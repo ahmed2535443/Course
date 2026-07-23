@@ -492,6 +492,36 @@ export default async function ProductDetails({ params, searchParams }) {
           <li>✅ query parameters مع searchParams</li>
         </ul>
 
+        <h2>🎮 جرّب بنفسك: Interactive Playground</h2>
+        <p>استخدم المحرر التفاعلي ده عشان تجرّب تكتب كود React وتشوف النتيجة مباشرة. غيّر الكود في اليسار وهتلقى النتيجة بتتحدث تلقائياً في اليمين.</p>
+
+        <div id="playground-react" 
+             data-playground 
+             data-language="react"
+             data-title="React Component Playground"
+             data-code='function App() {
+  const [count, setCount] = React.useState(0);
+
+  return (
+    &lt;div style={{ textAlign: "center", padding: "2rem" }}&gt;
+      &lt;h1 style={{ color: "#6366f1" }}&gt;Hello React! 🚀&lt;/h1&gt;
+      &lt;p style={{ fontSize: "1.2rem", marginTop: "1rem" }}&gt;
+        العدد الحالي: {count}
+      &lt;/p&gt;
+      &lt;div style={{ marginTop: "1rem" }}&gt;
+        &lt;button onClick={() =&gt; setCount(count + 1)}
+                style={{ padding: "0.5rem 1rem", margin: "0 0.5rem" }}&gt;
+          زيد +
+        &lt;/button&gt;
+        &lt;button onClick={() =&gt; setCount(count - 1)}
+                style={{ padding: "0.5rem 1rem", margin: "0 0.5rem" }}&gt;
+          نقص -
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}'></div>
+
         <div class="callout callout-info">
           <div class="callout-title">💡 نصيحة للممارسة</div>
           <div class="callout-content">
@@ -523,5 +553,6 @@ export default async function ProductDetails({ params, searchParams }) {
     </div>
   </div>
 
+  <script src="../js/code-playground.js"></script>
 </body>
 </html>
