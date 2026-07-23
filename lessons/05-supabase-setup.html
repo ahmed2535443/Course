@@ -1,589 +1,770 @@
 ﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الدرس 05 - إعداد Supabase وقاعدة البيانات</title>
-  <link rel="stylesheet" href="../css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الدرس 5 - إعداد قاعدة البيانات (Supabase) | دورة بناء متجر إلكتروني</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-
-  <!-- Header -->
-  <header class="header">
-    <div class="header-inner">
-      <a href="../index.html" class="logo">
-        <div class="logo-icon">🎓</div>
-        <span class="logo-text">Market Course</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="../index.html">الدروس</a></li>
-      </ul>
-    </div>
-  </header>
-
-  <!-- Content -->
-  <div class="container">
-    <div class="lesson-content">
-      
-      <!-- Header -->
-      <div class="lesson-header">
-        <div class="breadcrumb">
-          <a href="../index.html">الرئيسية</a>
-          <span>/</span>
-          <span>الدرس 05</span>
+    <header class="lesson-header">
+        <div class="container">
+            <a href="../index.html" class="logo">🛒 دورة المتجر</a>
+            <nav>
+                <a href="../index.html">الرئيسية</a>
+                <a href="../index.html#course">الدورة</a>
+            </nav>
         </div>
-        <h1>إعداد Supabase وقاعدة البيانات</h1>
-        <div class="meta">
-          <span>⏱️ 25 دقيقة</span>
-          <span>📖 عملي</span>
-          <span>الوحدة 2: قاعدة البيانات والمصادقة</span>
-        </div>
-      </div>
+    </header>
 
-      <!-- Body -->
-      <div class="lesson-body">
+    <main class="lesson-main">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="../index.html">الرئيسية</a>
+                <span>/</span>
+                <a href="../index.html#unit-3">الوحدة 3: تأسيس المشروع</a>
+                <span>/</span>
+                <span>الدرس 5: إعداد قاعدة البيانات (Supabase)</span>
+            </div>
 
-        <h2>🎯 أهداف الدرس</h2>
-        <p>أهلاً بيك في الدرس الخامس! في الدرس ده هنتعلم إزاي نعمل قاعدة بيانات ونخزّن فيها البيانات. قاعدة البيانات هي المخزن الرئيسي للمعلومات في أي مشروع - من غيرها مش هتقدر تحفظ أي حاجة!</p>
-        <ul>
-          <li>إنشاء مشروع Supabase جديد</li>
-          <li>فهم هيكل قاعدة البيانات</li>
-          <li>إنشاء جدول المنتجات (Products)</li>
-          <li>إعداد Storage لرفع الصور</li>
-          <li>فهم وتطبيق RLS Policies</li>
-          <li>الاتصال بـ Next.js</li>
-        </ul>
+            <h1 class="lesson-title">الدرس 5: إعداد قاعدة البيانات (Supabase)</h1>
+            <p class="lesson-subtitle">هنتعلم إزاي نستخدم Supabase لإنشاء و إدارة قاعدة بيانات مجاناً</p>
 
-        <div class="callout callout-info">
-          <div class="callout-title">💡 ليه Supabase؟</div>
-          <div class="callout-content">
-            Supabase هو بديل مفتوح المصدر لـ Firebase. بيوفر قاعدة بيانات PostgreSQL قوية مع واجهة سهلة الاستخدام. كمان فيه خطة مجانية سخية تكفي للمشاريع الصغيرة والمتوسطة.
-          </div>
-        </div>
+            <div class="lesson-meta">
+                <span>⏱️ مدة الدرس: 60 دقيقة</span>
+                <span>📝 المستوى: مبتدئ</span>
+            </div>
 
-        <h2>📦 إيه هو Supabase؟</h2>
-        <p><strong>Supabase</strong> هو بديل مفتوح المصدر لـ Firebase. بيقدم قاعدة بيانات PostgreSQL وتخزين سحابي ومصادقة و Realtime subscriptions. يعني كل اللي محتاجه في مكان واحد!</p>
+            <div class="lesson-body">
 
-        <h3>مميزات Supabase:</h3>
-        <ul>
-          <li><strong>PostgreSQL</strong> - قاعدة بيانات قوية وموثوقة ومستخدمة في شركات كبيرة</li>
-          <li><strong>Realtime</strong> - تحديثات مباشرة للبيانات</li>
-          <li><strong>Storage</strong> - تخزين الصور والملفات في السحابة</li>
-          <li><strong>Auth</strong> - نظام مصادقة جاهز</li>
-          <li><strong>Dashboard</strong> - لوحة تحكم سهلة وجميلة</li>
-          <li><strong>Free Tier</strong> - خطة مجانية تكفي لـ 500MB database و 1GB storage</li>
-          <li><strong>API يولد تلقائياً</strong> - بيولّد API تلقائياً من الجداول</li>
-        </ul>
+                <!-- Section: Introduction -->
+                <h2>مقدمة مبسّطة عن قواعد البيانات</h2>
 
-        <h3>الفرق بين Supabase و Firebase</h3>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>الميزة</th>
-                <th>Supabase</th>
-                <th>Firebase</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>قاعدة البيانات</td>
-                <td>PostgreSQL (SQL)</td>
-                <td>Firestore (NoSQL)</td>
-              </tr>
-              <tr>
-                <td>المصدر</td>
-                <td>مفتوح المصدر</td>
-                <td>ملكية Google</td>
-              </tr>
-              <tr>
-                <td>API</td>
-                <td>تلقائي + مخصص</td>
-                <td>تلقائي</td>
-              </tr>
-              <tr>
-                <td>التسعير</td>
-                <td>مجاني + مدفوع</td>
-                <td>مجاني + مدفوع</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                <p>قبل ما نبدأ في Supabase، خلّينا نفهم يعني إيه "قاعدة بيانات" أصلاً.</p>
 
-        <h2>🚀 الخطوة 1: إنشاء مشروع Supabase</h2>
-        
-        <h3>1.1 التسجيل في Supabase</h3>
-        <ol>
-          <li>ادخل على <strong>https://supabase.com</strong></li>
-          <li>اضغط "Start your project"</li>
-          <li>سجّل الدخول باستخدام GitHub أو Email</li>
-        </ol>
+                <div class="callout callout-info">
+                    <h4>💡 قاعدة البيانات إيه ببساطة؟</h4>
+                    <p>تخيل إن عندك مجلد كبير فيه كل بيانات منتجاتك - أسماؤها، أسعارها، صورها، الكمية المتاحة... بدل ما تحفظها في ملف Excel، بتحفظها في "قاعدة بيانات" عشان تقدر توصلها بسرعة وتعدلها بسهولة.</p>
+                </div>
 
-        <div class="callout callout-info">
-          <div class="callout-title">💡 نصيحة</div>
-          <div class="callout-content">
-            استخدم حساب GitHub عشان التسجيل يكون أسرع. لو ما عندك حساب GitHub، أنشأ واحد مجاني في 5 دقائق.
-          </div>
-        </div>
+                <h3>ليه محتاجين قاعدة بيانات؟</h3>
+                <p>لما نبني متجر إلكتروني، محتاجين نحفظ:</p>
+                <ul>
+                    <li><strong>المنتجات</strong> - الاسم، السعر، الصورة، الوصف</li>
+                    <li><strong>الطلبات</strong> - مين طلب إيه، امتى، وين يوصل</li>
+                    <li><strong>المستخدمين</strong> - البيانات الشخصية، العناوين</li>
+                    <li><strong>التقييمات</strong> - رأي كل عميل في المنتج</li>
+                </ul>
 
-        <h3>1.2 إنشاء مشروع جديد</h3>
-        <ol>
-          <li>من Dashboard، اضغط "New Project"</li>
-          <li>اختار Organization (أو أنشأ واحد جديد)</li>
-          <li>أدخل تفاصيل المشروع:
-            <ul>
-              <li><strong>Name:</strong> market</li>
-              <li><strong>Database Password:</strong> كلمة مرور قوية (اكتبها في مكان آمن!)</li>
-              <li><strong>Region:</strong> اختار أقرب منطقة (مثلاً EU West أو US East)</li>
-            </ul>
-          </li>
-          <li>اضغط "Create new project"</li>
-          <li>استنى دقيقة أو اتنين لين ينشأ المشروع</li>
-        </ol>
+                <div class="callout callout-warning">
+                    <h4>⚠️ ليه مش بنستخدم Excel؟</h4>
+                    <p>Excel كويس للمستخدم العادي، لكن للمواقع الكبيرة فيه مشاكل:</p>
+                    <ul>
+                        <li>ما ينفعش آلاف المستخدمين ي�عوا فيه في نفس الوقت</li>
+                        <li>ما فيهش نظام أمان (RMS) يمنع شخص يشوف بيانات غيره</li>
+                        <li>صعب تربط بين بيانات مختلفة (مثلاً: ربط طلب بعميل)</li>
+                    </ul>
+                </div>
 
-        <div class="callout callout-warning">
-          <div class="callout-title">⚠️ تنبيه مهم</div>
-          <div class="callout-content">
-            احتفظ بكلمة المرور في مكان آمن! مش هتقدر تتغير بعدين. كمان، استخدم كلمة مرور قوية تحتوي على أرقام وحروف وأحرف خاصة. كلمة المرور دي مش هتقدر تغيّرها بعد الإنشاء.
-          </div>
-        </div>
+                <h3>ليه Supabase بالذات؟</h3>
 
-        <h2>🗄️ الخطوة 2: إنشاء جدول المنتجات (Products)</h2>
-        <p>بعد إنشاء المشروع، هنحتاج نإنشاء جداول قاعدة البيانات. الجدول هو المخزن الرئيسي للبيانات - زي الجدول في Excel بس أقوى بكتير!</p>
+                <p>فيه كتير من قواعد البيانات زي MySQL و PostgreSQL و MongoDB... ليه اختارنا Supabase؟</p>
 
-        <h3>2.1 فتح SQL Editor</h3>
-        <ol>
-          <li>من Dashboard، اختار "SQL Editor" من القائمة الجانبية</li>
-          <li>اضغط "New query"</li>
-        </ol>
+                <div class="callout callout-success">
+                    <h4>✅ مميزات Supabase للمبتدئين:</h4>
+                    <ul>
+                        <li><strong>مجاني بالكامل</strong> - في خطة مجانية كافية للمشاريع الصغيرة</li>
+                        <li><strong>واجهة سهلة</strong> - فيه Table Editor تقدر تشوف و تعدل البيانات بضغطة زر</li>
+                        <li><strong>يعمل مع أي لغة برمجة</strong> - Next.js, React, Python, PHP...</li>
+                        <li><strong>يعمل مع Clerk</strong> - هنربطه مع Clerk في الدرس ده</li>
+                        <li><strong>Storage مجاني</strong> - ترفع عليه الصور بدل ما تستخدم external CDN</li>
+                        <li><strong>SQL Editor مدمج</strong> - تكتب أوامر SQL مباشرة</li>
+                    </ul>
+                </div>
 
-        <h3>2.2 إنشاء جدول المنتجات</h3>
-        <p>انسخ والصق الكود التالي في SQL Editor واضغط "Run":</p>
+                <h3>شرح PostgreSQL ببساطة</h3>
 
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">SQL - إنشاء جدول المنتجات</span>
-            <span class="code-block-lang">sql</span>
-          </div>
-          <pre><code>-- إنشاء جدول المنتجات
+                <p>Supabase مبني على PostgreSQL - وده أشهر أنواع قواعد البيانات في العالم. خلّينا نفهمه:</p>
+
+                <p><strong>SQL</strong> = Structured Query Language = لغة الاستعلام الهيكلية</p>
+                <p>ببساطة، SQL هي الطريقة اللي بنتكلم بيها مع قاعدة البيانات. مثلاً:</p>
+
+                <pre><code>-- استعلام عادي: جيب كل المنتجات
+SELECT * FROM products;
+
+-- استعلام محدد: جيب منتج اسمه "قميص"
+SELECT * FROM products WHERE name = 'قميص';
+
+-- إضافة منتج جديد
+INSERT INTO products (name, price) VALUES ('بنطلون', 150);
+
+-- حذف منتج
+DELETE FROM products WHERE id = 1;</code></pre>
+
+                <p>كده ببساطة! SQL زي إنك بتقول للقاعدة بيانات: "اعمل كذا" وهي بتعمله.</p>
+
+                <h3>شرح مفاهيم أساسية</h3>
+
+                <div class="callout callout-info">
+                    <h4>📋 مفاهيم مهمة تعرفها:</h4>
+                    <ul>
+                        <li><strong>Table (جدول)</strong> = ملف زي Excel فيه صفوف وأعمدة. مثلاً: جدول المنتجات فيه كل المنتجات</li>
+                        <li><strong>Row (صف)</strong> = سطر واحد = منتج واحد في جدول المنتجات</li>
+                        <li><strong>Column (عمود)</strong> = خانة = خاصية زي الاسم أو السعر</li>
+                        <li><strong>Primary Key</strong> = العمود اللي بيحدد كل صف بشكل فريد (مثل: رقم المنتج)</li>
+                        <li><strong>Foreign Key</strong> = عمود بيربط جدول بجدول تاني (مثل: رقم الطلب بيربط بالعميل)</li>
+                        <li><strong>UUID</strong> = رقم عشوائي فريد جداً، بنستخدمه بدل الـ ID العادي</li>
+                    </ul>
+                </div>
+
+
+                <!-- Section: Create Account -->
+                <h2>إنشاء حساب Supabase خطوة بخطوة</h2>
+
+                <h3>الخطوة 1: فتح الموقع</h3>
+                <p>افتح المتصفح واكتب <code>https://supabase.com</code> واضغط Enter.</p>
+                <p>هتشوف الصفحة الرئيسية. اضغط على زر <strong>"Start your project"</strong> (أو "ابدأ مشروعك").</p>
+
+                <div class="callout callout-tip">
+                    <h4>💡 نصيحة:</h4>
+                    <p>لو عندك حساب GitHub، هيسهّل عليك التسجيل جداً. استخدم "Sign in with GitHub".</p>
+                </div>
+
+                <h3>الخطوة 2: إنشاء حساب</h3>
+                <p>ممكن تسجل بـ:</p>
+                <ul>
+                    <li><strong>GitHub</strong> (الأسهل والأسرع) - اضغط "Sign in with GitHub"</li>
+                    <li><strong>Google</strong> - اضغط "Sign in with Google"</li>
+                    <li><strong>البريد الإلكتروني</strong> - اكتب إيميلك واعمل حساب جديد</li>
+                </ul>
+
+                <h3>الخطوة 3: تسجيل الدخول</h3>
+                <p>بعد التسجيل، هتدخل على Dashboard بتاع Supabase. ده لوحة التحكم اللي هتشوف فيها كل مشاريعك.</p>
+
+                <div class="callout callout-info">
+                    <h4>💡 لو ما عندك حساب GitHub:</h4>
+                    <p>روح على <code>https://github.com</code> واعمل حساب جديد ببلاش. ده مفيد كمان لمراحل تانية في الدورة.</p>
+                </div>
+
+
+                <!-- Section: Create Project -->
+                <h2>إنشاء المشروع</h2>
+
+                <h3>الخطوة 1: اضغط "New Project"</h3>
+                <p>في الـ Dashboard، هتشوف زر <strong>"New Project"</strong> ( المشروع الجديد). اضغط عليه.</p>
+
+                <h3>الخطوة 2: اختار Organization</h3>
+                <p>لو عندك أكتر من organization، اختار واحد. لو أول مرة، هيتعمل واحد تلقائياً.</p>
+
+                <h3>الخطوة 3: املأ بيانات المشروع</h3>
+
+                <p>هتشوف نموذج فيه حقول لازم تملأها. خلّينا نشرح كل واحد:</p>
+
+                <ul>
+                    <li><strong>Name</strong>: اكتب اسم المشروع. مثلاً: <code>market-store</code>. ده اسم تعريفي، مش مهم أوي.</li>
+                    <li><strong>Database Password</strong>: كلمة سر لقاعدة البيانات. <span style="color: #e74c3c;"><strong>مهم جداً</strong></span> - اختار كلمة سر قوية واكتبها في مكان آمن! ما تنساهاش!</li>
+                    <li><strong>Region</strong>: اختار أقرب منطقة ليك. لو في مصر/السعودية/الإمارات، اختار <code>EU West</code> (أوروبا).</li>
+                </ul>
+
+                <div class="callout callout-warning">
+                    <h4>⚠️ كلمة السر مهمة جداً!</h4>
+                    <p>كلمة السر دي مش هتقدر تغيرها بعدين. اكتبها في ملف notepad واحفظها في مكان آمن. هنحتاجها لما نكتب SQL.</p>
+                </div>
+
+                <h3>الخطوة 4: اضغط "Create new project"</h3>
+                <p>بعد ما تملأ كل الحقول، اضغط <strong>"Create new project"</strong>. Проект هياخد تقريباً 2-3 دقيقة عشان يتعمل setup.</p>
+
+                <div class="callout callout-success">
+                    <h4>✅ مبروك!</h4>
+                    <p>دلوقتي عندك مشروع Supabase جاهز. فيه:</p>
+                    <ul>
+                        <li>قاعدة بيانات PostgreSQL فاضية</li>
+                        <li>SQL Editor</li>
+                        <li>Table Editor</li>
+                        <li>Storage</li>
+                        <li>Authentication</li>
+                        <li>API automatically generated</li>
+                    </ul>
+                </div>
+
+
+                <!-- Section: Dashboard Tour -->
+                <h2>شرح الـ Dashboard</h2>
+
+                <p>بعد ما المشروع يتعمل، هتشوف الـ Dashboard. خلّينا نعمل جولة سريعة:</p>
+
+                <h3>القائمة الجانبية (Left Sidebar)</h3>
+                <ul>
+                    <li><strong>Home</strong> - الصفحة الرئيسية للمشروع</li>
+                    <li><strong>Table Editor</strong> - تعديل الجداول بالدوس (GUI)</li>
+                    <li><strong>SQL Editor</strong> - كتابة أوامر SQL مباشرة</li>
+                    <li><strong>Authentication</strong> - إدارة المستخدمين (مش هنستخدمه لأننا بنستخدم Clerk)</li>
+                    <li><strong>Storage</strong> - رفع وتخزين الصور</li>
+                    <li><strong>Database</strong> - معلومات عن قاعدة البيانات</li>
+                    <li><strong>API</strong> - الـ API اللي هنستخدمها في الـ Frontend</li>
+                </ul>
+
+                <h3>API Section</h3>
+                <p>في قسم الـ API، هتلاقي:</p>
+                <ul>
+                    <li><strong>Project URL</strong>: رابط المشروع. مثال: <code>https://xyzcompany.supabase.co</code>. ده بتحطه في كود الـ Frontend.</li>
+                    <li><strong>API Key</strong>: مفتاح API. فيه نوعين:
+                        <ul>
+                            <li><strong>Anon Key</strong>: للمستخدمين العاديين. تقدر تحطه في الكود.</li>
+                            <li><strong>Service Role Key</strong>: للمدير. <span style="color: #e74c3c;"><strong>ما تحطهش في كود الـ Frontend!</strong></span></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="callout callout-warning">
+                    <h4>⚠️ معلومة أمان مهمة!</h4>
+                    <p><strong>Anon Key</strong> آمن تحطه في كود الـ Frontend لأن RLS بيحميك. لكن <strong>Service Role Key</strong> بيمحو كل الحماية، فما تحطهش في أي مكان في الـ Frontend!</p>
+                </div>
+
+
+                <!-- Section: SQL Editor -->
+                <h2>SQL Editor شرح تفصيلي</h2>
+
+                <p>الـ SQL Editor هو المكان اللي هتكتب فيه أوامر SQL عشان تنشئ الجداول وتعدل البيانات.</p>
+
+                <h3>كيفية الوصول للـ SQL Editor</h3>
+                <p>من القائمة الجانبية، اضغط على <strong>"SQL Editor"</strong>.</p>
+
+                <h3>شرح الواجهة</h3>
+                <ul>
+                    <li><strong>New Query</strong>: زر لإنشاء استعلام جديد</li>
+                    <li><strong>Editor</strong>: المكان اللي بتأ فيه الكود</li>
+                    <li><strong>Run</strong>: الزر اللي بتضغطه عشان تنفذ الاستعلام</li>
+                    <li><strong>Results</strong>: النتيجة بتظهر هنا بعد التنفيذ</li>
+                </ul>
+
+                <h3>أنواع الاستعلامات</h3>
+                <ul>
+                    <li><strong>DDL (Data Definition Language)</strong>: أوامر لإنشاء وتعديل هيكل الجداول
+                        <pre><code>CREATE TABLE products (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL
+);
+
+ALTER TABLE products ADD COLUMN price DECIMAL(10,2);
+
+DROP TABLE products;</code></pre>
+                    </li>
+                    <li><strong>DML (Data Manipulation Language)</strong>: أوامر لإضافة وتعديل وحذف البيانات
+                        <pre><code>INSERT INTO products (name, price) VALUES ('قميص', 150);
+
+UPDATE products SET price = 200 WHERE name = 'قميص';
+
+DELETE FROM products WHERE id = 'some-uuid';</code></pre>
+                    </li>
+                    <li><strong>DQL (Data Query Language)</strong>: أوامر للبحث عن البيانات
+                        <pre><code>SELECT * FROM products;
+
+SELECT name, price FROM products WHERE price > 100;
+
+SELECT * FROM products ORDER BY price ASC;</code></pre>
+                    </li>
+                </ul>
+
+
+                <!-- Section: Create Tables -->
+                <h2>إنشاء جدول المنتجات خطوة بخطوة</h2>
+
+                <p>دلوقتي هنعمل جدول يحتوي على كل المنتجات بتاعتنا.</p>
+
+                <h3>الخطوة 1: افتح SQL Editor</h3>
+                <p>من القائمة الجانبية، اضغط على "SQL Editor" ثم "New Query".</p>
+
+                <h3>الخطوة 2: اكتب الكود</h3>
+
+                <p>انسخ الكود ده والصقه في الـ Editor:</p>
+
+                <pre><code>-- إنشاء جدول المنتجات
 CREATE TABLE products (
+  -- المعرف الفريد لكل منتج
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  
+  -- اسم المنتج (نص إلزامي)
   name TEXT NOT NULL,
+  
+  -- وصف المنتج (نص اختياري)
   description TEXT,
-  price DECIMAL(10, 2) NOT NULL,
-  image_url TEXT,
-  category TEXT,
+  
+  -- السعر (رقم عشري)
+  price DECIMAL(10, 2) NOT NULL DEFAULT 0,
+  
+  -- نسبة الخصم (رقم صحيح من 0 لـ 100)
+  discount INTEGER DEFAULT 0,
+  
+  -- صورة المنتج (رابط)
+  image TEXT,
+  
+  -- الكمية المتاحة
   stock INTEGER DEFAULT 0,
+  
+  -- هل المنتج مميز؟
   featured BOOLEAN DEFAULT false,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- إنشاء فهرس على الفئة
-CREATE INDEX idx_products_category ON products(category);
-
--- إنشاء فهرس على المنتجات المميزة
-CREATE INDEX idx_products_featured ON products(featured);</code></pre>
-        </div>
-
-        <h3>2.3 شرح الحقول</h3>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>الحقل</th>
-                <th>النوع</th>
-                <th>الوصف</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>id</code></td>
-                <td>UUID</td>
-                <td>المعرّف الفريد للمنتج (يُنشأ تلقائياً)</td>
-              </tr>
-              <tr>
-                <td><code>name</code></td>
-                <td>TEXT</td>
-                <td>اسم المنتج (إلزامي - NOT NULL)</td>
-              </tr>
-              <tr>
-                <td><code>description</code></td>
-                <td>TEXT</td>
-                <td>وصف المنتج (اختياري)</td>
-              </tr>
-              <tr>
-                <td><code>price</code></td>
-                <td>DECIMAL</td>
-                <td>سعر المنتج (إلزامي)</td>
-              </tr>
-              <tr>
-                <td><code>image_url</code></td>
-                <td>TEXT</td>
-                <td>رابط صورة المنتج</td>
-              </tr>
-              <tr>
-                <td><code>category</code></td>
-                <td>TEXT</td>
-                <td>فئة المنتج (إلكترونيات، كتب، إلخ)</td>
-              </tr>
-              <tr>
-                <td><code>stock</code></td>
-                <td>INTEGER</td>
-                <td>المخزون المتوفر (الافتراضي 0)</td>
-              </tr>
-              <tr>
-                <td><code>featured</code></td>
-                <td>BOOLEAN</td>
-                <td>هل المنتج مميز؟ (الافتراضي false)</td>
-              </tr>
-              <tr>
-                <td><code>created_at</code></td>
-                <td>TIMESTAMP</td>
-                <td>تاريخ الإنشاء (تلقائي)</td>
-              </tr>
-              <tr>
-                <td><code>updated_at</code></td>
-                <td>TIMESTAMP</td>
-                <td>تاريخ آخر تحديث (تلقائي)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3>2.4 إنشاء جدول الطلبات (Orders)</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">SQL - إنشاء جدول الطلبات</span>
-            <span class="code-block-lang">sql</span>
-          </div>
-          <pre><code>-- إنشاء جدول الطلبات
-CREATE TABLE orders (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id TEXT NOT NULL,
-  total DECIMAL(10, 2) NOT NULL,
-  status TEXT DEFAULT 'pending',
-  shipping_address JSONB,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- إنشاء جدول عناصر الطلب
-CREATE TABLE order_items (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
-  product_id UUID REFERENCES products(id),
-  quantity INTEGER NOT NULL,
-  price DECIMAL(10, 2) NOT NULL
-);
-
--- إنشاء فهرس
-CREATE INDEX idx_orders_user_id ON orders(user_id);
-CREATE INDEX idx_order_items_order_id ON order_items(order_id);</code></pre>
-        </div>
-
-        <p>لاحظ إن في جدولين هنا: orders (الطلبات) و order_items (عناصر كل طلب). الربط بينهم بيحصل عن طريق <code>order_id</code> في جدول order_items.</p>
-
-        <h2>📁 الخطوة 3: إعداد Storage لرفع الصور</h2>
-        <p>Supabase بيوفر Storage سحابي لرفع وتخزين الصور. ممكن ترفع صور المنتجات وتخزنها عندهم.</p>
-
-        <h3>3.1 إنشاء Bucket جديد</h3>
-        <ol>
-          <li>من Dashboard، اختار "Storage" من القائمة الجانبية</li>
-          <li>اضغط "New bucket"</li>
-          <li>أدخل التفاصيل:
-            <ul>
-              <li><strong>Name:</strong> products</li>
-              <li><strong>Public:</strong> فعّل (عشان الصور تظهر للكل)</li>
-            </ul>
-          </li>
-          <li>اضغط "Create bucket"</li>
-        </ol>
-
-        <div class="callout callout-info">
-          <div class="callout-title">💡 ملاحظة</div>
-          <div class="callout-content">
-            الـ Public bucket يعني أي حد يقدر يوصل للصور بالـ URL مباشرة. ده مناسب لصور المنتجات اللي محتاجينها تكون متاحة للجميع. لو عايز صور خاصة (زي صور المستخدمين)، اعمل Private bucket.
-          </div>
-        </div>
-
-        <h3>3.2 رفع صورة تجريبية</h3>
-        <ol>
-          <li>اضغط على الـ Bucket اللي أنشأته</li>
-          <li>اضغط "Upload file"</li>
-          <li>اختار صورة من جهازك</li>
-          <li>بعد الرفع، هتلاقي الـ URL بتاع الصورة</li>
-        </ol>
-
-        <h2>🔐 الخطوة 4: RLS Policies</h2>
-        <p><strong>Row Level Security (RLS)</strong> هي ميزة في PostgreSQL بتسمحلك تتحكم في مين يقدر يقرأ أو يكتب البيانات. ده مهم جداً للأمان!</p>
-
-        <h3>4.1 تفعيل RLS على جدول المنتجات</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">SQL - تفعيل RLS</span>
-            <span class="code-block-lang">sql</span>
-          </div>
-          <pre><code>-- تفعيل Row Level Security
-ALTER TABLE products ENABLE ROW LEVEL SECURITY;
-
--- سياسة للقراءة: أي حد يقدر يقرأ المنتجات
-CREATE POLICY "Products are viewable by everyone" 
-ON products FOR SELECT 
-USING (true);
-
--- سياسة للإدراج: فقط المستخدمين المسجلين
-CREATE POLICY "Users can insert products" 
-ON products FOR INSERT 
-WITH CHECK (auth.role() = 'authenticated');
-
--- سياسة للتحديث: فقط المستخدمين المسجلين
-CREATE POLICY "Users can update products" 
-ON products FOR UPDATE 
-USING (auth.role() = 'authenticated');
-
--- سياسة للحذف: فقط المستخدمين المسجلين
-CREATE POLICY "Users can delete products" 
-ON products FOR DELETE 
-USING (auth.role() = 'authenticated');</code></pre>
-        </div>
-
-        <h3>4.2 شرح السياسات</h3>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>السياسة</th>
-                <th>العملية</th>
-                <th>الشرط</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Products are viewable by everyone</td>
-                <td>SELECT</td>
-                <td>true (الكل يقدر يقرأ)</td>
-              </tr>
-              <tr>
-                <td>Users can insert products</td>
-                <td>INSERT</td>
-                <td>auth.role() = 'authenticated'</td>
-              </tr>
-              <tr>
-                <td>Users can update products</td>
-                <td>UPDATE</td>
-                <td>auth.role() = 'authenticated'</td>
-              </tr>
-              <tr>
-                <td>Users can delete products</td>
-                <td>DELETE</td>
-                <td>auth.role() = 'authenticated'</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3>4.3 RLS للطلبات</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">SQL - RLS للطلبات</span>
-            <span class="code-block-lang">sql</span>
-          </div>
-          <pre><code>-- تفعيل RLS على جدول الطلبات
-ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
-
--- المستخدم يقدر يشوف طلباته فقط
-CREATE POLICY "Users can view their own orders" 
-ON orders FOR SELECT 
-USING (auth.uid()::text = user_id);
-
--- المستخدم يقدر ينشئ طلبات
-CREATE POLICY "Users can create orders" 
-ON orders FOR INSERT 
-WITH CHECK (auth.uid()::text = user_id);
-
--- تفعيل RLS على جدول عناصر الطلب
-ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
-
--- المستخدم يقدر يشوف عناصر طلباته
-CREATE POLICY "Users can view their order items" 
-ON order_items FOR SELECT 
-USING (
-  order_id IN (
-    SELECT id FROM orders 
-    WHERE user_id = auth.uid()::text
-  )
+  
+  -- اسم القسم (ملابس، إلكترونيات، إكسسوارات...)
+  category TEXT,
+  
+  -- تاريخ الإنشاء
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );</code></pre>
-        </div>
 
-        <p>RLS مهم جداً عشان يحمي بيانات المستخدمين. كل مستخدم يقدر يشوف طلباته بس ومش يقدر يشوف طلبات غيره.</p>
+                <h3>شرح كل سطر بالتفصيل:</h3>
 
-        <h2>🔗 الخطوة 5: الاتصال بـ Next.js</h2>
-        <p>الآن محتاجين نوصل مشروع Next.js بـ Supabase عشان نقدر نقرأ ونكتب البيانات.</p>
+                <div class="callout callout-info">
+                    <h4>📋 شرح الأعمدة:</h4>
+                    <ul>
+                        <li><code>id UUID DEFAULT gen_random_uuid() PRIMARY KEY</code>: ده المعرف الفريد لكل منتج. UUID = رقم عشوائي طويل (زي: <code>550e8400-e29b-41d4-a716-446655440000</code>). الـ <code>DEFAULT gen_random_uuid()</code> معناه "اعمل رقم تلقائياً". الـ <code>PRIMARY KEY</code> معناه "ده المفتاح الرئيسي، كل صف لازم يكون مختلف".</li>
+                        <li><code>name TEXT NOT NULL</code>: اسم المنتج. الـ <code>NOT NULL</code> معناه "لازم يكون فيه قيمة، ما ينفعش يكون فاضي".</li>
+                        <li><code>description TEXT</code>: وصف المنتج. الـ <code>TEXT</code> بدون <code>NOT NULL</code> معناه "ممكن يكون فاضي".</li>
+                        <li><code>price DECIMAL(10, 2) NOT NULL DEFAULT 0</code>: السعر. الـ <code>DECIMAL(10,2)</code> معناه "رقم عشري فيه 10 أرقام قبل العلامة العشري و2 بعدها". يعني أقصى سعر: 99999999.99. الـ <code>DEFAULT 0</code> معناه "لو ما حطيت سعر، خليه صفر".</li>
+                        <li><code>discount INTEGER DEFAULT 0</code>: نسبة الخصم كنسبة مئوية (0-100).</li>
+                        <li><code>image TEXT</code>: رابط صورة المنتج.</li>
+                        <li><code>stock INTEGER DEFAULT 0</code>: الكمية المتاحة في المخزون.</li>
+                        <li><code>featured BOOLEAN DEFAULT false</code>: هل المنتج مميز يظهر في الصفحة الرئيسية؟ <code>true</code> أو <code>false</code>.</li>
+                        <li><code>category TEXT</code>: اسم القسم (ملابس، إلكترونيات...).</li>
+                        <li><code>created_at TIMESTAMPTZ DEFAULT NOW()</code>: تاريخ ووقت إنشاء المنتج تلقائياً.</li>
+                    </ul>
+                </div>
 
-        <h3>5.1 تثبيت Supabase Client</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">Terminal</span>
-            <span class="code-block-lang">bash</span>
-          </div>
-          <pre><code>npm install @supabase/supabase-js @supabase/ssr</code></pre>
-        </div>
+                <h3>الخطوة 3: اضغط Run</h3>
+                <p>بعد ما تكتب الكود، اضغط زر <strong>"Run"</strong> (أو <code>Ctrl+Enter</code>). لو ما فيهش أخطاء، هتشوف رسالة نجاح.</p>
 
-        <h3>5.2 إنشاء ملف البيئة</h3>
-        <p>أنشئ ملف <code>.env.local</code> في جذر المشروع (لو ماكانش موجود):</p>
+                <h3>الخطوة 4: تحقق من الجدول</h3>
+                <p>روح على <strong>Table Editor</strong> من القائمة الجانبية. هتشوف جدول المنتجات <code>products</code> ظهر. اضغط عليه وشوف الأعمدة اللي عملناها.</p>
 
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">.env.local</span>
-            <span class="code-block-lang">bash</span>
-          </div>
-          <pre><code>NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here</code></pre>
-        </div>
+                <div class="callout callout-success">
+                    <h4>✅ مبروك!</h4>
+                    <p>دلوقتي عندك جدول المنتجات جاهز. جرّب تضيف منتج واحد من خلال الـ Table Editor عشان تتأكد إن كل حاجة شغالة.</p>
+                </div>
 
-        <div class="callout callout-info">
-          <div class="callout-title">💡 أين أجد هذه المفاتيح؟</div>
-          <div class="callout-content">
-            من Supabase Dashboard → Settings → API. هتلاقي:
-            <ul>
-              <li><strong>Project URL:</strong> رابط المشروع</li>
-              <li><strong>anon public key:</strong> المفتاح العام</li>
-            </ul>
-          </div>
-        </div>
 
-        <div class="callout callout-warning">
-          <div class="callout-title">⚠️ حفظ المفاتيح</div>
-          <div class="callout-content">
-            ملف .env.local مش بيتخزن في Git. ده مهم للأمان عشان المفاتيح ما تتسرّبش. تأكد إن الملف موجود في .gitignore.
-          </div>
-        </div>
+                <!-- Section: Orders Table -->
+                <h2>إنشاء جدول الطلبات</h2>
 
-        <h3>5.3 إنشاء Supabase Client</h3>
-        <div class="file-tree">
-          <div class="file-tree-item folder">📁 lib/</div>
-          <div class="file-tree-item file">└── 📄 supabase.js            # Supabase Client</div>
-        </div>
+                <p>دلوقتي محتاجين جدول يحتفظ بالطلبات اللي العملاء بيحطوها.</p>
 
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">lib/supabase.js</span>
-            <span class="code-block-lang">javascript</span>
-          </div>
-          <pre><code>import { createClient } from '@supabase/supabase-js';
+                <pre><code>-- إنشاء جدول الطلبات
+CREATE TABLE orders (
+  -- المعرف الفريد للطلب
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  
+  -- رقم المستخدم (من Clerk)
+  user_id TEXT NOT NULL,
+  
+  -- ملخص المنتجات في الطلب (JSON)
+  items JSONB NOT NULL,
+  
+  -- المبلغ الإجمالي
+  total DECIMAL(10, 2) NOT NULL,
+  
+  -- حالة الطلب
+  status TEXT DEFAULT 'pending',
+  
+  -- بيانات الشحن
+  shipping_name TEXT NOT NULL,
+  shipping_address TEXT NOT NULL,
+  shipping_city TEXT NOT NULL,
+  shipping_phone TEXT NOT NULL,
+  
+  -- تاريخ الإنشاء
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);</code></pre>
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+                <h3>شرح الـ JSONB:</h3>
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);</code></pre>
-        </div>
-
-        <h3>5.4 اختبار الاتصال</h3>
-        <p>أنشئ صفحة اختبار للتأكد من الاتصال:</p>
-
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">app/test-supabase/page.js</span>
-            <span class="code-block-lang">javascript</span>
-          </div>
-          <pre><code>import { supabase } from '@/lib/supabase';
-
-export default async function TestSupabase() {
-  // جلب المنتجات من قاعدة البيانات
-  const { data: products, error } = await supabase
-    .from('products')
-    .select('*');
-
-  if (error) {
-    return &lt;div&gt;خطأ: {error.message}&lt;/div&gt;;
-  }
-
-  return (
-    &lt;div&gt;
-      &lt;h1&gt;اختبار Supabase&lt;/h1&gt;
-      &lt;p&gt;عدد المنتجات: {products?.length || 0}&lt;/p&gt;
-      &lt;pre&gt;{JSON.stringify(products, null, 2)}&lt;/pre&gt;
-    &lt;/div&gt;
-  );
+                <div class="callout callout-info">
+                    <h4>📋 يعني إيه JSONB؟</h4>
+                    <p>JSONB = JavaScript Object Notation Binary. ببساطة، ده نوع بيانات بيحتفظ بمعلومات منظمة (زي الـ JSON). مثلاً:</p>
+                    <pre><code>{
+  "items": [
+    {"product_id": "abc", "name": "قميص", "price": 150, "quantity": 2},
+    {"product_id": "def", "name": "بنطلون", "price": 200, "quantity": 1}
+  ]
 }</code></pre>
+                    <p>بنستخدمه عشان نحفظ كل المنتجات في الطلب مرة واحدة بدل ما نعمل جدول منفصل لكل منتج في الطلب.</p>
+                </div>
+
+                <h3>شرح حالة الطلب (status)</h3>
+                <ul>
+                    <li><code>pending</code> = قيد الانتظار</li>
+                    <li><code>processing</code> = قيد التجهيز</li>
+                    <li><code>shipped</code> = تم الشحن</li>
+                    <li><code>delivered</code> = تم التوصيل</li>
+                </ul>
+
+
+                <!-- Section: Categories Table -->
+                <h2>إنشاء جدول الأقسام</h2>
+
+                <pre><code>-- إنشاء جدول الأقسام
+CREATE TABLE categories (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  name_ar TEXT NOT NULL,
+  description TEXT,
+  image TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- إضافة قسم افتراضي
+INSERT INTO categories (name, name_ar, description) VALUES
+('clothing', 'ملابس', 'الملابس والإكسسوارات'),
+('electronics', 'إلكترونيات', 'الأجهزة الإلكترونية'),
+('accessories', 'إكسسوارات', 'الإكسسوارات والإضافات');</code></pre>
+
+                <div class="callout callout-info">
+                    <h4>📋 شرح UNIQUE:</h4>
+                    <p>الـ <code>UNIQUE</code> معناه "ما ينفعش فيه قسمين بنفس الاسم". لو جربت تعمل قسم اسمه "ملابس" مرتين، التانية هتعمل error.</p>
+                </div>
+
+
+                <!-- Section: Storage -->
+                <h2>Storage شرح تفصيلي</h2>
+
+                <p>الـ Storage هو خدمة التخزين السحابي بتاعة Supabase. هنستخدمه عشان نرفع الصور.</p>
+
+                <h3>ليه Storage؟</h3>
+                <ul>
+                    <li>الصور كبيرة في الحجم، مش مناسبة تحفظها في قاعدة البيانات</li>
+                    <li>Storage بيوفرلك رابط (URL) لكل صورة تقدر تستخدمه في الـ Frontend</li>
+                    <li>Storage مجاني لحد حد معين (1 جيجا مجاناً)</li>
+                </ul>
+
+                <h3>إنشاء Bucket للصور</h3>
+                <ol>
+                    <li>روح على <strong>Storage</strong> من القائمة الجانبية</li>
+                    <li>اضغط على <strong>"New Bucket"</strong></li>
+                    <li>اكتب اسم الـ Bucket: <code>products</code></li>
+                    <li>افعل <strong>"Public"</strong> عشان الصور تكون متاحة للجميع (المنتجات لازم تكون public)</li>
+                    <li>اضغط <strong>"Create Bucket"</strong></li>
+                </ol>
+
+                <div class="callout callout-tip">
+                    <h4>💡 نصيحة:</h4>
+                    <p>لو عايز صور خاصة (مثلاً: صور شخصية للمستخدمين)، اعمل Bucket منفصل اسمه <code>avatars</code> وخلّيه private.</p>
+                </div>
+
+                <h3>رفع صورة تجريبي</h3>
+                <p>جرّب ترفع صورة واحدة من الـ Dashboard عشان تتأكد إن كل حاجة شغالة:</p>
+                <ol>
+                    <li>روح على Storage → products</li>
+                    <li>اضغط <strong>"Upload"</strong></li>
+                    <li>اختار صورة من جهازك</li>
+                    <li>اضغط <strong>"Upload"</strong></li>
+                    <li>هتشوف الصورة اترفعت وعندك رابط (URL) تقدر تنسخه</li>
+                </ol>
+
+
+                <!-- Section: RLS -->
+                <h2>RLS شرح مبسّط</h2>
+
+                <p>RLS = Row Level Security = أمان على مستوى الصفوف. ده من أهم مفاهيم الأمان في Supabase.</p>
+
+                <div class="callout callout-info">
+                    <h4>💡 يعني إيه RLS ببساطة؟</h4>
+                    <p>تخيل إن عندك جدول فيه منتجات كل عميل يقدر يشوف منتجاته بس. RLS بيخلي كل عميل ما يشوفش منتجات غيره. لو RLS مش شغال، أي حد يقدر يشوف ويعمل edit في كل البيانات!</p>
+                </div>
+
+                <h3>تفعيل RLS</h3>
+                <p>في Supabase، RLS مشتغلش بشكل تلقائي. لازم تفعله يدوياً:</p>
+                <ol>
+                    <li>روح على Table Editor</li>
+                    <li>اختار جدول المنتجات (products)</li>
+                    <li>اضغط على أيقونة الحماية (🛡️) أو روح على الـ Settings</li>
+                    <li>افعل <strong>"Enable RLS"</strong></li>
+                </ol>
+
+                <h3>إنشاء Policies</h3>
+                <p>بعد ما تفعل RLS، لازم تحط "سياسات" (policies) تحدد مين يقدر يشوف ويعمل إيه.</p>
+
+                <div class="callout callout-success">
+                    <h4>✅ سياسة للقراءة (SELECT)</h4>
+                    <p>الكود ده بيسمح لأي حد يشوف المنتجات:</p>
+                    <pre><code>-- السماح للجميع بقراءة المنتجات
+CREATE POLICY "Allow public read access" 
+ON products 
+FOR SELECT 
+USING (true);</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <h4>✅ سياسة للإضافة (INSERT)</h4>
+                    <p>الكود ده بيسمح لأي مستخدم مسجل يضيف منتجات:</p>
+                    <pre><code>-- السماح للمستخدمين المسجلين بإضافة منتجات
+CREATE POLICY "Allow authenticated insert" 
+ON products 
+FOR INSERT 
+WITH CHECK (auth.uid() IS NOT NULL);</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <h4>✅ سياسة للتعديل (UPDATE)</h4>
+                    <pre><code>-- السماح للمستخدمين المعدل بتعديل منتجاتهم
+CREATE POLICY "Allow authenticated update" 
+ON products 
+FOR UPDATE 
+USING (auth.uid() IS NOT NULL);</code></pre>
+                </div>
+
+                <div class="callout callout-success">
+                    <h4>✅ سياسة للحذف (DELETE)</h4>
+                    <pre><code>-- السماح للمستخدمين المعدل بحذف منتجاتهم
+CREATE POLICY "Allow authenticated delete" 
+ON products 
+FOR DELETE 
+USING (auth.uid() IS NOT NULL);</code></pre>
+                </div>
+
+                <h3>شرح تفصيلي لكل policy</h3>
+
+                <div class="callout callout-info">
+                    <h4>📋 شرح العناصر:</h4>
+                    <ul>
+                        <li><code>CREATE POLICY</code>: بيعمل سياسة جديدة</li>
+                        <li><code>"Allow public read access"</code>: اسم السياسة (تختاره إنت)</li>
+                        <li><code>ON products</code>: على أي جدول (products في الحالة دي)</li>
+                        <li><code>FOR SELECT</code>: نوع العملية (SELECT = قراءة، INSERT = إضافة، UPDATE = تعديل، DELETE = حذف)</li>
+                        <li><code>USING (true)</code>: الشرط. الـ <code>true</code> معناه "دايماً صح" = أي حد يقدر يقرأ</li>
+                        <li><code>WITH CHECK (auth.uid() IS NOT NULL)</code>: الشرط للإضافة. الـ <code>auth.uid()</code> بيرجع ID المستخدم الحالي. الـ <code>IS NOT NULL</code> معناه "لو المستخدم مسجل دخوله"</li>
+                    </ul>
+                </div>
+
+
+                <!-- Section: Connect to Next.js -->
+                <h2>الاتصال بـ Next.js</h2>
+
+                <p>دلوقتي محتاجين نربط Supabase مع مشروع الـ Next.js بتاعنا.</p>
+
+                <h3>الخطوة 1: تثبيت Supabase Client</h3>
+                <p>افتح الـ Terminal واكتب:</p>
+                <pre><code>npm install @supabase/supabase-js</code></pre>
+
+                <div class="callout callout-info">
+                    <h4>📋 يعني إيه @supabase/supabase-js؟</h4>
+                    <p>ده الـ Client SDK بتاع Supabase. ببساطة، ده مكتبة بتسهّل عليك الاتصال بـ Supabase من الكود. بدل ما تكتب HTTP requests يدوياً، المكتبة بتعملهالك.</p>
+                </div>
+
+                <h3>الخطوة 2: إنشاء ملف Supabase Client</h3>
+                <p>أنشئ ملف <code>lib/supabase.js</code>:</p>
+                <pre><code>import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+// التأكد من وجود البيانات المطلوبة
+if (!supabaseUrl || !supabaseKey) {
+  console.error('Missing Supabase credentials')
+}
+
+export const supabase = createClient(
+  supabaseUrl || '',
+  supabaseKey || ''
+)</code></pre>
+
+                <div class="callout callout-warning">
+                    <h4>⚠️ ليه بنتحقق من القيم؟</h4>
+                    <p>لو الـ Environment Variables مش موجودة، الـ app هيتعمل crash. التحقق من القيم بيخلي الكود يشتغل حتى لو القيم مش موجودة (بس هيبان إن فيه مشكلة في الـ Console).</p>
+                </div>
+
+                <h3>الخطوة 3: إضافة Environment Variables</h3>
+                <p>افتح ملف <code>.env.local</code> وتأكد إنه فيه:</p>
+                <pre><code>NEXT_PUBLIC_SUPABASE_URL=https://pkjwrpciymhtknrqplpp.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_awv_WEoEJZ-7YjMQ-UgAAw_ZKhss3lJ</code></pre>
+
+                <h3>الخطوة 4: استخدام Supabase في الكود</h3>
+                <p>دلوقتي تقدر تستخدم Supabase في أي ملف. مثلاً، في صفحة المنتجات:</p>
+                <pre><code>import { supabase } from '@/lib/supabase'
+
+// جلب كل المنتجات
+const { data: products, error } = await supabase
+  .from('products')
+  .select('*')
+
+if (error) {
+  console.error('Error fetching products:', error)
+}</code></pre>
+
+                <div class="callout callout-info">
+                    <h4>📋 شرح الكود:</h4>
+                    <ul>
+                        <li><code>supabase.from('products')</code>: اختار جدول المنتجات</li>
+                        <li><code>.select('*')</code>: جيب كل الأعمدة. لو عايز أعمدة معينة: <code>.select('name, price')</code></li>
+                        <li><code>data</code>: النتيجة لو نجحت</li>
+                        <li><code>error</code>: الخطأ لو حصل</li>
+                    </ul>
+                </div>
+
+                <h3>أمثلة على استخدامات شائعة</h3>
+
+                <pre><code>// جلب منتج محدد
+const { data } = await supabase
+  .from('products')
+  .select('*')
+  .eq('id', 'some-uuid')
+  .single()
+
+// جلب منتجات حسب القسم
+const { data } = await supabase
+  .from('products')
+  .select('*')
+  .eq('category', 'clothing')
+
+// جلب المنتجات المميزة فقط
+const { data } = await supabase
+  .from('products')
+  .select('*')
+  .eq('featured', true)
+
+// إضافة منتج جديد
+const { error } = await supabase
+  .from('products')
+  .insert({
+    name: 'قميص رسمي',
+    price: 250,
+    description: 'قميص قطني 100%',
+    category: 'clothing',
+    stock: 50
+  })
+
+// تحديث منتج
+const { error } = await supabase
+  .from('products')
+  .update({ price: 200 })
+  .eq('id', 'some-uuid')
+
+// حذف منتج
+const { error } = await supabase
+  .from('products')
+  .delete()
+  .eq('id', 'some-uuid')</code></pre>
+
+
+                <!-- Section: Seed Data -->
+                <h2>إضافة بيانات تجريبية</h2>
+
+                <p>دلوقتي عايز نضيف بعض المنتجات التجريبية عشان نشوف الـ Frontend شغال.</p>
+
+                <h3>إضافة منتجات من SQL Editor</h3>
+                <p>روح على SQL Editor واكتب:</p>
+
+                <pre><code>-- إضافة منتجات تجريبية
+INSERT INTO products (name, description, price, discount, category, stock, featured, image) VALUES
+('قميص قطني كلاسيكي', 'قميص قطني 100% بتصميم كلاسيكي مناسب للعمل والمناسبات', 299.99, 10, 'clothing', 50, true, '/images/shirt.jpg'),
+('بنطلون جينز سليم', 'بنطلون جينز بقصة سليم مريحة وعصرية', 399.99, 15, 'clothing', 35, true, '/images/jeans.jpg'),
+('حذاء رياضي خفيف', 'حذاء رياضي مريح للجري والمشي اليومي', 599.99, 20, 'accessories', 25, true, '/images/sneakers.jpg'),
+('ساعة ذكية', 'ساعة ذكية بتصميم أنيق ومقاومة للماء', 1299.99, 5, 'electronics', 15, false, '/images/watch.jpg'),
+('حقيبة ظهر عملية', 'حقيبة ظهر بتصميم عملي مناسبة للعمل والدراسة', 450.00, 0, 'accessories', 40, false, '/images/bag.jpg'),
+('نظارة شمسية', 'نظارة شمسية بحماية UV400 وتصميم عصري', 350.00, 25, 'accessories', 30, true, '/images/sunglasses.jpg');</code></pre>
+
+                <h3>التحقق من المنتجات</h3>
+                <p>بعد ما تنفذ الكود، روح على Table Editor وشوف جدول المنتجات. هتلاقي 6 منتجات اتضافت.</p>
+
+                <div class="callout callout-tip">
+                    <h4>💡 نصيحة:</h4>
+                    <p>ممكن تستخدم "Import CSV" في Table Editor عشان تضيف منتجات كتير بسرعة من ملف Excel.</p>
+                </div>
+
+
+                <!-- Section: Troubleshooting -->
+                <h2>استكشاف الأخطاء</h2>
+
+                <h3>مشكلة 1: "relation does not exist"</h3>
+                <div class="callout callout-warning">
+                    <h4>⚠️ السبب:</h4>
+                    <p>الجدول ما اتخلقش. تأكد إنك نفذت الـ SQL اللي بيعمل الجدول.</p>
+                    <h4>✅ الحل:</h4>
+                    <p>روح على SQL Editor ونفّذ أمر <code>CREATE TABLE</code> تاني.</p>
+                </div>
+
+                <h3>مشكلة 2: "new row violates row-level security policy"</h3>
+                <div class="callout callout-warning">
+                    <h4>⚠️ السبب:</h4>
+                    <p>RLS شغال وما فيهش policy يسمح بالعملية.</p>
+                    <h4>✅ الحل:</h4>
+                    <p>أضف policy مناسبة للعملية اللي عايز تعملها (INSERT, UPDATE, DELETE).</p>
+                </div>
+
+                <h3>مشكلة 3: "permission denied for table"</h3>
+                <div class="callout callout-warning">
+                    <h4>⚠️ السبب:</h4>
+                    <p>الـ Service Role Key مش مستخدم. أو الـ RLS policy مش مناسب.</p>
+                    <h4>✅ الحل:</h4>
+                    <p>تأكد إنك بتستخدم الـ Anon Key (وليس Service Role) وتأكد إن الـ RLS policy صحيح.</p>
+                </div>
+
+                <h3>مشكلة 4: "Failed to fetch"</h3>
+                <div class="callout callout-warning">
+                    <h4>⚠️ السبب:</h4>
+                    <p>الـ URL أو الـ Key غلط. أو المشكلة في الاتصال بالإنترنت.</p>
+                    <h4>✅ الحل:</h4>
+                    <p>تأكد من صحة الـ URL والـ Key في ملف <code>.env.local</code>.</p>
+                </div>
+
+
+                <!-- Section: Exercise -->
+                <h2>تمرين عملي</h2>
+
+                <p>التمرين ده هيساعدك تتمرن على كل اللي اتعلمناه:</p>
+
+                <h3>المهمة:</h3>
+                <ol>
+                    <li>أنشئ حساب Supabase لو ما عندكش</li>
+                    <li>أنشئ مشروع جديد</li>
+                    <li>أنشئ جدول <code>products</code> بالشكل اللي شرحناه</li>
+                    <li>فعّل RLS وأضف Policies</li>
+                    <li>أضف 3 منتجات من SQL Editor</li>
+                    <li>ارفع صورة واحدة على Storage</li>
+                    <li>جرّب تجلب المنتجات من الـ SQL Editor</li>
+                </ol>
+
+                <div class="callout callout-success">
+                    <h4>✅ لما تخلص التمرين:</h4>
+                    <p>هتكون فاهم إزاي تنشئ جداول، تضيف بيانات، تفعل RLS، وتستخدم Supabase Storage.</p>
+                </div>
+
+
+                <!-- Section: Summary -->
+                <h2>ملخص الدرس</h2>
+
+                <p>في الدرس ده اتعلمنا:</p>
+
+                <ul>
+                    <li>✅ يعني إيه قاعدة بيانات ولّي محتاجينها</li>
+                    <li>✅ إزاي ننشأ حساب Supabase</li>
+                    <li>✅ إزاي ننشئ مشروع جديد</li>
+                    <li>✅ شرح الـ Dashboard والـ SQL Editor</li>
+                    <li>✅ إزاي ننشئ جدول المنتجات</li>
+                    <li>✅ إزاي ننشئ جدول الطلبات</li>
+                    <li>✅ إزاي نستخدم Storage لرفع الصور</li>
+                    <li>✅ يعني إيه RLS وإزاي نفعّله</li>
+                    <li>✅ إزاي نربط Supabase مع Next.js</li>
+                    <li>✅ إزاي نضيف بيانات تجريبية</li>
+                    <li>✅ استكشاف الأخطاء الشائعة</li>
+                </ul>
+
+                <div class="callout callout-info">
+                    <h4>💡 في الدرس الجاي:</h4>
+                    <p>هنتعلم إزاي نضيف نظام تسجيل دخول وتسجيل حساب باستخدام Clerk.</p>
+                </div>
+
+            </div>
+
+            <div class="lesson-nav">
+                <a href="04-tailwind-setup.html" class="prev">الدرس السابق</a>
+                <a href="06-clerk-auth.html" class="next">الدرس الجاي</a>
+            </div>
         </div>
+    </main>
 
-        <h2>📊 إضافة بيانات تجريبية</h2>
-        <p>بعد إنشاء الجداول، محتاجين نضيف بعض المنتجات التجريبية عشان نقدر نختبر المشروع:</p>
-
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">SQL - بيانات تجريبية</span>
-            <span class="code-block-lang">sql</span>
-          </div>
-          <pre><code>-- إضافة منتجات تجريبية
-INSERT INTO products (name, description, price, category, stock, featured) VALUES
-('لابتوب HP', 'لابتوب HP بمعالج Core i7 وذاكرة 16GB', 2500.00, 'إلكترونيات', 10, true),
-('سماعات AirPods', 'سماعات لاسلكية Apple AirPods Pro', 250.00, 'إلكترونيات', 25, true),
-('كتاب البرمجة', 'كتاب شامل عن تطوير الويب', 45.00, 'كتب', 50, false),
-('حقيبة ظهر', 'حقيبة ظهر مريحة للابتوب', 89.99, 'أزياء', 30, true),
-('ساعة ذكية', 'ساعة ذكية مع ميزات صحية', 199.99, 'إلكترونيات', 15, false);</code></pre>
+    <footer class="lesson-footer">
+        <div class="container">
+            <p>🛒 دورة بناء متجر إلكتروني - جميع الحقوق محفوظة © 2026</p>
         </div>
-
-        <div class="callout callout-info">
-          <div class="callout-title">💡 ملاحظة</div>
-          <div class="callout-content">
-            بعد ما تضيف البيانات، روح على تبويب "Table Editor" في الـ Dashboard وشوف الجدول. هتلاقي المنتجات الخمسة اللي ضفتها.
-          </div>
-        </div>
-
-        <h2>🔍 استكشاف الأخطاء</h2>
-
-        <h3>مشكلة: الاتصال فاشل</h3>
-        <p>لو ما قدرتش تتصل بـ Supabase:</p>
-        <ul>
-          <li>تأكد إن الـ URL والـ Key صح في ملف .env.local</li>
-          <li>أعد تشغيل خادم التطوير بعد تعديل .env.local</li>
-          <li>تأكد إن المشروع فعلاً انشأ في Supabase</li>
-        </ul>
-
-        <h3>مشكلة: الجدول مش موجود</h3>
-        <p>لو ظهر خطأ "relation does not exist":</p>
-        <ul>
-          <li>تأكد إنك نفّذت أوامر SQL صح</li>
-          <li>روح على Table Editor وشوف لو الجدول موجود</li>
-          <li>تأكد من اسم الجدول (حساس لحالة الأحرف)</li>
-        </ul>
-
-        <h2>📝 ملخص الدرس</h2>
-        <p>في الدرس ده عملنا:</p>
-        <ul>
-          <li>✅ إنشاء مشروع Supabase</li>
-          <li>✅ إنشاء جداول المنتجات والطلبات</li>
-          <li>✅ إعداد Storage لرفع الصور</li>
-          <li>✅ تطبيق RLS Policies للحماية</li>
-          <li>✅ الاتصال بـ Next.js</li>
-          <li>✅ إضافة بيانات تجريبية</li>
-        </ul>
-
-        <div class="callout callout-success">
-          <div class="callout-title">🎉 الدرس الجاي</div>
-          <div class="callout-content">
-            في الدرس الجاي هنتعلم إعداد Clerk Authentication - هنشتغل على نظام تسجيل الدخول والمستخدمين. الموضوع سهل وممتع!
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Navigation -->
-      <div class="lesson-nav">
-        <a href="04-tailwind-setup.html" class="nav-btn">
-          <span class="nav-btn-label">← السابق</span>
-          <span class="nav-btn-title">إعداد Tailwind CSS 4</span>
-        </a>
-        <a href="06-clerk-auth.html" class="nav-btn nav-btn-next">
-          <span class="nav-btn-label">التالي →</span>
-          <span class="nav-btn-title">إعداد Clerk Authentication</span>
-        </a>
-      </div>
-
-    </div>
-  </div>
-
+    </footer>
 </body>
 </html>
