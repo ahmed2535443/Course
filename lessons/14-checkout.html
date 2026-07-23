@@ -52,6 +52,14 @@
           <li>إضافة معالجة الأخطاء</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 مقدمة للدرس</div>
+          <div class="callout-content">
+            <p>أهلاً بيك في الدرس الاربعتاشر! في الدرس ده هنكمّل رحلة عملية الشراء. بعد ما المستخدم اختار منتجاته وحطهم في السلة، لازم دلوقتي يدخل بيانات الشحن ويدفع. الدرس ده مهم جداً لأنه لبّ أي متجر إلكتروني!</p>
+            <p>هنبني صفحة Checkout كاملة فيها: نموذج إدخال البيانات الشخصية وبيانات الشحن، اختيار طريقة الدفع، ملخص الطلب، وأخيراً صفحة تأكيد إن الطلب اتعمل بنجاح.</p>
+          </div>
+        </div>
+
         <h2>📁 هيكل ملفات صفحة الدفع</h2>
 
         <div class="file-tree">
@@ -66,7 +74,16 @@
           <div class="file-tree-item file">└── 📄 OrderSummary.jsx       # ملخص الطلب</div>
         </div>
 
+        <p>بنينا صفحة Checkout بتتكون من أجزاء كتير. كل جزء ليه دور:</p>
+        <ul>
+          <li><strong>CheckoutForm.jsx</strong> - النموذج الرئيسي اللي بيجمع كل الخطوات مع بعض</li>
+          <li><strong>ShippingForm.jsx</strong> - نموذج بيانات الشحن (الاسم، العنوان، المدينة، إلخ)</li>
+          <li><strong>PaymentMethods.jsx</strong> - اختيار طريقة الدفع (بطاقة ائتمان، Apple Pay، الدفع عند الاستلام)</li>
+          <li><strong>OrderSummary.jsx</strong> - ملخص الطلب اللي بيعرض المنتجات والإجماليات</li>
+        </ul>
+
         <h2>💳 الخطوة 1: صفحة الدفع الرئيسية</h2>
+        <p>الصفحة الرئيسية بتجمع كل المكونات مع بعض. بتتحقق هل السلة فاضية ولا لأ، وبتبعت البيانات للـ API لما المستخدم يضغط "تأكيد الطلب".</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -185,7 +202,27 @@ export default function CheckoutPage() {
 }</code></pre>
         </div>
 
+        <h3>شرح تفصيلي للصفحة الرئيسية:</h3>
+        <ul>
+          <li><strong>isProcessing:</strong> حالة بتتبع هل الطلب قيد المعالجة ولا لأ. بتخفي الزر وتعرض loading spinner أثناء المعالجة</li>
+          <li><strong>handleSubmit:</strong> الدالة اللي بتتنفذ لما المستخدم يضغط "تأكيد الطلب". بتبعت البيانات للـ API وبتفريغ السلة وبتنقل المستخدم لصفحة التأكيد</li>
+          <li><strong>clearCart():</strong> بعد ما الطلب يتعمل بنجاح، بنفريغ السلة لأن المنتجات اتباعت!</li>
+          <li><strong>router.push:</strong> بننقل المستخدم لصفحة التأكيد برقم الطلب</li>
+        </ul>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ أخطاء شائعة</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>خطأ شائع 1:</strong> نسيان التحقق من إن السلة مش فاضية قبل إرسال الطلب. لو المستخدم فتح صفحة Checkout وهي فاضية، لازم نعرض رسالة خطأ</li>
+              <li><strong>خطأ شائع 2:</strong> نسيان تفريغ السلة بعد إتمام الطلب. لو ما فريغناهاش، المستخدم هيشوف نفس المنتجات تاني!</li>
+              <li><strong>خطأ شائع 3:</strong> استخدام <code>window.location.href</code> بدلاً من <code>router.push</code>. الـ Next.js routing أسرع وأفضل للتجربة</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>📝 الخطوة 2: نموذج الدفع</h2>
+        <p>النموذج ده بيحتوي على خطوتين: أول خطوة بيانات الشحن، وخطوة تانية بيانات الدفع. بنستخدم <code>step</code> state للتحكم في أي خطوة المستخدم عليها.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -368,7 +405,29 @@ export default function CheckoutForm({ onSubmit, isProcessing, isSignedIn }) {
 }</code></pre>
         </div>
 
+        <h3>شرح تفصيلي لنموذج الدفع:</h3>
+        <ul>
+          <li><strong>updateFormData:</strong> دالة بتحدث الـ formData وبتمسح الخطأ الخاص بالحقل اللي اتغير. لما المستخدم يكتب في حقل، الخطأ اللي عليه بيختفي تلقائياً</li>
+          <li><strong>validateStep:</strong> بتحقق من كل الحقول المطلوبة في كل خطوة. لو في حقل فاضي، بيضيف error message</li>
+          <li><strong>handleNext:</strong> لما المستخدم يضغط "التالي"، بنتحقق من الخطوة الحالية. لو صحيحة، بنروح للخطوة التانية. لو فيها أخطاء، بنعرضها</li>
+          <li><strong>handleSubmit:</strong> لما المستخدم يضغط "تأكيد الطلب"، بنتحقق من الخطوة التانية ونبعت البيانات</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 لماذا نستخدم خطوتين؟</div>
+          <div class="callout-content">
+            <p>بنستخدم خطوتين بدل ما نحط كل الحقول في صفحة واحدة للأسباب دي:</p>
+            <ul>
+              <li>تقليل الـ cognitive load على المستخدم (يعني ما يحسّش إن الصفحة مزدحمة)</li>
+              <li>تحسين تجربة المستخدم على الموبايل</li>
+              <li>تسهيل التحقق من البيانات (كل خطوة ليها تحقق خاص بيها)</li>
+              <li>المستخدم يقدر يرجع للخطوة الأولى يعدّل فيها من غير ما يفقد البيانات</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>📦 الخطوة 3: نموذج الشحن</h2>
+        <p>النموذج ده فيه كل الحقول اللي محتاجها لشحن الطلب: الاسم، البريد الإلكتروني، رقم الهاتف، العنوان، المدينة، المنطقة، والرمز البريدي.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -480,7 +539,26 @@ export default function ShippingForm({ data, onChange, errors }) {
 }</code></pre>
         </div>
 
+        <h3>شرح نموذج الشحن:</h3>
+        <ul>
+          <li><strong>onChange={(e) =&gt; onChange({ firstName: e.target.value })}:</strong> لما المستخدم يكتب في الحقل، بنبعث التغيير للـ parent component عن طريق الدالة onChange</li>
+          <li><strong>error={errors.firstName}:</strong> لو في خطأ في الحقل ده، المكون الـ Input هيعرض رسالة الخطأ</li>
+          <li><strong>placeholder:</strong> نص مثال يساعد المستخدم يعرف هيكتب إيه</li>
+        </ul>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ أخطاء شائعة في نموذج الشحن</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>خطأ شائع 1:</strong> نسيان استخدام <code>type="email"</code> للبريد الإلكتروني. ده بيساعد المتصفح يتحقق من صحة الإدخال تلقائياً</li>
+              <li><strong>خطأ شائع 2:</strong> نسيان استخدام <code>type="tel"</code> لرقم الهاتف. ده بيفتح لوحة أرقام الموبايل على الموبايل</li>
+              <li><strong>خطأ شائع 3:</strong> عدم تعطيل زر "التالي" أثناء الإرسال. لو المستخدم ضغط مرتين، الطلب هيتكرر!</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>💳 الخطوة 4: طرق الدفع</h2>
+        <p>في الخطوة التانية بنعرض المستخدم يختار طريقة الدفع. فيه 3 خيارات: بطاقة ائتمان، Apple Pay، والدفع عند الاستلام.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -624,7 +702,23 @@ export default function PaymentMethods({ data, onChange, errors }) {
 }</code></pre>
         </div>
 
+        <h3>شرح طرق الدفع:</h3>
+        <ul>
+          <li><strong>paymentMethods array:</strong> مصفوفة فيها كل طرق الدفع مع معلوماتها: المعرف، الاسم، الأيقونة، والوصف</li>
+          <li><strong>Conditional rendering:</strong> لما المستخدم يختار "بطاقة ائتمان"، بنعرض الحقول الخاصة بالبطاقة (رقم البطاقة، تاريخ الانتهاء، CVV، الاسم). لو اختار طريقة تانية، الحقول دي مش بتظهر</li>
+          <li><strong>type="password" على CVV:</strong> بنخفي رقم CVV لأنها معلومات حساسة</li>
+          <li><strong>maxLength:</strong> بنحدد أقصى عدد أحرف لكل حقل (16 رقم للبطاقة، 5 أحرف للتاريخ، 3 أرقام لـ CVV)</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ملاحظة أمنية مهمة</div>
+          <div class="callout-content">
+            <p>في التطبيق الحقيقي، لا تخزّن بيانات البطاقة أبداً! استخدم خدمة دفع مثل Stripe أو PayPal. الكود هنا للتعلم فقط. في الإنتاج، الـ frontend بيبعت الـ payment token للـ backend، والـ backend بيعالج الدفع.</p>
+          </div>
+        </div>
+
         <h2>📋 الخطوة 5: ملخص الطلب</h2>
+        <p>ملخص الطلب بيعرض كل المنتجات اللي في السلة مع الأسعار والإجماليات. كمان بيبين رسوم الشحن والضرائب.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -705,7 +799,15 @@ export default function OrderSummary({ items, totals }) {
 }</code></pre>
         </div>
 
+        <h3>شرح ملخص الطلب:</h3>
+        <ul>
+          <li><strong>max-h-64 overflow-y-auto:</strong> لو فيه منتجات كتير، القائمة بتبقى قابلة للتمرير بدل ما تاخد كل الشاشة</li>
+          <li><strong>sticky top-24:</strong> الملخص بيفضل ثابت في الشاشة لو المستخدم scrolled down</li>
+          <li><strong>الشمول الكمية:</strong> بنعرض رقم صغير على الصورة بيبيّن كمية كل منتج</li>
+        </ul>
+
         <h2>✅ الخطوة 6: صفحة تأكيد الطلب</h2>
+        <p>بعد ما المستخدم يضغط "تأكيد الطلب" والطلب يتعمل بنجاح، بننقله لصفحة تأكيد فيها كل تفاصيل الطلب ومعلومات تتبعه.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -885,7 +987,15 @@ export default function OrderConfirmationPage() {
 }</code></pre>
         </div>
 
+        <h3>شرح صفحة التأكيد:</h3>
+        <ul>
+          <li><strong>Framer Motion:</strong> بنستخدم animations عشان الصفحة تبقى حيوية. الأيقونة بتظهر بتأثير spring، والمعلومات بتظهر واحدة واحدة</li>
+          <li><strong>Status Timeline:</strong> خط بيبيّن مراحل الطلب: تم الاستلام → قيد الشحن → تم التسليم</li>
+          <li><strong>useSearchParams:</strong> بنقرأ رقم الطلب من الـ URL query parameters</li>
+        </ul>
+
         <h2>🔗 الخطوة 7: API Route للطلبات</h2>
+        <p>الـ API route ده بيستقبل بيانات الطلب من الـ frontend وبيحفظها في قاعدة البيانات:</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -999,6 +1109,18 @@ export async function GET(request) {
           <li>✅ صفحة تأكيد الطلب</li>
           <li>✅ API Route لإنشاء الطلبات</li>
         </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمارين للتدريب</div>
+          <div class="callout-content">
+            <ul>
+              <li>حاول تضيف تحقق من رقم البطاقة باستخدام خوارزمية Luhn</li>
+              <li>حاول تضيف خاصية "حفظ بيانات الشحن للاستخدام لاحقاً"</li>
+              <li>حاول تضيف صفحة "عرض كل طلباتي"</li>
+              <li>حاول تضيف إمكانية إلغاء الطلب من صفحة التأكيد</li>
+            </ul>
+          </div>
+        </div>
 
         <div class="callout callout-success">
           <div class="callout-title">🎉 مبروك!</div>

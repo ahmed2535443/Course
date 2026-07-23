@@ -52,6 +52,15 @@
           <li>إضافة خيارات الترتيب (Sorting)</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه صفحة المنتجات مهمة؟</div>
+          <div class="callout-content">
+            <p>مرحب بيك في الدرس الحادي عشر! صفحة المنتجات هي أهم صفحة في المتجر بعد الصفحة الرئيسية. هي الصفحة اللي المستخدم بيقضي فيها معظم وقته — بيبحث، بيفلتر، بيرتب، وبيختار المنتج اللي عايزه.</p>
+            <p>في الدرس ده هنبني صفحة منتجات احترافية فيها كل الميزات اللي يتوقعها المستخدم: بحث سريع، فلتر بالتصنيف، ترتيب بالسعر أوالتقييم، وترقيم صفحات. كمان هنستخدم Debounce عشان البحث ما يبطئش الموقع.</p>
+            <p>الميزة الأهم في الصفحة دي إنها متجاوبة — يعني بتشتغل كويس على كل الشاشات من الموبايل للديسكتوب.</p>
+          </div>
+        </div>
+
         <h2>📁 هيكل ملفات صفحة المنتجات</h2>
 
         <div class="file-tree">
@@ -67,6 +76,7 @@
         </div>
 
         <h2>🛍️ الخطوة 1: صفحة المنتجات الرئيسية</h2>
+        <p>الصفحة الرئيسية لصفحة المنتجات. ده الملف الرئيسي اللي بيتجمع فيه كل المكونات: شريط البحث، الفلاتر، الشبكة، وترقيم الصفحات.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -179,7 +189,7 @@ export default function ProductsPage() {
           /&gt;
 
           {/* Pagination */}
-          {totalPages &gt; 1 && (
+          {totalPages &gt; 1 &amp;&amp; (
             &lt;div className="mt-8"&gt;
               &lt;Pagination
                 currentPage={currentPage}
@@ -195,7 +205,16 @@ export default function ProductsPage() {
 }</code></pre>
         </div>
 
+        <p>ملاحظات مهمة على الكود:</p>
+        <ul>
+          <li><strong>useSearchParams()</strong>: بناخد الفلاتر من URL. يعني لو المستخدم فتح الرابط <code>/products?category=electronics</code>، الفلتر هيبقى مفعّل تلقائياً.</li>
+          <li><strong>updateFilters()</strong>: لما المستخدم يغيّر أي فلتر، بنعمل reset للصفحة الأولى (page: 1). ده مهم عشان لو المستخدم كان في الصفحة 5 وغيّر الفلتر، يرجع الصفحة الأولى.</li>
+          <li><strong>URLSearchParams</strong>: بنبنى الـ URL الخاص بالـ API بناءً على الفلاتر الحالية.</li>
+          <li><strong>limit: 12</strong>: بنعرض 12 منتج في الصفحة. ده عدد مناسب يملأ الشاشة من غير ما يكون كتير.</li>
+        </ul>
+
         <h2>🔍 الخطوة 2: شريط البحث</h2>
+        <p>شريط البحث من أهم العناصر في الصفحة. المستخدم بيدور على المنتج اللي عايزه، فمحتاج يكون سريع وسهل الاستخدام.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -241,7 +260,7 @@ export default function SearchBar({ value, onChange }) {
       /&gt;
 
       {/* Clear Button */}
-      {localValue && (
+      {localValue &amp;&amp; (
         &lt;button
           onClick={() =&gt; {
             setLocalValue('');
@@ -261,10 +280,19 @@ export default function SearchBar({ value, onChange }) {
           <div class="callout-title">💡 ما هو Debounce؟</div>
           <div class="callout-content">
             <p>Deounce هو تقنية تؤخر تنفيذ الدالة حتى يتوقف المستخدم عن الكتابة لفترة قصيرة (300ms هنا). هذا يمنع إرسال طلب لكل حرف يكتبه المستخدم.</p>
+            <p>بدون Debounce، لو المستخدم كتب "هاتف"، الـ API هيتطلب 4 مرات (ه، ها، هاتف). مع Debounce، الـ API هيتطلب مرة واحدة بس بعد ما يخلص كتابة.</p>
           </div>
         </div>
 
+        <p>شرح الكود بالتفصيل:</p>
+        <ul>
+          <li><strong>localValue</strong>: ده State محلي بيحتفظ بالنص اللي المستخدم كتبه. بنبعته للـ parent بس بعد 300ms.</li>
+          <li><strong>useEffect مع setTimeout</strong>: كل ما القيمة تتغير، بنلغي الـ timer القديم وبنعمل واحد جديد. لو المستخدم كتب حرف جديد قبل ما الـ timer يخلص، الـ timer القديم بيتعمله cancel.</li>
+          <li><strong>زرار X</strong>: بيظهر بس لو في نص. لما المستخدم يضغط عليه، بيمسح النص وبيشيل الفلتر.</li>
+        </ul>
+
         <h2>📂 الخطوة 3: فلتر التصنيفات</h2>
+        <p>فلتر التصنيفات بيسمح للمستخدم يختار تصنيفاً معيناً. مثلاً لو عايز شوف بس المنتجات الإلكترونية، يضغط على "الإلكترونيات".</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -314,7 +342,7 @@ export default function CategoryFilter({ selectedCategory, onChange }) {
       &lt;/button&gt;
 
       {/* Categories List */}
-      {isExpanded && (
+      {isExpanded &amp;&amp; (
         &lt;div className="space-y-2"&gt;
           {/* All Categories */}
           &lt;button
@@ -365,7 +393,16 @@ export default function CategoryFilter({ selectedCategory, onChange }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظات على الفلتر:</p>
+        <ul>
+          <li><strong>isExpanded</strong>: الفلتر قابل للطي. المستخدم يقدر يضغط على العنوان عشان يفتحه أو يقفله.</li>
+          <li><strong>Skeleton Loading</strong>: أثناء تحميل التصنيفات، بنعرض مربعات رمادية.</li>
+          <li><strong>productCount</strong>: كل تصنيف بيعرض عدد المنتجات اللي فيه.</li>
+          <li><strong>slug</strong>: بنستخدم slug بدل الـ id عشان الـ URL يكون واضح ومقروء.</li>
+        </ul>
+
         <h2>↕️ الخطوة 4: خيارات الترتيب</h2>
+        <p>خيارات الترتيب بتسمح للمستخدم يرتب المنتجات حسب احتياجه: الأحدث، الأقل سعراً، الأعلى تقييماً، وغيرهم.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -400,19 +437,19 @@ export default function SortingOptions({ value, onChange }) {
           "flex items-center gap-2 px-4 py-3 rounded-xl",
           "bg-white/5 border border-white/10",
           "text-white hover:bg-white/10 transition-colors",
-          isOpen && "ring-2 ring-indigo-500"
+          isOpen &amp;&amp; "ring-2 ring-indigo-500"
         )}
       &gt;
         &lt;ArrowUpDown className="w-5 h-5 text-gray-400" /&gt;
         &lt;span&gt;{selectedOption?.label || 'ترتيب حسب'}&lt;/span&gt;
         &lt;ChevronDown className={cn(
           "w-4 h-4 text-gray-400 transition-transform",
-          isOpen && "rotate-180"
+          isOpen &amp;&amp; "rotate-180"
         )} /&gt;
       &lt;/button&gt;
 
       {/* Dropdown */}
-      {isOpen && (
+      {isOpen &amp;&amp; (
         &lt;&gt;
           {/* Overlay */}
           &lt;div
@@ -447,7 +484,15 @@ export default function SortingOptions({ value, onChange }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظات:</p>
+        <ul>
+          <li><strong>Overlay</strong>: لما القائمة المنسدلة تتفتح، بنضيف خلفية شفافة بتلغي القائمة لو المستخدم ضغط في أي مكان تاني.</li>
+          <li><strong>rotate-180</strong>: السهم بيدور 180 درجة لما القائمة تتفتح.</li>
+          <li><strong>z-20</strong>: القائمة بتبان فوق كل العناصر التانية.</li>
+        </ul>
+
         <h2>📄 الخطوة 5: ترقيم الصفحات</h2>
+        <p>ترقيم الصفحات مهم لما عدد المنتجات يكون كبير. بدل ما نعرض كل المنتجات في صفحة واحدة (اللي ممكن تبقى بطيئة)، بنقسمها لصفحات.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -517,7 +562,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
       {getPageNumbers().map((page, index) =&gt; (
         &lt;button
           key={index}
-          onClick={() =&gt; typeof page === 'number' && onPageChange(page)}
+          onClick={() =&gt; typeof page === 'number' &amp;&amp; onPageChange(page)}
           disabled={page === '...'}
           className={cn(
             "min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors",
@@ -554,7 +599,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظة مهمة: لاحظ إن الأيقونات عكس الاتجاه (ChevronRight للسابق وChevronLeft للتالي). ده لأننا شغالين في بيئة RTL (من اليمين للشمال). في بيئة LTR، الموضوع بيبقى عكس.</p>
+
         <h2>🔲 الخطوة 6: شبكة المنتجات</h2>
+        <p>شبكة المنتجات هي المساحة اللي بتعرض المنتجات. فيها حالات مختلفة: حالة التحميل (Skeleton)، حالة عدم وجود منتجات، وحالة عرض المنتجات.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -614,7 +662,15 @@ export default function ProductGrid({ products, loading }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظات:</p>
+        <ul>
+          <li><strong>3 حالات</strong>: التحميل، لا توجد منتجات، عرض المنتجات. كل حالة ليها تصميم مختلف.</li>
+          <li><strong>Skeleton</strong>: عناصر رمادية بحركة نبض (animate-pulse) بتظهر أثناء التحميل.</li>
+          <li><strong>Empty State</strong>: لما ما في منتجات، بنعرض رسالة واضحة مع أيقونة.</li>
+        </ul>
+
         <h2>🔗 الخطوة 7: حاوية الفلاتر</h2>
+        <p>حاوية الفلاتر فيها فلاتر إضافية زي نطاق السعر والتقييم. على الموبايل، بتظهر كقائمة جانبية.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -715,7 +771,7 @@ export default function ProductFilters({ filters, onFilterChange }) {
       &lt;/div&gt;
 
       {/* Mobile Sidebar */}
-      {isMobileOpen && (
+      {isMobileOpen &amp;&amp; (
         &lt;div className="lg:hidden fixed inset-0 z-40"&gt;
           &lt;div
             className="absolute inset-0 bg-black/50"
@@ -740,6 +796,18 @@ export default function ProductFilters({ filters, onFilterChange }) {
 }</code></pre>
         </div>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصائح لتصميم الفلاتر</div>
+          <div class="callout-content">
+            <ul>
+              <li>على الموبايل، الفلاتر بتظهر كقائمة جانبية (Drawer)</li>
+              <li>استخدم <code>fixed</code> عشان القائمة تغطي الشاشة كلها</li>
+              <li>أضف Overlay عشان المستخدم يقدر يقفل القائمة بالضغط على الخلفية</li>
+              <li>استخدم <code>overflow-y-auto</code> عشان لو الفلاتر كتيرة يبقى فيه scroll</li>
+            </ul>
+          </div>
+        </div>
+
         <div class="callout callout-warning">
           <div class="callout-title">⚠️ ملاحظات الأداء</div>
           <div class="callout-content">
@@ -747,7 +815,36 @@ export default function ProductFilters({ filters, onFilterChange }) {
               <li>استخدم <code>useSearchParams()</code> لتحديث URL بدلاً من State فقط</li>
               <li>أضف <code>loading.js</code> في مجلد products لتحميل أفضل</li>
               <li>استخدم Server Components حيثما أمكن</li>
+              <li>استخدم Debounce للبحث عشان ما تبطئش الموقع</li>
+              <li>استخدم Skeleton Loading عشان الصفحة ما تبقىش فاضية أثناء التحميل</li>
             </ul>
+          </div>
+        </div>
+
+        <h2>🚨 أخطاء شائعة يجب تجنبها</h2>
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ الأخطاء اللي لازم تتجنبها</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الخطأ 1</strong>: جلب كل المنتجات من الـ API دفعة واحدة — النتيجة: الصفحة بتبقى بطيئة</li>
+              <li><strong>الخطأ 2</strong>: عدم استخدام Debounce — النتيجة: الـ API بيتطلب كل حرف</li>
+              <li><strong>الخطأ 3</strong>: عدم التعامل مع الحالة الفارغة — النتيجة: المستخدم مش فاهم فين المشكلة</li>
+              <li><strong>الخطأ 4</strong>: عدم تحديث URL — النتيجة: المستخدم مش هيقدر يشارك الرابط</li>
+              <li><strong>الخطأ 5</strong>: عدم استخدام Skeleton Loading — النتيجة: الصفحة بتبقى فاضية أثناء التحميل</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>✅ تمارين عملية للتدرب</h2>
+        <div class="callout callout-success">
+          <div class="callout-title">📝 جرّب اللي اتعلمتة!</div>
+          <div class="callout-content">
+            <p><strong>التمرين 1</strong>: أضف فلتر "نطاق السعر" يسمح للمستخدم يحدد السعر الأدنى والأعلى بـ slider.</p>
+            <p><strong>التمرين 2</strong>: أضف فلتر "حالة المخزون" (متوفر، نفذ، قليل).</p>
+            <p><strong>التمرين 3</strong>: عدّل صفحة المنتجات تعرض عدد النتائج اللي طلعت.</p>
+            <p><strong>التمرين 4</strong>: أضف زرار "مسح الفلاتر" يشيل كل الفلاتر دفعة واحدة.</p>
+            <p><strong>التمرين 5</strong>: عدّل الـ Pagination يستخدم URL بدل State.</p>
+            <p><strong>التمرين 6</strong>: أضف "Load More" Button بدل الـ Pagination التقليدي.</p>
           </div>
         </div>
 
@@ -763,10 +860,12 @@ export default function ProductFilters({ filters, onFilterChange }) {
           <li>✅ فلاتر إضافية (سعر، تقييم)</li>
         </ul>
 
+        <p>صفحة المنتجات من أهم الصفحات في المتجر. لازم تكون سريعة وسهلة الاستخدام وتوفر كل المعلومات اللي يحتاجها المستخدم.</p>
+
         <div class="callout callout-success">
           <div class="callout-title">🎉 الدرس الجاي</div>
           <div class="callout-content">
-            في الدرس الجاي هنبني <strong>صفحة تفاصيل المنتج</strong> مع الصور والمراجعات.
+            في الدرس الجاي هنبني <strong>صفحة تفاصيل المنتج</strong> مع الصور والمراجعات. الصفحة دي هي اللي المستخدم بيقضي فيها وقت أطول عشان يعرف تفاصيل المنتج قبل ما يشتريه.
           </div>
         </div>
 

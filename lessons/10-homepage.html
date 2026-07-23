@@ -52,6 +52,15 @@
           <li>بناء قسم الإحصائيات</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 إيه أهمية الصفحة الرئيسية؟</div>
+          <div class="callout-content">
+            <p>مرحب بيك في الدرس العاشر! الصفحة الرئيسية هي أول حاجة المستخدم بيشوفها لما يفتح المتجر. هي زي واجهة المتجر في العالم الحقيقي — لو كانت جميلة ومنظمة، المستخدم هيكمّل تصفّح. لو كانت فوضوية ومملة، هيمشي فوراً.</p>
+            <p>في الدرس ده هنبني الصفحة الرئيسية بالكامل. هنقسمها لأقسام كتير: Hero Section هو أول قسم المستخدم بيشوفه، قسم المنتجات المميزة، قسم التصنيفات، قسم شعارات الثقة (الشحن المجاني، الدفع الآمن، وغيرهم)، وقسم الإحصائيات.</p>
+            <p>كمان هنستخدم مكتبة Framer Motion عشان نضيف حركات سلسة واحترافية. الحركات دي بتعطي إحساس بالجودة والاحترافية للموقع.</p>
+          </div>
+        </div>
+
         <h2>📁 هيكل ملفات الصفحة الرئيسية</h2>
 
         <div class="file-tree">
@@ -65,8 +74,15 @@
           <div class="file-tree-item file">└── 📄 Stats.jsx              # الإحصائيات</div>
         </div>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه المكونات في مجلد home منفصل؟</div>
+          <div class="callout-content">
+            <p>في تطوير المشاريع الكبيرة، كل صفحة ليها مكوناتها الخاصة. الصفحة الرئيسية فيها أقسام كتير مميزة مش هنستخدمها في صفحات تانية. فبنحطها في مجلد <code>home</code> عشان نحافظ على التنظيم. لو محتاج مكون في أكتر من مكان، ننقله لـ <code>components/ui</code>.</p>
+          </div>
+        </div>
+
         <h2>🏠 الخطوة 1: الصفحة الرئيسية</h2>
-        <p>الآن نجمع كل الأقسام في الصفحة الرئيسية:</p>
+        <p>الآن نجمع كل الأقسام في الصفحة الرئيسية. الملف ده بسيط جداً — كل دوره إنه يجمع المكونات مع بعض بالترتيب الصح.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -101,8 +117,19 @@ export default function HomePage() {
 }</code></pre>
         </div>
 
+        <p>ملاحظة على الترتيب: لاحظ إننا حطينا الـ Hero Section في الأول. ده عشان هو أول حاجة المستخدم بيشوفها. بعده شعارات الثقة عشان نبني ثقة مع المستخدم من البداية. بعده المنتجات المميزة عشان نعرض عليه أحسن منتجاتنا. وبعده التصنيفات عشان نسهّل عليه التصفّح.</p>
+
         <h2>🦸 الخطوة 2: Hero Section</h2>
-        <p>القسم الرئيسي بتأثير تدرج ألوان وعناصر متحركة:</p>
+        <p>القسم الرئيسي هو أهم قسم في الصفحة كلها. هو أول حاجة المستخدم بيشوفها لما يفتح الصفحة. لازم يكون جذاب وواضح ويشجع المستخدم إنه يكمّل تصفّح.</p>
+
+        <p>في القسم ده هنستخدم:</p>
+        <ul>
+          <li><strong>Gradient Background</strong>: خلفية بتدرج ألوان تجذب العين</li>
+          <li><strong>Animated Elements</strong>: عناصر متحركة بتعطي إحساس بالحيوية</li>
+          <li><strong>Motion.div</strong>: من Framer Motion للحركات السلسة</li>
+          <li><strong>Buttons</strong>: أزرار للإجراء الرئيسي والإجراء الثانوي</li>
+          <li><strong>Stats</strong>: إحصائيات سريعة تبني الثقة</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -283,11 +310,36 @@ export default function Hero() {
               <li><strong>initial</strong>: القيمة الأولية</li>
               <li><strong>transition</strong>: سرعة ونوع الحركة</li>
               <li><strong>whileHover</strong>: الحركة عند المرور</li>
+              <li><strong>delay</strong>: التأخير قبل بدء الحركة</li>
+              <li><strong>repeat: Infinity</strong>: تكرار الحركة إلى الأبد</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>خلينا نفهم الكود بالتفصيل:</p>
+        <ul>
+          <li><strong>min-h-screen</strong>: القسم بياخد أقل مساحة ممكنة هي شاشة كاملة</li>
+          <li><strong>relative / absolute</strong>: الـ background elements موجودة ورا المحتوى</li>
+          <li><strong>blur-3xl</strong>: التأثير الضبابي على العناصر المتحركة</li>
+          <li><strong>initial و animate</strong>: القيمة الأولية والنهاية للحركة</li>
+          <li><strong>delay</strong>: التأخير قبل بدء الحركة. كل عنصر بيبتدي بعد اللي قبله</li>
+          <li><strong>hidden lg:block</strong>: العناصر اللي على اليمين مش بتظهر على الموبايل</li>
+        </ul>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ أخطاء شائعة مع Hero Section</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الخطأ</strong>: استخدام <code>min-h-screen</code> بدون <code>flex items-center</code> — النتيجة: المحتوى مش في النص</li>
+              <li><strong>الخطأ</strong>: نسيان <code>"use client"</code> — النتيجة: Framer Motion مش هيشتغل</li>
+              <li><strong>الخطأ</strong>: الحركات كتيرة جداً — النتيجة: الصفحة بتبقى متعبة للعين</li>
+              <li><strong>الحل</strong>: استخدم 2-3 حركات بس، وخليها بسيطة وسلسة</li>
             </ul>
           </div>
         </div>
 
         <h2>⭐ الخطوة 3: المنتجات المميزة</h2>
+        <p>قسم المنتجات المميزة بيعرض مجموعة مختارة من المنتجات. الهدف هنا إنه يجذب انتباه المستخدم لأحسن منتجاتنا من أول نظرة.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -365,7 +417,15 @@ export default function FeaturedProducts() {
 }</code></pre>
         </div>
 
+        <p>ملاحظات مهمة:</p>
+        <ul>
+          <li><strong>Skeleton Loading</strong>: لما البيانات لسه بتحمّل، بنعرض مربعات رمادية بحركة نبض (animate-pulse). ده أحسن من إن الصفحة تبقى فاضية.</li>
+          <li><strong>Grid System</strong>: الشبكة بتتغير حسب حجم الشاشة. على الموبايل عمود واحد، على التابلت اتنين، وعلى الديسكتوب أربعة.</li>
+          <li><strong>API Call</strong>: بنجيب المنتجات المميزة من الـ API باستخدام <code>fetch</code>. الـ <code>limit=8</code> معناها عايزين 8 منتجات بس.</li>
+        </ul>
+
         <h2>📂 الخطوة 4: قسم التصنيفات</h2>
+        <p>قسم التصنيفات بيعرض المنتجات مقسمة لمجموعات. المستخدم يقدر يضغط على أي تصنيف ويروح للمنتجات الخاصة بيه.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -471,7 +531,10 @@ export default function Categories() {
 }</code></pre>
         </div>
 
+        <p>ملاحظة على التصميم: كل تصنيف فيه أيقونة واسم. الأيقونات من مكتبة Lucide React. كل تصنيف ليه لون مختلف عشان نسهّل التمييز. كمان في تأثير hover بيكبّر الأيقونة لما المستخدم يمرر الماوس عليها.</p>
+
         <h2>🛡️ الخطوة 5: شعارات الثقة</h2>
+        <p>قسم شعارات الثقة مهم جداً لبناء ثقة المستخدم. لما المستخدم يشوف إن فيه شحن مجاني ودفع آمن ودعم على مدار الساعة، هيحس بالراحة ويكمل تصفّح.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -533,7 +596,10 @@ export default function TrustBadges() {
 }</code></pre>
         </div>
 
+        <p>ملاحظة على التصميم: القسم ده بسيط ومباشر. كل شعار فيه أيقونة وعنوان ووصف قصير. المستخدم يقدر يشوف كل المعلومات المهمة في أول نظرة من غير ما يscroll.</p>
+
         <h2>📊 الخطوة 6: قسم الإحصائيات</h2>
+        <p>قسم الإحصائيات بيعرض أرقام تبني الثقة. لما المستخدم يشوف إن فيه أكثر من 10,000 عميل سعيد وأكتر من 500 منتج، هيحس إن المتجر جاد وموثوق.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -619,8 +685,10 @@ export default function Stats() {
 }</code></pre>
         </div>
 
+        <p>ملاحظة: لاحظ إن الـ Stats بتاعتنا بتتحرك لما المستخدم يوصلها (whileInView). يعني الحركة بتبدأ من غير ما المستخدم يعمل حاجة — بس لما العناصر تظهر في الشاشة.</p>
+
         <h2>🎨 الخطوة 7: مكون ProductCard</h2>
-        <p>نحتاج مكون ProductCard لعرض المنتجات:</p>
+        <p>نحتاج مكون ProductCard لعرض المنتجات. المكون ده بيستخدم في أكتر من مكان: الصفحة الرئيسية، صفحة المنتجات، نتائج البحث، وغيرهم. فمحتاج يكون مرن وجميل.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -654,7 +722,7 @@ export default function ProductCard({ product }) {
         /&gt;
         
         {/* Discount Badge */}
-        {product.discount && (
+        {product.discount &amp;&amp; (
           &lt;div className="absolute top-4 right-4"&gt;
             &lt;Badge variant="danger"&gt;
               -{product.discount}%
@@ -728,7 +796,7 @@ export default function ProductCard({ product }) {
           &lt;span className="text-xl font-bold text-white"&gt;
             ${product.price}
           &lt;/span&gt;
-          {product.originalPrice && (
+          {product.originalPrice &amp;&amp; (
             &lt;span className="text-sm text-gray-400 line-through"&gt;
               ${product.originalPrice}
             &lt;/span&gt;
@@ -740,6 +808,14 @@ export default function ProductCard({ product }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظات مهمة على ProductCard:</p>
+        <ul>
+          <li><strong>isHovered</strong>: State بيتغير لما المستخدم يمرر الماوس على الكارت. بيتحكم في ظهور زر القلب وزر أضف للسلة.</li>
+          <li><strong>aspect-square</strong>: الصورة بتكون مربعة. ده بيخلي الكروت متناسقة.</li>
+          <li><strong>line-clamp-1</strong>: لو اسم المنتج طويل، بيقطعه ويحط ... في الآخر.</li>
+          <li><strong>group-hover:scale-110</strong>: الصورة بتتكبّر لما المستخدم يمرر الماوس.</li>
+        </ul>
+
         <div class="callout callout-warning">
           <div class="callout-title">⚠️ ملاحظات الأداء</div>
           <div class="callout-content">
@@ -747,7 +823,35 @@ export default function ProductCard({ product }) {
               <li>استخدم <code>next/image</code> بدلاً من <code>&lt;img&gt;</code> لتحسين الأداء</li>
               <li>أضف <code>loading="lazy"</code> للصور غير المرئية</li>
               <li>استخدم <code>Suspense</code> لتحميل المكونات بشكل تدريجي</li>
+              <li>قلل عدد الحركات على الموبايل عشان الأداء يكون أحسن</li>
             </ul>
+          </div>
+        </div>
+
+        <h2>🚨 أخطاء شائعة يجب تجنبها</h2>
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ الأخطاء اللي لازم تتجنبها</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الخطأ 1</strong>: جعل الصفحة الرئيسية طويلة جداً — النتيجة: المستخدم بيتعب وبيمشي</li>
+              <li><strong>الخطأ 2</strong>: عدم استخدام Skeleton Loading — النتيجة: الصفحة بتبقى فاضية أثناء التحميل</li>
+              <li><strong>الخطأ 3</strong>: استخدام ألوان كتيرة — النتيجة: الصفحة بتبقى فوضوية</li>
+              <li><strong>الخطأ 4</strong>: نسيان Mobile Responsive — النتيجة: الصفحة مش هتشتغل كويس على الموبايل</li>
+              <li><strong>الخطأ 5</strong>: الحركات كتيرة — النتيجة: الصفحة بتبقى متعبة وبطيئة</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>✅ تمارين عملية للتدرب</h2>
+        <div class="callout callout-success">
+          <div class="callout-title">📝 جرّب اللي اتعلمتة!</div>
+          <div class="callout-content">
+            <p><strong>التمرين 1</strong>: أضف قسم "العروض الحالية" في الصفحة الرئيسية يعرض المنتجات اللي عليها خصم.</p>
+            <p><strong>التمرين 2</strong>: عدّل الـ Hero Section يعرض صورة حقيقية بدل العناصر المتحركة.</p>
+            <p><strong>التمرين 3</strong>: أضف Newsletter Section يسمح للمستخدم يسجل بريده الإلكتروني.</p>
+            <p><strong>التمرين 4</strong>: عدّل ProductCard يضيف زرار "المقارنة" جنب زرار القلب.</p>
+            <p><strong>التمرين 5</strong>: أضف Testimonials Section فيه شهادات العملاء.</p>
+            <p><strong>التمرين 6</strong>: عدّل التصنيفات تأتي من API بدل ما تكون ثابتة.</p>
           </div>
         </div>
 
@@ -762,10 +866,12 @@ export default function ProductCard({ product }) {
           <li>✅ مكون ProductCard</li>
         </ul>
 
+        <p>الصفحة الرئيسية هي واجهة المتجر. لازم تكون جميلة وسريعة وواضحة. كل قسم فيه دور محدد في بناء تجربة المستخدم.</p>
+
         <div class="callout callout-success">
           <div class="callout-title">🎉 الدرس الجاي</div>
           <div class="callout-content">
-            في الدرس الجاي هنبني <strong>صفحة المنتجات</strong> مع بحث وفلتر وتصفح.
+            في الدرس الجاي هنبني <strong>صفحة المنتجات</strong> مع بحث وفلتر وتصفح. الصفحة دي هي اللي المستخدم بيقضي فيها معظم وقته في المتجر.
           </div>
         </div>
 

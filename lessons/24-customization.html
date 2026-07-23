@@ -34,7 +34,7 @@
         </div>
         <h1>تخصيص القالب</h1>
         <div class="meta">
-          <span>⏱️ 25 دقيقة</span>
+          <span>⏱️ 30 دقيقة</span>
           <span>📖 عملي</span>
           <span>الوحدة 7: النشر والبيع</span>
         </div>
@@ -51,6 +51,26 @@
           <li>إضافة ميزات جديدة</li>
           <li>إنشاء مكونات مخصصة</li>
         </ul>
+
+        <h2>💡 مقدمة عن التخصيص</h2>
+        <p>أهلاً بيكم يا صديقي في الدرس الرابع والعشرين! لحد كده عندك متجر إلكتروني شغال ومحسّن ومنشور. لكن الميزة الحقيقية إنك تقدر تخصصه حسب احتياجك.</p>
+
+        <p>تخيل معايا: انت شاري قالب جاهز. لكن كل الناس بتستخدم نفس القالب. عشان متجرك يبقى مميز، لازم تخصصه. غير الألوان، غيّر الشعار، عدّل التصنيفات، وأضف ميزات جديدة. وبكده متجرك هيبقى مختلف عن الباقي.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه التخصيص مهم؟</div>
+          <div class="callout-content">
+            <ul>
+              <li>بيخلي متجرك يميّز عن المنافسين</li>
+              <li>بيعكس هوية علامتك التجارية</li>
+              <li>بيحسّن تجربة المستخدم لعملائك</li>
+              <li>بيزود ثقة العملاء في المتجر</li>
+              <li>بيقلل التكرار والملل</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>في الدرس ده هنتعلم ازاي تخصص كل حاجة في القالب: الألوان، الشعار، التصنيفات، النصوص، وحتى تضيف ميزات جديدة ما كانتش موجودة.</p>
 
         <h2>🎨 تغيير الألوان والثيم</h2>
         <p>القالب يستخدم Tailwind CSS مع متغيرات CSS قابلة للتخصيص. يمكنك تغيير الألوان بسهولة من خلال ملف <code>tailwind.config.js</code>.</p>
@@ -113,10 +133,18 @@ module.exports = {
 };</code></pre>
         </div>
 
+        <p>شوف يا صديقي، ازاي تغيّر الألوان بسهولة:</p>
+        <ul>
+          <li><strong>primary:</strong> اللون الرئيسي للمتجر. هو اللون اللي هيظهر في الأزرار والروابط والعناوين. اللون الحالي indigo (نيلي).</li>
+          <li><strong>secondary:</strong> اللون الثانوي. بيظهر في التدرجات والخلفيات.</li>
+          <li><strong>accent:</strong> لون التمييز. لون مميز بيستخدم للتركيز.</li>
+          <li><strong>success/warning/danger:</strong> ألوان الحالات. أخضر للنجاح، أحمر للخطأ، أصفر للتحذير.</li>
+        </ul>
+
         <div class="callout callout-info">
-          <div class="callout-title">💡 نصيحة</div>
+          <div class="callout-title">💡 نصيحة لاختيار الألوان</div>
           <div class="callout-content">
-            يمكنك استخدام أداة مثل <a href="https://coolors.co" target="_blank">Coolors</a> أو <a href="https://www.happyhues.co" target="_blank">Happy Hues</a> لاختيار ألوان متناسقة.
+            يمكنك استخدام أداة مثل <a href="https://coolors.co" target="_blank">Coolors</a> أو <a href="https://www.happyhues.co" target="_blank">Happy Hues</a> لاختيار ألوان متناسقة. القاعدة الذهبية: اختر 3 ألوان بس - لون رئيسي ولون ثانوي ولون تمييز.
           </div>
         </div>
 
@@ -179,6 +207,17 @@ module.exports = {
 }</code></pre>
         </div>
 
+        <p>الـ CSS Variables دي مهمة جداً. هي بتخلي التغيير أسهل. لو عايز تغيّر اللون الرئيسي، بس غيّر قيمة --primary في الملف ده وهي تتغير في كل مكان تاني.</p>
+
+        <p>كمان شوف إن في Dark Mode. لو عايز تضيف وضع ليلي للمتجر، بتحط الألوان الجديدة في .dark.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ نصيحة مهمة</div>
+          <div class="callout-content">
+            لما تغيّر الألوان، تأكد إن التباين (contrast) بين النص والخلفية يكون كافي. يعني النص الأبيض على الخلفية السوداء كويس. النص الأسود على الخلفية السوداء مش كويس. استخدم أداة WebAIM Contrast Checker للتحقق.
+          </div>
+        </div>
+
         <h2>📁 تعديل التصنيفات</h2>
         <p>التصنيفات (Categories) مخزنة في قاعدة البيانات Supabase. يمكنك تعديلها من خلال:</p>
 
@@ -202,7 +241,7 @@ export default function CategoriesPage() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
   
-  const addCategory = async () => {
+  const addCategory = async () =&gt; {
     const { data, error } = await supabase
       .from('categories')
       .insert({ name: newCategory, slug: newCategory.toLowerCase().replace(/\s+/g, '-') })
@@ -243,6 +282,13 @@ export default function CategoriesPage() {
   );
 }</code></pre>
         </div>
+
+        <p>ده كود لوحة تحكم التصنيفات. شوف ازاي بتتعامل مع Supabase:</p>
+        <ul>
+          <li><strong>createClient:</strong> بتعمل اتصال بقاعدة البيانات.</li>
+          <li><strong>insert:</strong> بتضيف تصنيف جديد.</li>
+          <li><strong>slug:</strong> اللينك الودي. مثلاً "إلكترونيات" بيتحول لـ "electronics".</li>
+        </ul>
 
         <h3>2. تعديل التصنيفات الافتراضية</h3>
         <div class="code-block">
@@ -295,6 +341,15 @@ export const defaultCategories = [
 ];</code></pre>
         </div>
 
+        <p>لو عندك متجر متخصص (مثلاً: موبايلات بس)، غيّر التصنيفات. مثلاً:</p>
+        <ul>
+          <li>موبايلات آيفون</li>
+          <li>موبايلات سامسونج</li>
+          <li>موبايلات شاومي</li>
+          <li>إكسسوارات موبايلات</li>
+          <li>سماعات</li>
+        </ul>
+
         <h2>🏷️ تغيير اسم الموقع والشعارات</h2>
         <p>يمكنك تغيير اسم الموقع والشعارات من خلال:</p>
 
@@ -308,7 +363,7 @@ export const defaultCategories = [
     default: 'اسم متجرك - وصف قصير',
     template: '%s | اسم متجرك'
   },
-  description: 'وصف المتجر của bạn',
+  description: 'وصف المتجر الخاص بك',
   openGraph: {
     title: 'اسم متجرك',
     description: 'وصف المتجر',
@@ -317,6 +372,8 @@ export const defaultCategories = [
   }
 };</code></pre>
         </div>
+
+        <p>غيّر "اسم متجرك" في كل مكان. وكمان غيّر description عشان يناسب متجرك.</p>
 
         <h3>تغيير الشعار في Header</h3>
         <div class="code-block">
@@ -355,6 +412,25 @@ export default function Header() {
     &lt;/header&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>شوف ازاي تغيّر الشعار:</p>
+        <ul>
+          <li><strong>الشعار كصورة:</strong> حط صورة الشعار في public/logo.png واستخدم Image component.</li>
+          <li><strong>الشعار كنص:</strong> استخدم div و span بدل الصورة. أسهل وأسرع.</li>
+          <li><strong>الشعار كأيقونة:</strong> استخدم أيقونة من lucide-react أو أي مكتبة أيقونات.</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 مواصفات الشعار</div>
+          <div class="callout-content">
+            <ul>
+              <li>الحجم: 150x40 بكسل أو أصغر</li>
+              <li>الصيغة: PNG مع خلفية شفافة أو SVG</li>
+              <li>الحجم: أقل من 50KB عشان يتحمل بسرعة</li>
+              <li>الألوان: لازم يتناسب مع ألوان المتجر</li>
+            </ul>
+          </div>
         </div>
 
         <h2>➕ إضافة ميزات جديدة</h2>
@@ -411,6 +487,15 @@ export default function Header() {
 }</code></pre>
         </div>
 
+        <p>صفحة "عن المتجر" مهمة جداً. العملاء بيثقوا في المتجر اللي بيعرفوا قصته. حط فيها:</p>
+        <ul>
+          <li>قصة المتجر</li>
+          <li>رؤيتك ورسالتك</li>
+          <li>المميزات بتاعتك</li>
+          <li>صور الفريق أو المتجر</li>
+          <li>التواصل الاجتماعي</li>
+        </ul>
+
         <h3>2. إضافة نظام تقييم المنتجات</h3>
         <div class="code-block">
           <div class="code-block-header">
@@ -456,6 +541,20 @@ export default function ProductRating({ productId, initialRating = 0 }) {
 }</code></pre>
         </div>
 
+        <p>نظام التقييمات مهم جداً للمتاجر الإلكترونية. العملاء بيثقوا في التقييمات. شوف ازاي المكون بيشتغل:</p>
+        <ul>
+          <li><strong>hover state:</strong> لما المستخدم يمرر الماوس على النجمة، كل النجوم قبلها بتتحول لصفراء.</li>
+          <li><strong>click:</strong> لما يضغط، التقييم بيتسجل.</li>
+          <li><strong>fill-current:</strong> بيخلي النجمة ممتلئة باللون.</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ميزة إضافية</div>
+          <div class="callout-content">
+            أضف localStorage عشان التقييم يفضل متسجل حتى لو المستخدم أغلق الصفحة. أو استخدم Supabase عشان التقييم يتسجل في قاعدة البيانات.
+          </div>
+        </div>
+
         <h2>🧩 إنشاء مكونات مخصصة</h2>
         <p>يمكنك إنشاء مكونات جديدة وإضافتها للمشروع:</p>
 
@@ -486,6 +585,14 @@ export default function ProductRating({ productId, initialRating = 0 }) {
   );
 }</code></pre>
         </div>
+
+        <p>ده مكون Badge بسيط ومفيد. ممكن تستخدمه لـ:</p>
+        <ul>
+          <li>حالة المنتج: "متوفر" أو "غير متوفر"</li>
+          <li>نوع الخصم: "خصم 20%"</li>
+          <li>حالة الطلب: "تم الشحن" أو "قيد التنفيذ"</li>
+          <li>تصنيف المنتج: "جديد" أو "الأكثر مبيعاً"</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -521,7 +628,7 @@ export default function Alert({
       &lt;div className="flex items-start gap-3"&gt;
         &lt;Icon className="w-5 h-5 mt-0.5" /&gt;
         &lt;div&gt;
-          {title && &lt;h4 className="font-semibold mb-1"&gt;{title}&lt;/h4&gt;}
+          {title &amp;&amp; &lt;h4 className="font-semibold mb-1"&gt;{title}&lt;/h4&gt;}
           &lt;div className="text-sm"&gt;{children}&lt;/div&gt;
         &lt;/div&gt;
       &lt;/div&gt;
@@ -530,10 +637,41 @@ export default function Alert({
 }</code></pre>
         </div>
 
+        <p>ده مكون Alert مهم جداً. ممكن تستخدمه لـ:</p>
+        <ul>
+          <li>رسائل النجاح: "تمت العملية بنجاح!"</li>
+          <li>رسائل الخطأ: "حدث خطأ، يرجى المحاولة مرة أخرى."</li>
+          <li>التحذيرات: "الكمية محدودة!"</li>
+          <li>المعلومات: "سيتم الشحن خلال 3 أيام."</li>
+        </ul>
+
         <div class="callout callout-success">
           <div class="callout-title">✅ نجاح</div>
           <div class="callout-content">
-            بعد إنشاء المكون الجديد، يمكنك استخدامه في أي مكان في المشروع مثل أي مكون آخر.
+            بعد إنشاء المكون الجديد، يمكنك استخدامه في أي مكان في المشروع مثل أي مكون آخر. مثلاً: &lt;Badge variant="success"&gt;متوفر&lt;/Badge&gt;
+          </div>
+        </div>
+
+        <h2>📝 تمارين عملية</h2>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 1: غيّر ألوان المتجر</div>
+          <div class="callout-content">
+            غيّر اللون الرئيسي من indigo لـ emerald (أخضر). شوف ازاي كل الأزرار والعناوين بتتغير.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 2: أضف صفحة "تواصل معنا"</div>
+          <div class="callout-content">
+            أنشئ صفحة contact فيها نموذج تواصل ورقم الهاتف والبريد الإلكتروني وعنوان المتجر.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 3: أضف مكون Newsletter</div>
+          <div class="callout-content">
+            أنشئ مكون فيه حقل بريد إلكتروني وزرار "اشترك في النشرة البريدية". حطه في الفوتر.
           </div>
         </div>
 
@@ -545,6 +683,7 @@ export default function Alert({
           <li>✅ تغيير اسم الموقع والشعارات</li>
           <li>✅ إضافة ميزات جديدة</li>
           <li>✅ إنشاء مكونات مخصصة</li>
+          <li>✅ تمارين عملية</li>
         </ul>
 
         <div class="callout callout-info">

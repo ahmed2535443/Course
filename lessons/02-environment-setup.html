@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -44,15 +44,26 @@
       <div class="lesson-body">
 
         <h2>🎯 أهداف الدرس</h2>
+        <p>أهلاً بيك في الدرس التاني! في الدرس ده هنعمل حاجة مهمة جداً وهي إعداد بيئة التطوير على جهازك. يعني إيه بيئة تطوير؟ ببساطة هي الأدوات اللي محتاجها عشان تقدر تكتب كود وتشغله وتشوف النتيجة.</p>
+        <p>خلّيني أقولك حاجة مهمة: إعداد بيئة التطوير صح من الأول بيوفر عليك وقت كبير بعدين. كتير من الطلاب بيقضوا ساعات في مشاكل سهلة كانت هتتلافى لو كان الإعداد صح.</p>
         <ul>
           <li>تثبيت Node.js على جهازك</li>
+          <li>تثبيت Visual Studio Code (محرر الكود)</li>
           <li>إنشاء مشروع Next.js جديد</li>
           <li>فهم هيكل المشروع الأساسي</li>
           <li>تشغيل خادم التطوير والتأكد من عمل المشروع</li>
+          <li>تثبيت المكتبات الأساسية اللي هنستخدمها</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه الدرس ده مهم؟</div>
+          <div class="callout-content">
+            بدون بيئة تطوير صحيحة، مش هتقدر تشتغل على أي مشروع. تخيل إنك عايز تطبخ من غير مطبخ أو أدوات - إزاي هتقدر؟ نفس الشيء بالظبط! الدرس ده هيحطلك الأساس عشان أي درس جاي يبقى سهل عليك.
+          </div>
+        </div>
+
         <h2>📋 المتطلبات المسبقة</h2>
-        <p>قبل ما نبدأ، محتاجين نتأكد من توفر الأدوات التالية على جهازك:</p>
+        <p>قبل ما نبدأ، محتاجين نتأكد من توفر الأدوات التالية على جهازك. لو مش لاقي أي أداة من دول، متقلقش - هنقولك إزاي تنزلها وثبّتها خطوة بخطوة.</p>
         
         <div class="table-wrapper">
           <table>
@@ -61,6 +72,7 @@
                 <th>الأداة</th>
                 <th>الحد الأدنى</th>
                 <th>التثبيت</th>
+                <th>ليه محتاجها؟</th>
               </tr>
             </thead>
             <tbody>
@@ -68,45 +80,72 @@
                 <td><strong>Node.js</strong></td>
                 <td>18.0 أو أعلى</td>
                 <td>nodejs.org</td>
+                <td>بيشغّل JavaScript على جهازك</td>
               </tr>
               <tr>
                 <td><strong>npm</strong></td>
                 <td>9.0 أو أعلى</td>
                 <td>يتضمن مع Node.js</td>
+                <td>بيثبت الحزم والمكتبات</td>
               </tr>
               <tr>
-                <td><strong>Code Editor</strong></td>
-                <td>أي محرر</td>
-                <td>VS Code موصى به</td>
+                <td><strong>VS Code</strong></td>
+                <td>أي إصدار حديث</td>
+                <td>code.visualstudio.com</td>
+                <td>محرر الكود الأساسي</td>
               </tr>
               <tr>
                 <td><strong>Terminal</strong></td>
                 <td>أي terminal</td>
                 <td>bash أو PowerShell</td>
+                <td>لتشغيل الأوامر</td>
+              </tr>
+              <tr>
+                <td><strong>Git</strong></td>
+                <td>أي إصدار</td>
+                <td>git-scm.com</td>
+                <td>لتتبع التغييرات (اختياري)</td>
+              </tr>
+              <tr>
+                <td><strong>متصفح حديث</strong></td>
+                <td>Chrome أو Firefox</td>
+                <td>مثبت مسبقاً</td>
+                <td>لـ testing و debugging</td>
               </tr>
             </tbody>
           </table>
         </div>
 
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ مهم جداً</div>
+          <div class="callout-content">
+            لو عندك Windows قديم (أقدم من Windows 10)، ممكن بعض الأدوات ما تشتغلش كويس. كمان تأكد إنك عندك مساحة كافية على القرص الصلب (على الأقل 2GB فاضية).
+          </div>
+        </div>
+
         <h2>📥 الخطوة 1: تثبيت Node.js</h2>
-        <p>Node.js هو بيئة تشغيل JavaScript على السيرفر. محتاجينه عشان نشغّل مشروع Next.js.</p>
+        <p>Node.js هو بيئة تشغيل JavaScript على السيرفر. يعني بيخلي JavaScript تشتغل برة المتصفح - على جهازك مباشرة. ده مهم جداً عشان Next.js (اللي هنستخدمه) بيعتمد عليه في التشغيل.</p>
+        
+        <p>خلّيني أقولك حاجة بسيطة: JavaScript في الأصل كانت بتشتغل بس في المتصفح. Node.js جه وقال "ليه ما نشغّلهاش برة المتصفح كمان؟" وده خلا البرمجة بكاملها تتم على جهازك.</p>
 
         <h3>1.1 حمل Node.js</h3>
         <ol>
           <li>ادخل على الموقع الرسمي: <strong>https://nodejs.org</strong></li>
-          <li>حمّل الإصدار LTS (Long Term Support) - ده الإصدار المستقر</li>
-          <li>شغّل ملف التثبيت واتبع الخطوات</li>
+          <li>هتلاقي اختيارين: LTS و Current</li>
+          <li>حمّل الإصدار LTS (Long Term Support) - ده الإصدار المستقر والمناسب للمشاريع الإنتاجية</li>
+          <li>شغّل ملف التثبيت واتبع الخطوات (Next &rarr; Next &rarr; Install)</li>
+          <li>استنى لين يخلّص التثبيت (ممكن ياخد 2-5 دقائق حسب سرعة جهازك)</li>
         </ol>
 
         <div class="callout callout-info">
           <div class="callout-title">💡 نصيحة</div>
           <div class="callout-content">
-            اختار إصدار LTS لأن ده الإصدار المستقر والمناسب للمشاريع الإنتاجية. الإصدار المحدث (Current) قد يكون فيه بعض الأخطاء.
+            اختار إصدار LTS لأن ده الإصدار المستقر والمناسب للمشاريع الإنتاجية. الإصدار المحدث (Current) قد يكون فيه بعض الأخطاء لأنهم بيجربوا عليه مميزات جديدة. لحد ما تبقى متقدم، LTS هو الأفضل ليك.
           </div>
         </div>
 
         <h3>1.2 التحقق من التثبيت</h3>
-        <p>بعد التثبيت، افتح Terminal واكتب الأوامر التالية للتأكد:</p>
+        <p>بعد التثبيت، لازم نتأكد إن كل حاجة اتثبّت صح. افتح Terminal (في Windows اضغط Windows + R واكتب cmd) واكتب الأوامر التالية:</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -120,12 +159,86 @@ node --version
 npm --version</code></pre>
         </div>
 
-        <p>لو ظهر أرقام الإصدارات (مثلاً v20.11.0 و 10.2.4)، يبقى التثبيت ناجح.</p>
+        <p>لو ظهر أرقام الإصدارات (مثلاً v20.11.0 و 10.2.4)، يبقى التثبيت ناجح. لو ظهرت رسالة خطأ زي "node is not recognized"، يبقى لسه محتاج تعيد تشغيل الـ Terminal أو الكمبيوتر.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 فرق بين npm و npx</div>
+          <div class="callout-content">
+            <strong>npm</strong> (Node Package Manager) هو أداة لتثبيت الحزم. <strong>npx</strong> هو أداة لتشغيل الحزم بدون ما تثبّتها. مثلاً: <code>npm install</code> بيثبّت الحزمة، و <code>npx create-next-app</code> بيشغّل الحزمة مباشرة. في أكتر من 90% من الحالات، هتستخدم npx.
+          </div>
+        </div>
+
+        <h3>1.3 أخطاء شائعة في تثبيت Node.js</h3>
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ الأخطاء الأكثر شيوعاً</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>رسالة "node is not recognized"</strong>: يعني إن Node.js مش في الـ PATH. الحل: أعد تشغيل الـ Terminal أو أعد تشغيل الكمبيوتر</li>
+              <li><strong>خطأ في الاتصال</strong>: تأكد إنك متصلاً بالإنترنت</li>
+              <li><strong>صلاحيات مرفوضة</strong>: في Mac/Linux، استخدم <code>sudo</code> قبل الأمر</li>
+              <li><strong>إصدار قديم</strong>: لو ظهر إصدار أقدم من 18، حمّل الإصدار الأحدث من الموقع</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📝 الخطوة 1.5: تثبيت VS Code</h2>
+        <p>Visual Studio Code (أو VS Code) هو محرر الكود الأشهر في العالم. بيقدم مميزات كتير بتسهّل عليك الكتابة والتعديل. مجاناً ومن سهل التثبيت.</p>
+
+        <h3>1.5.1 حمل VS Code</h3>
+        <ol>
+          <li>ادخل على: <strong>https://code.visualstudio.com</strong></li>
+          <li>اضغط "Download for Windows"</li>
+          <li>شغّل الملف اللي اتنزّل</li>
+          <li>اتبع خطوات التثبيت (استخدم الإعدادات الافتراضية)</li>
+        </ol>
+
+        <h3>1.5.2 إضافات مهمة لـ VS Code</h3>
+        <p>بعد التثبيت، محتاجين نثبّت بعض الإضافات (Extensions) اللي هتسهّل عليك الشغل:</p>
+        <ul>
+          <li><strong>ES7+ React/Redux/React-Native snippets</strong> - بيوفر عليك كتابة أكواد React</li>
+          <li><strong>Prettier - Code formatter</strong> - بينظّم الكود تلقائياً</li>
+          <li><strong>ESLint</strong> - بيكتشف الأخطاء في الكود</li>
+          <li><strong>Tailwind CSS IntelliSense</strong> - بيساعدك في كتابة أكواد Tailwind</li>
+          <li><strong>Auto Rename Tag</strong> - بيعيد تسمية الـ HTML tags تلقائياً</li>
+          <li><strong>Path Intellisense</strong> - بيكمّل مسارات الملفات</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 إزاي تثبّت الإضافات</div>
+          <div class="callout-content">
+            افتح VS Code، اضغط Ctrl+Shift+X عشان تفتح صفحة الإضافات، واكتب اسم الإضافة في خانة البحث واضغط Install على كل إضافة. الموضوع بسيط ومش هيياخد منك أكتر من 5 دقائق.
+          </div>
+        </div>
+
+        <h3>1.5.3 إعدادات مهمة في VS Code</h3>
+        <p>في بعض الإعدادات اللي ممكن تساعدك في الشغل:</p>
+        <ul>
+          <li><strong>Auto Save</strong>: افتح الإعدادات (Ctrl+,) واكتب "auto save" وفعّلها عشان الملفات تنحفظ تلقائياً</li>
+          <li><strong>Font Size</strong>: غيّر حجم الخط لـ 16 عشان يبقى مريح للعين</li>
+          <li><strong>Format On Save</strong>: بينظّم الكود تلقائياً كل ما تحفظ الملف</li>
+        </ul>
 
         <h2>📦 الخطوة 2: إنشاء مشروع Next.js</h2>
-        <p>Next.js هو إطار عمل React يوفر了很多 مميزات جاهزة زي App Router و Server Components.</p>
+        <p>Next.js هو إطار عمل (Framework) مبني على React. بيقدم مميزات جاهزة كتير زي App Router و Server Components والـ Static Generation والـ Server Side Rendering. ببساطة، بيوفر عليك شغل كتير وبيخلي المشروع أسرع وأحسن.</p>
 
-        <h3>2.1 إنشاء المشروع</h3>
+        <p>في الخطوات الجاية هنستخدم الأمر <code>npx create-next-app@latest</code> عشان نإنشاء مشروع جديد. الأمر ده بيثبّت كل اللي محتاجه تلقائياً.</p>
+
+        <h3>2.1 اختيار مكان المشروع</h3>
+        <p>قبل ما تكتب الأمر، فكّر فين عايز تحط المشروع. مثلاً:</p>
+        <ul>
+          <li>Desktop: <code>cd Desktop</code></li>
+          <li>مجلد مخصص: <code>cd "D:\My Projects"</code></li>
+          <li>جذر القرص: <code>cd C:\</code></li>
+        </ul>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ اسم المجلد</div>
+          <div class="callout-content">
+            متستخدمش مسافات أو أحرف خاصة في اسم المشروع. استخدم شرطة سفلية (_) أو شرطة (-) بدل المسافة. مثلاً: <code>my-market</code> ومش <code>my market</code>.
+          </div>
+        </div>
+
+        <h3>2.2 إنشاء المشروع</h3>
         <p>افتح Terminal واكتب الأمر التالي:</p>
 
         <div class="code-block">
@@ -139,12 +252,12 @@ npm --version</code></pre>
         <div class="callout callout-warning">
           <div class="callout-title">⚠️ تنبيه</div>
           <div class="callout-content">
-            تأكد إنك متصلاً بالإنترنت أثناء تشغيل الأمر. كما قد يستغرق الأمر بضع دقائق للتحميل.
+            تأكد إنك متصلاً بالإنترنت أثناء تشغيل الأمر. كما قد يستغرق الأمر بضع دقائق للتحميل. لو الاتصال ضعيف، ممكن ياخد أطول شوية - متقلقش واستنى.
           </div>
         </div>
 
-        <h3>2.2 اختيارات التثبيت</h3>
-        <p>هتظهر لك مجموعة من الأسئلة. اختار الإعدادات التالية:</p>
+        <h3>2.3 اختيارات التثبيت</h3>
+        <p>هتظهر لك مجموعة من الأسئلة. اختار الإعدادات التالية بالظبط:</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -154,59 +267,61 @@ npm --version</code></pre>
           <pre><code>Would you like to use TypeScript? → No
 Would you like to use ESLint? → Yes
 Would you like to use Tailwind CSS? → Yes
-Would you like to use `src` directory? → No
+Would you like to use src directory? → No
 Would you like to use App Router? → Yes
 Would you like to use Turbopack for next dev? → Yes
 Would you like to customize the import alias? → No</code></pre>
         </div>
 
-        <h3>2.3 شرح الاختيارات</h3>
+        <h3>2.4 شرح كل سؤال بالتفصيل</h3>
+        <p>خلّيني أشرحلك كل سؤال وليه اختارنا الإجابة دي:</p>
+
         <div class="table-wrapper">
           <table>
             <thead>
               <tr>
                 <th>السؤال</th>
                 <th>الاختيار</th>
-                <th>السبب</th>
+                <th>السبب بالتفصيل</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>TypeScript</td>
                 <td>No</td>
-                <td>هنشتغل على JavaScript عشان نبدأ بأسهل</td>
+                <td>TypeScript ممتاز بس هو لغة منفصلة عن JavaScript. هنشتغل على JavaScript عشان نبدأ بأسهل ونركز على الأساسيات</td>
               </tr>
               <tr>
                 <td>ESLint</td>
                 <td>Yes</td>
-                <td>لاكتشاف الأخطاء مبكراً</td>
+                <td>أداة لاكتشاف الأخطاء مبكراً. بتحذرلك لو في مشاكل في الكود قبل ما تشغّله</td>
               </tr>
               <tr>
                 <td>Tailwind CSS</td>
                 <td>Yes</td>
-                <td>هنشتغل عليه في الدرس القادم</td>
+                <td>هنشتغل عليه في الدرس الجاي عشان التصميم. من الأفضل نثبّته دلوقتي</td>
               </tr>
               <tr>
                 <td>src directory</td>
                 <td>No</td>
-                <td>هيكل بسيط بدون مجلد src</td>
+                <td>هيكل بسيط بدون مجلد src. في المشاريع الكبيرة المجلد ده بيكون مفيد، بس للمبتدئين الأفضل يبقى كل حاجة في المجلد الرئيسي</td>
               </tr>
               <tr>
                 <td>App Router</td>
                 <td>Yes</td>
-                <td>أحدث نظام توجيه في Next.js</td>
+                <td>أحدث نظام توجيه في Next.js. الأفضل تتعلم عليه من الأول لأن ده المستقبل</td>
               </tr>
               <tr>
                 <td>Turbopack</td>
                 <td>Yes</td>
-                <td>أسرع بكثير من Webpack</td>
+                <td>أسرع بكثير من Webpack القديم. بيخلي تشغيل خادم التطوير أسرع 10 مرات</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h2>📁 الخطوة 3: فهم هيكل المشروع</h2>
-        <p>بعد إنشاء المشروع، هتلاقي المجلدات والملفات التالية:</p>
+        <p>بعد إنشاء المشروع، هتلاقي المجلدات والملفات التالية. فهم الهيكل ده مهم جداً عشان تعرف تتنقل في المشروع وتعمل فيه تعديلات.</p>
 
         <div class="file-tree">
           <div class="file-tree-item folder">📁 market/</div>
@@ -226,7 +341,8 @@ Would you like to customize the import alias? → No</code></pre>
         <h3>3.1 شرح المجلدات والملفات الرئيسية</h3>
 
         <h4>📁 مجلد app/</h4>
-        <p>ده المجلد الأساسي اللي فيه كل صفحات المشروع. في Next.js مع App Router، كل ملف في مجلد app يمثل صفحة أو مكون.</p>
+        <p>ده المجلد الأساسي اللي فيه كل صفحات المشروع. في Next.js مع App Router، كل ملف في مجلد app يمثل صفحة أو مكون. خلّيك دايماً ترجع للمجلد ده لما تدوّر على أي صفحة.</p>
+        <p>المجلد ده هو قلب المشروع. كل ما عايز تضيف صفحة جديدة، بتعمل مجلد جوا app وبتحط ملف page.js جواه. سهل بسيط!</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -251,6 +367,8 @@ export default function RootLayout({ children }) {
 }</code></pre>
         </div>
 
+        <p>الملف ده (layout.js) بيمثل التخطيط الرئيسي لكل صفحات المشروع. كل صفحة هتتحط جوا الـ children. الـ metadata دي بتحدد عنوان الصفحة والوصف اللي بيظهر في نتائج البحث.</p>
+
         <div class="code-block">
           <div class="code-block-header">
             <span class="code-block-title">app/page.js</span>
@@ -266,8 +384,13 @@ export default function RootLayout({ children }) {
 }</code></pre>
         </div>
 
+        <p>الملف ده (page.js) بيمثل الصفحة الرئيسية للمتجر. لما تزور http://localhost:3000، هتلاقي المحتوى اللي جوا الـ return.</p>
+
+        <h4>📁 مجلد public/</h4>
+        <p>المجلد ده للملفات العامة زي الصور والأيقونات والـ favicons. أي ملف تحطه هنا هيتعرض مباشرة في المتصفح بدون معالجة. مثلاً لو حطيت صورة اسمها logo.png هنا، تقدر توصلها بالرابط /logo.png.</p>
+
         <h4>📄 ملف package.json</h4>
-        <p>ده ملف بيحتوي على معلومات المشروع والـ dependencies (المكتبات المستخدمة).</p>
+        <p>ده ملف بيحتوي على معلومات المشروع والـ dependencies (المكتبات المستخدمة). لما تثبّت حزمة جديدة، بتتضاف هنا تلقائياً.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -296,8 +419,20 @@ export default function RootLayout({ children }) {
 }</code></pre>
         </div>
 
+        <h4>📄 ملف globals.css</h4>
+        <p>ده ملف الأنماط العامة للمشروع. فيه الأنماط اللي بتتطبق على كل الصفحات. في Next.js مع Tailwind CSS، الملف ده بيحتوي على أمر @import عشان يحمّل Tailwind.</p>
+
+        <h3>3.2 شرح أوامر package.json</h3>
+        <p>في الجدول جوا package.json، فيه أوامر مهمة ممكن تشغّلها:</p>
+        <ul>
+          <li><code>npm run dev</code> - بيشغّل خادم التطوير عشان تقدر تشوف المشروع في المتصفح</li>
+          <li><code>npm run build</code> - بيبني المشروع للإنتاج (لما تبقى عايز تنشره)</li>
+          <li><code>npm run start</code> - بيشغّل المشروع المبني</li>
+          <li><code>npm run lint</code> - بيفحص الكود ويقولك لو في أخطاء</li>
+        </ul>
+
         <h2>🚀 الخطوة 4: تشغيل خادم التطوير</h2>
-        <p>الآن خلّينا نشغّل المشروع ونشوف النتيجة.</p>
+        <p>الآن خلّينا نشغّل المشروع ونشوف النتيجة. الخطوة دي مهمة جداً عشان تتأكد إن كل حاجة اشتغلت صح.</p>
 
         <h3>4.1 الدخول لمجلد المشروع</h3>
         <div class="code-block">
@@ -307,6 +442,7 @@ export default function RootLayout({ children }) {
           </div>
           <pre><code>cd market</code></pre>
         </div>
+        <p>الأمر ده بيقودك لمجلد المشروع. لازم تكون في المجلد الصح قبل ما تشغّل أي أمر تاني.</p>
 
         <h3>4.2 تشغيل خادم التطوير</h3>
         <div class="code-block">
@@ -317,10 +453,12 @@ export default function RootLayout({ children }) {
           <pre><code>npm run dev</code></pre>
         </div>
 
+        <p>بعد ما تضغط Enter، هتبدأ Next.js تحمّل المشروع. ممكن ياخد ثواني قليلة. لما تشوف الرسالة اللي جاية، يبقى خلاص!</p>
+
         <div class="callout callout-success">
           <div class="callout-title">✅ نجاح</div>
           <div class="callout-content">
-            لو شفت الرسالة "Ready in 1.2s" أو something مشابه، يبقى المشروع اتشغّل بنجاح. افتح المتصفح على <strong>http://localhost:3000</strong>
+            لو شفت الرسالة "Ready in 1.2s" أو شيء مشابه، يبقى المشروع اتشغّل بنجاح. افتح المتصفح على <strong>http://localhost:3000</strong>
           </div>
         </div>
 
@@ -334,10 +472,20 @@ export default function RootLayout({ children }) {
           <pre><code>http://localhost:3000</code></pre>
         </div>
 
-        <p>هتلاقي الصفحة الرئيسية لمشروع Next.js مع شعار Next.js وكلمة "Get started by editing app/page.js".</p>
+        <p>هتلاقي الصفحة الرئيسية لمشروع Next.js مع شعار Next.js وكلمة "Get started by editing app/page.js". ده معناه إن المشروع اشتغل بنجاح!</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 تجربة Hot Reload</div>
+          <div class="callout-content">
+            جرّب تغيير النص في ملف <code>app/page.js</code> وشوف التغيير بيظهر مباشرة في المتصفح بدون ما تعمل إعادة تحميل. ده اسمه Hot Reload وبيسهّل عملية التطوير جداً. لما بتحفظ الملف، الصفحة بتتحدث تلقائياً!
+          </div>
+        </div>
+
+        <h3>4.4 إيقاف خادم التطوير</h3>
+        <p>لما تبقى عايز تقفل خادم التطوير، اضغط Ctrl+C في الـ Terminal. ده هيوقف الخادم بأمان. متضغطش زر X عشان ممكن يسيب عملية شغالة في الخلفية.</p>
 
         <h2>🔧 الخطوة 5: تثبيت المكتبات الإضافية</h2>
-        <p>محتاجين نثبّت بعض المكتبات اللي هنستخدمها في المشروع:</p>
+        <p>محتاجين نثبّت بعض المكتبات اللي هنستخدمها في المشروع ده. كل مكتبة ليها وظيفة معينة وبنحتاجها عشان نبني المشروع الكامل.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -358,6 +506,46 @@ npm install @supabase/supabase-js
 npm install @supabase/ssr</code></pre>
         </div>
 
+        <h3>5.1 شرح كل مكتبة</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>المكتبة</th>
+                <th>الوظيفة</th>
+                <th>ليه محتاجينها؟</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>framer-motion</strong></td>
+                <td>حركات وتأثيرات</td>
+                <td>لإضافة حركات سلسة للعناصر زي الظهور والاختفاء</td>
+              </tr>
+              <tr>
+                <td><strong>lucide-react</strong></td>
+                <td>أيقونات</td>
+                <td>مكتبة أيقونات جميلة وخفيفة للتصميم</td>
+              </tr>
+              <tr>
+                <td><strong>@clerk/nextjs</strong></td>
+                <td>المصادقة</td>
+                <td>نظام تسجيل الدخول والخروج للمستخدمين</td>
+              </tr>
+              <tr>
+                <td><strong>@supabase/supabase-js</strong></td>
+                <td>قاعدة البيانات</td>
+                <td>الاتصال بقاعدة البيانات Supabase</td>
+              </tr>
+              <tr>
+                <td><strong>@supabase/ssr</strong></td>
+                <td>دعم Server Side</td>
+                <td>للاتصال بـ Supabase من السيرفر</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <h2>📝 ملخص أوامر npm المهمة</h2>
         <div class="table-wrapper">
           <table>
@@ -365,44 +553,62 @@ npm install @supabase/ssr</code></pre>
               <tr>
                 <th>الأمر</th>
                 <th>الوظيفة</th>
+                <th>متى تستخدمه؟</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><code>npm run dev</code></td>
                 <td>تشغيل خادم التطوير</td>
+                <td>لما تبقى عايز تشتغل على المشروع</td>
               </tr>
               <tr>
                 <td><code>npm run build</code></td>
                 <td>بناء المشروع للإنتاج</td>
+                <td>لما تبقى عايز تنشر المشروع</td>
               </tr>
               <tr>
                 <td><code>npm run start</code></td>
                 <td>تشغيل المشروع المبني</td>
+                <td>بعد البناء مباشرة</td>
               </tr>
               <tr>
                 <td><code>npm run lint</code></td>
                 <td>فحص الأخطاء</td>
+                <td>لما تتأكد إن الكود نظيف</td>
               </tr>
               <tr>
                 <td><code>npm install [package]</code></td>
                 <td>تثبيت حزمة جديدة</td>
+                <td>لما تحتاج مكتبة جديدة</td>
+              </tr>
+              <tr>
+                <td><code>npm uninstall [package]</code></td>
+                <td>حذف حزمة</td>
+                <td>لما معدتش تحتاج الحزمة</td>
+              </tr>
+              <tr>
+                <td><code>npm update</code></td>
+                <td>تحديث الحزم</td>
+                <td>لما تحب تحدّث الحزم لإصدارات أحدث</td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <h2>🔍 استكشاف الأخطاء</h2>
+        <p>في بعض المشاكل اللي ممكن تقابلها. خلّيني أقولك الحلول:</p>
         
-        <h3>مشكلة: الأمر لا يعمل</h3>
+        <h3>مشكلة: الأمر node أو npm لا يعمل</h3>
         <p>لو لم يتعرف على الأمر <code>node</code> أو <code>npm</code>:</p>
         <ul>
           <li>أعد تشغيل الـ Terminal بعد تثبيت Node.js</li>
           <li>تأكد من تثبيت Node.js بشكل صحيح</li>
           <li>أعد تشغيل الكمبيوتر</li>
+          <li>لو لسه مش شغال، جرّب تثبّته تاني</li>
         </ul>
 
-        <h3>مشكلة: خطأ في التثبيت</h3>
+        <h3>مشكلة: خطأ في تثبيت الحزم</h3>
         <p>لو ظهر خطأ أثناء تثبيت الحزم:</p>
         <div class="code-block">
           <div class="code-block-header">
@@ -415,7 +621,7 @@ npm install</code></pre>
         </div>
 
         <h3>مشكلة: المنفذ مشغول</h3>
-        <p>لو المنفذ 3000 مشغول، ممكن نغيره:</p>
+        <p>لو المنفذ 3000 مشغول (مثلاً في مشروع تاني شغال)، ممكن نغيره:</p>
         <div class="code-block">
           <div class="code-block-header">
             <span class="code-block-title">Terminal</span>
@@ -425,27 +631,46 @@ npm install</code></pre>
 npm run dev -- -p 3001</code></pre>
         </div>
 
+        <h3>مشكلة: الصفحة بيضاء</h3>
+        <p>لو الصفحة اتفتحت بس مفيش محتوى:</p>
+        <ul>
+          <li>تأكد إنك في المجلد الصح (cd market)</li>
+          <li>تأكد إن خادم التطوير شغال</li>
+          <li>افتح Console في المتصفح (F12) وشوف لو في أخطاء</li>
+          <li>أعد تشغيل خادم التطوير</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة للبحث عن الأخطاء</div>
+          <div class="callout-content">
+            اضغط F12 في المتصفح عشان تفتح Developer Tools، وروح على تبويب Console. أي خطأ في الكود هيبان هنا. كمان روح على تبويب Network وشوف لو في طلبات فاشلة (حمراء).
+          </div>
+        </div>
+
         <h2>📝 ملخص الدرس</h2>
         <p>في الدرس ده عملنا:</p>
         <ul>
           <li>✅ تثبيت Node.js و npm</li>
+          <li>✅ تثبيت VS Code مع الإضافات المهمة</li>
           <li>✅ إنشاء مشروع Next.js جديد</li>
           <li>✅ فهم هيكل المشروع الأساسي</li>
           <li>✅ تشغيل خادم التطوير</li>
           <li>✅ تثبيت المكتبات الإضافية</li>
+          <li>✅ تعلم أوامر npm المهمة</li>
+          <li>✅ حل المشاكل الشائعة</li>
         </ul>
 
         <div class="callout callout-info">
-          <div class="callout-title">💡 نصيحة</div>
+          <div class="callout-title">💡 نصيحة مهمة</div>
           <div class="callout-content">
-            خلّيك تجرب تغيير نص في ملف <code>app/page.js</code> وشوف التغيير بيظهر مباشرة في المتصفح. ده اسمه Hot Reload وبيسهّل عملية التطوير.
+            خلّيك تجرب تغيير نص في ملف <code>app/page.js</code> وشوف التغيير بيظهر مباشرة في المتصفح. ده اسمه Hot Reload وبيسهّل عملية التطوير. كمان جرّب تفتح الملف في VS Code وشوف إزاي الكود منظم.
           </div>
         </div>
 
         <div class="callout callout-success">
-          <div class="callout-title">🎉 الدرس الجاي</div>
+          <div class="callout-title">🎉 مبروك!</div>
           <div class="callout-content">
-            في الدرس الجاي هنتعلم <strong>أساسيات Next.js 16 و App Router</strong> - هنفهم إزاي نبني صفحات وننظم المشروع.
+            كده خلّصنا الدرس التاني! عندك الآن بيئة تطوير كاملة ومشروع Next.js شغال. في الدرس الجاي هنتعلم أساسيات Next.js 16 و App Router - هنفهم إزاي نبني صفحات وننظم المشروع.
           </div>
         </div>
 

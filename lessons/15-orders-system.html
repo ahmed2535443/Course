@@ -53,6 +53,14 @@
           <li>إنشاء صفحة سجل الطلبات</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 مقدمة للدرس</div>
+          <div class="callout-content">
+            <p>أهلاً بيك في الدرس الخمستاشر! في الدرس ده هنبني نظام الطلبات الكامل. نظام الطلبات ده من أهم الأنظمة في أي متجر إلكتروني - هو اللي بيربط بين المستخدم والمنتج وبين المتجر والعميل.</p>
+            <p>هنتعلم إزاي نخزن الطلبات في قاعدة البيانات، وإزاي نتتبع حالتها (قيد الانتظار، تم التأكيد، قيد الشحن، تم التسليم)، وإزاي المستخدم يقدر يشوف طلباته كلها وتفاصيل كل طلب.</p>
+          </div>
+        </div>
+
         <h2>📁 هيكل ملفات نظام الطلبات</h2>
 
         <div class="file-tree">
@@ -71,9 +79,20 @@
           <div class="file-tree-item file">    └── 📄 route.js           # API Routes</div>
         </div>
 
+        <p>بنينا هيكل الملفات كده:</p>
+        <ul>
+          <li><strong>orderService.js</strong> - فيه كل الدوال اللي بتعامل مع الطلبات (إنشاء، جلب، تحديث، حذف)</li>
+          <li><strong>page.js (orders)</strong> - صفحة بتعرض كل طلبات المستخدم</li>
+          <li><strong>page.js (orders/[id])</strong> - صفحة ب تعرض تفاصيل طلب محدد</li>
+          <li><strong>page.js (confirmation)</strong> - صفحة التأكيد بعد إتمام الطلب</li>
+          <li><strong>route.js</strong> - الـ API endpoints اللي الـ frontend بيتكلم معاها</li>
+        </ul>
+
         <h2>🗄️ الخطوة 1: جدول Orders في Supabase</h2>
 
-        <p>أولاً محتاجين نعمل جدول في Supabase لتخزين الطلبات. روح على Supabase Dashboard واذهب إلى SQL Editor وأدخل الكود ده:</p>
+        <p>أولاً محتاجين نعمل جدول في Supabase لتخزين الطلبات. الجدول ده بيحتوي على كل المعلومات عن الطلب: مين الزبون، إيه المنتجات، كام الإجمالي، وحالة الطلب.</p>
+
+        <p>روح على Supabase Dashboard واذهب إلى SQL Editor وأدخل الكود ده:</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -165,8 +184,33 @@ CREATE TRIGGER update_orders_updated_at
   EXECUTE FUNCTION update_updated_at_column();</code></pre>
         </div>
 
+        <h3>شرح جدول Orders:</h3>
+        <ul>
+          <li><strong>id:</strong> معرف فريد لكل طلب. بنستخدم UUID عشان يكون فريد وآمن</li>
+          <li><strong>user_id:</strong> معرف المستخدم اللي عمل الطلب. ده بيربط الطلب بالمستخدم</li>
+          <li><strong>status:</strong> حالة الطلب. ممكن يكون: pending (قيد الانتظار)، confirmed (تم التأكيد)، processing (قيد المعالجة)، shipped (تم الشحن)، delivered (تم التسليم)، cancelled (ملغي)</li>
+          <li><strong>payment_status:</strong> حالة الدفع: pending (في الانتظار)، paid (مدفوع)، failed (فشل)، refunded (مسترد)</li>
+          <li><strong>shipping_address:</strong> عنوان الشحن. بنستخدم JSONB عشان نخزن كل تفاصيل العنوان في حقل واحد</li>
+          <li><strong>subtotal, shipping_cost, tax, total:</strong> المبالغ المالية</li>
+        </ul>
+
+        <h3>شرح جدول order_items:</h3>
+        <ul>
+          <li><strong>order_id:</strong> معرف الطلب. بيحبس الطلب بعناصره</li>
+          <li><strong>product_id:</strong> معرف المنتج. بيحبس العنصر بالمنتج الأصلي</li>
+          <li><strong>ON DELETE CASCADE:</strong> لو الطلب اتحذف، كل عناصره بتتحذف تلقائياً</li>
+        </ul>
+
         <div class="callout callout-info">
-          <div class="callout-title">💡 ملاحظة مهمة</div>
+          <div class="callout-title">💡 ما هو Row Level Security (RLS)؟</div>
+          <div class="callout-content">
+            <p>الـ RLS ده ميزة في Supabase بتخلي كل مستخدم يشوف بياناته بس. يعني لو المستخدم أحمد عمل طلب، مش هيقدر يشوف طلبات المستخدم سارة. ده مهم جداً للأمان!</p>
+            <p>السياسات (Policies) اللي فوق بتحدد مين يقدر يقرأ ويكتب إيه. مثلاً: "المستخدم يقدر يقرأ طلباته بس" و"المستخدم يقدر يضيف طلبات جديدة".</p>
+          </div>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ تحذير</div>
           <div class="callout-content">
             الـ UUID في orders هو مرجع المستخدم من Clerk. لاحظ أننا نستخدم <code>auth.uid()::text</code> لتحويله إلى نص. في بعض الحالات ممكن تحتاج تعدل الـ RLS policies حسب إعدادات Clerk بتاعتك.
           </div>
@@ -174,7 +218,14 @@ CREATE TRIGGER update_orders_updated_at
 
         <h2>📦 الخطوة 2: خدمات الطلبات (Order Service)</h2>
 
-        <p>بنينا مكون services مخصص لإدارة الطلبات. المكون ده بيشتغل كطبقة وسيطة بين الـ API والـ Supabase:</p>
+        <p>بنينا مكون services مخصص لإدارة الطلبات. المكون ده بيشتغل كطبقة وسيطة بين الـ API والـ Supabase. يعني كل التعامل مع قاعدة البيانات بيحصل هنا.</p>
+
+        <p>ليه بنعمل services بدل ما نكتب الكود مباشرة في الـ API؟</p>
+        <ul>
+          <li>لأننا ممكن نستخدم نفس الدوال في أكتر من مكان (مثلاً في الـ API وفي الـ Admin)</li>
+          <li>لأنه أسهل في الصيانة والتعديل</li>
+          <li>لأنه بيفصل منطق الأعمال عن الـ API routes</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -386,6 +437,15 @@ export async function cancelOrder(orderId, userId) {
 }</code></pre>
         </div>
 
+        <h3>شرح تفصيلي لخدمات الطلبات:</h3>
+        <ul>
+          <li><strong>createOrder:</strong> الدالة دي بتعمل حاجتين: أول حاجة بتنشئ الطلب الرئيسي في جدول orders، والتانية بتنشئ عناصر الطلب في جدول order_items. لو أي حاجة حصلت غلط، بيترمى error</li>
+          <li><strong>getUserOrders:</strong> الدالة دي بتجيب كل طلبات المستخدم. ممكن تفلتر حسب الحالة، وكمان ممكن تحدد عدد النتائج</li>
+          <li><strong>getOrderById:</strong> الدالة دي بتجيب تفاصيل طلب محدد. لاحظ إنها بتحقق من إن الطلب فعلاً تبع المستخدم (أمان!)</li>
+          <li><strong>updateOrderStatus:</strong> الدالة دي بتغير حالة الطلب. مثلاً: من "قيد الانتظار" إلى "تم التأكيد"</li>
+          <li><strong>cancelOrder:</strong> الدالة دي بتلغي الطلب بس لو حالته "قيد الانتظار" أو "تم التأكيد". لو الطلب اتشحن، مش هنقدر نلغيه!</li>
+        </ul>
+
         <div class="callout callout-warning">
           <div class="callout-title">⚠️ تحذير</div>
           <div class="callout-content">
@@ -395,7 +455,7 @@ export async function cancelOrder(orderId, userId) {
 
         <h2>🌐 الخطوة 3: API Routes للطلبات</h2>
 
-        <p>بنينا API Routes للتعامل مع الطلبات من خلال REST API:</p>
+        <p>بنينا API Routes للتعامل مع الطلبات من خلال REST API. الـ API ده هو الرابط بين الـ frontend والـ backend.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -488,7 +548,16 @@ export async function GET(request) {
 }</code></pre>
         </div>
 
+        <h3>شرح API Routes:</h3>
+        <ul>
+          <li><strong>POST:</strong> endpoint لإنشاء طلب جديد. بيستقبل بيانات الطلب من الـ frontend وبيحفظها في قاعدة البيانات</li>
+          <li><strong>GET:</strong> endpoint لجلب طلبات المستخدم. بيقبل query parameters للتصفية (status، limit، offset)</li>
+          <li><strong>التحقق من البيانات:</strong> لاحظ إننا بنتحقق من إن كل البيانات المطلوبة موجودة قبل ما نعمل الطلب. لو ناقصة حاجة، بنرجع error message</li>
+          <li><strong>error handling:</strong> كل endpoint فيه try/catch عشان نتعامل مع أي أخطاء ممكن تحصل</li>
+        </ul>
+
         <h2>📄 الخطوة 4: صفحة تأكيد الطلب</h2>
+        <p>بعد ما المستخدم يضغط "تأكيد الطلب" والطلب يتعمل بنجاح، بننقله لصفحة تأكيد فيها كل تفاصيل الطلب.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -513,13 +582,13 @@ export default function OrderConfirmationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  useEffect(() =&gt; {
     if (orderId) {
       fetchOrder();
     }
   }, [orderId]);
 
-  const fetchOrder = async () => {
+  const fetchOrder = async () =&gt; {
     try {
       const response = await fetch(`/api/orders/${orderId}`);
       if (!response.ok) {
@@ -534,7 +603,7 @@ export default function OrderConfirmationPage() {
     }
   };
 
-  const getStatusSteps = (status) => {
+  const getStatusSteps = (status) =&gt; {
     const steps = [
       { key: 'pending', label: 'قيد الانتظار', icon: Clock },
       { key: 'confirmed', label: 'تم التأكيد', icon: CheckCircle },
@@ -543,235 +612,235 @@ export default function OrderConfirmationPage() {
       { key: 'delivered', label: 'تم التسليم', icon: CheckCircle },
     ];
 
-    const currentIndex = steps.findIndex(step => step.key === status);
-    return steps.map((step, index) => ({
+    const currentIndex = steps.findIndex(step =&gt; step.key === status);
+    return steps.map((step, index) =&gt; ({
       ...step,
-      completed: index <= currentIndex,
+      completed: index &lt;= currentIndex,
       active: step.key === status,
     }));
   };
 
   if (loading) {
     return (
-      <Container className="py-16">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <p className="mt-4 text-gray-400">جاري تحميل تفاصيل الطلب...</p>
-        </div>
-      </Container>
+      &lt;Container className="py-16"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" /&gt;
+          &lt;p className="mt-4 text-gray-400"&gt;جاري تحميل تفاصيل الطلب...&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/Container&gt;
     );
   }
 
   if (error || !order) {
     return (
-      <Container className="py-16">
-        <div className="text-center">
-          <div className="w-24 h-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-6">
-            <span className="text-4xl">❌</span>
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-4">
+      &lt;Container className="py-16"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;div className="w-24 h-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-6"&gt;
+            &lt;span className="text-4xl"&gt;❌&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;h2 className="text-2xl font-bold text-white mb-4"&gt;
             {error || 'الطلب غير موجود'}
-          </h2>
-          <Link href="/products">
-            <Button>
-              <ArrowLeft className="w-5 h-5 ml-2" />
+          &lt;/h2&gt;
+          &lt;Link href="/products"&gt;
+            &lt;Button&gt;
+              &lt;ArrowLeft className="w-5 h-5 ml-2" /&gt;
               العودة للتسوق
-            </Button>
-          </Link>
-        </div>
-      </Container>
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+        &lt;/div&gt;
+      &lt;/Container&gt;
     );
   }
 
   const statusSteps = getStatusSteps(order.status);
 
   return (
-    <Container className="py-16">
-      <div className="max-w-3xl mx-auto">
+    &lt;Container className="py-16"&gt;
+      &lt;div className="max-w-3xl mx-auto"&gt;
         {/* Success Header */}
-        <motion.div
+        &lt;motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
           className="text-center mb-12"
-        >
-          <div className="w-24 h-24 mx-auto rounded-full bg-green-500/20 flex items-center justify-center mb-6">
-            <CheckCircle className="w-12 h-12 text-green-400" />
-          </div>
-          <h1 className="text-3xl font-bold text-white mb-4">
+        &gt;
+          &lt;div className="w-24 h-24 mx-auto rounded-full bg-green-500/20 flex items-center justify-center mb-6"&gt;
+            &lt;CheckCircle className="w-12 h-12 text-green-400" /&gt;
+          &lt;/div&gt;
+          &lt;h1 className="text-3xl font-bold text-white mb-4"&gt;
             تم تأكيد طلبك!
-          </h1>
-          <p className="text-gray-400 mb-2">
+          &lt;/h1&gt;
+          &lt;p className="text-gray-400 mb-2"&gt;
             شكراً لك! تم استلام طلبك بنجاح.
-          </p>
-          <p className="text-indigo-400 font-mono text-lg">
+          &lt;/p&gt;
+          &lt;p className="text-indigo-400 font-mono text-lg"&gt;
             رقم الطلب: #{order.id.slice(0, 8).toUpperCase()}
-          </p>
-        </motion.div>
+          &lt;/p&gt;
+        &lt;/motion.div&gt;
 
         {/* Order Status Timeline */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-        >
-          <Card variant="glass" className="mb-8">
-            <h2 className="text-xl font-bold text-white mb-6">تتبع حالة الطلب</h2>
+        &gt;
+          &lt;Card variant="glass" className="mb-8"&gt;
+            &lt;h2 className="text-xl font-bold text-white mb-6"&gt;تتبع حالة الطلب&lt;/h2&gt;
             
-            <div className="flex items-center justify-between">
-              {statusSteps.map((step, index) => (
-                <div key={step.key} className="flex items-center">
-                  <div className="flex flex-col items-center">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
+            &lt;div className="flex items-center justify-between"&gt;
+              {statusSteps.map((step, index) =&gt; (
+                &lt;div key={step.key} className="flex items-center"&gt;
+                  &lt;div className="flex flex-col items-center"&gt;
+                    &lt;div className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
                       step.completed 
                         ? 'bg-indigo-500 text-white' 
                         : 'bg-gray-700 text-gray-400'
-                    } ${step.active ? 'ring-4 ring-indigo-500/30' : ''}`}>
-                      <step.icon className="w-6 h-6" />
-                    </div>
-                    <span className={`text-sm ${
+                    } ${step.active ? 'ring-4 ring-indigo-500/30' : ''}`}&gt;
+                      &lt;step.icon className="w-6 h-6" /&gt;
+                    &lt;/div&gt;
+                    &lt;span className={`text-sm ${
                       step.completed ? 'text-indigo-400' : 'text-gray-500'
-                    }`}>
+                    }`}&gt;
                       {step.label}
-                    </span>
-                  </div>
-                  {index < statusSteps.length - 1 && (
-                    <div className={`w-12 sm:w-20 h-1 mx-2 ${
+                    &lt;/span&gt;
+                  &lt;/div&gt;
+                  {index &lt; statusSteps.length - 1 && (
+                    &lt;div className={`w-12 sm:w-20 h-1 mx-2 ${
                       step.completed ? 'bg-indigo-500' : 'bg-gray-700'
-                    }`} />
+                    }`} /&gt;
                   )}
-                </div>
+                &lt;/div&gt;
               ))}
-            </div>
-          </Card>
-        </motion.div>
+            &lt;/div&gt;
+          &lt;/Card&gt;
+        &lt;/motion.div&gt;
 
         {/* Order Details */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-        >
-          <Card variant="glass" className="mb-8">
-            <h2 className="text-xl font-bold text-white mb-6">تفاصيل الطلب</h2>
+        &gt;
+          &lt;Card variant="glass" className="mb-8"&gt;
+            &lt;h2 className="text-xl font-bold text-white mb-6"&gt;تفاصيل الطلب&lt;/h2&gt;
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div>
-                <p className="text-gray-400 text-sm mb-1">تاريخ الطلب</p>
-                <p className="text-white">
+            &lt;div className="grid grid-cols-1 sm:grid-cols-2 gap-6"&gt;
+              &lt;div&gt;
+                &lt;p className="text-gray-400 text-sm mb-1"&gt;تاريخ الطلب&lt;/p&gt;
+                &lt;p className="text-white"&gt;
                   {new Date(order.created_at).toLocaleDateString('ar-SA', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',
                   })}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-400 text-sm mb-1">طريقة الدفع</p>
-                <p className="text-white">
+                &lt;/p&gt;
+              &lt;/div&gt;
+              &lt;div&gt;
+                &lt;p className="text-gray-400 text-sm mb-1"&gt;طريقة الدفع&lt;/p&gt;
+                &lt;p className="text-white"&gt;
                   {order.payment_method === 'credit_card' && '💳 بطاقة ائتمان'}
                   {order.payment_method === 'apple_pay' && ' Apple Pay'}
                   {order.payment_method === 'cod' && '💵 الدفع عند الاستلام'}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-400 text-sm mb-1">عنوان الشحن</p>
-                <p className="text-white">
+                &lt;/p&gt;
+              &lt;/div&gt;
+              &lt;div&gt;
+                &lt;p className="text-gray-400 text-sm mb-1"&gt;عنوان الشحن&lt;/p&gt;
+                &lt;p className="text-white"&gt;
                   {order.shipping_address?.city}, {order.shipping_address?.address}
-                </p>
-              </div>
-              <div>
-                <p className="text-gray-400 text-sm mb-1">الإجمالي</p>
-                <p className="text-white text-xl font-bold">
+                &lt;/p&gt;
+              &lt;/div&gt;
+              &lt;div&gt;
+                &lt;p className="text-gray-400 text-sm mb-1"&gt;الإجمالي&lt;/p&gt;
+                &lt;p className="text-white text-xl font-bold"&gt;
                   ${order.total.toFixed(2)}
-                </p>
-              </div>
-            </div>
-          </Card>
-        </motion.div>
+                &lt;/p&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/Card&gt;
+        &lt;/motion.div&gt;
 
         {/* Order Items */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-        >
-          <Card variant="glass" className="mb-8">
-            <h2 className="text-xl font-bold text-white mb-6">المنتجات المطلوبة</h2>
+        &gt;
+          &lt;Card variant="glass" className="mb-8"&gt;
+            &lt;h2 className="text-xl font-bold text-white mb-6"&gt;المنتجات المطلوبة&lt;/h2&gt;
             
-            <div className="space-y-4">
-              {order.order_items?.map((item) => (
-                <div
+            &lt;div className="space-y-4"&gt;
+              {order.order_items?.map((item) =&gt; (
+                &lt;div
                   key={item.id}
                   className="flex items-center gap-4 p-4 bg-white/5 rounded-xl"
-                >
-                  <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-800">
+                &gt;
+                  &lt;div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-800"&gt;
                     {item.products?.image && (
-                      <img
+                      &lt;img
                         src={item.products.image}
                         alt={item.products.name}
                         className="w-full h-full object-cover"
-                      />
+                      /&gt;
                     )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate">
+                  &lt;/div&gt;
+                  &lt;div className="flex-1 min-w-0"&gt;
+                    &lt;p className="text-white font-medium truncate"&gt;
                       {item.products?.name}
-                    </p>
-                    <p className="text-gray-400 text-sm">
+                    &lt;/p&gt;
+                    &lt;p className="text-gray-400 text-sm"&gt;
                       {item.selected_size && `مقاس: ${item.selected_size}`}
                       {item.selected_size && item.selected_color && ' | '}
                       {item.selected_color && `لون: ${item.selected_color}`}
-                    </p>
-                  </div>
-                  <div className="text-left">
-                    <p className="text-white font-medium">
+                    &lt;/p&gt;
+                  &lt;/div&gt;
+                  &lt;div className="text-left"&gt;
+                    &lt;p className="text-white font-medium"&gt;
                       ${(item.price * item.quantity).toFixed(2)}
-                    </p>
-                    <p className="text-gray-400 text-sm">
+                    &lt;/p&gt;
+                    &lt;p className="text-gray-400 text-sm"&gt;
                       الكمية: {item.quantity}
-                    </p>
-                  </div>
-                </div>
+                    &lt;/p&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
               ))}
-            </div>
-          </Card>
-        </motion.div>
+            &lt;/div&gt;
+          &lt;/Card&gt;
+        &lt;/motion.div&gt;
 
         {/* Actions */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <Link href="/orders">
-            <Button variant="secondary">
-              <Package className="w-5 h-5 ml-2" />
+        &gt;
+          &lt;Link href="/orders"&gt;
+            &lt;Button variant="secondary"&gt;
+              &lt;Package className="w-5 h-5 ml-2" /&gt;
               تتبع طلباتي
-            </Button>
-          </Link>
-          <Link href="/products">
-            <Button>
-              <ArrowLeft className="w-5 h-5 ml-2" />
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+          &lt;Link href="/products"&gt;
+            &lt;Button&gt;
+              &lt;ArrowLeft className="w-5 h-5 ml-2" /&gt;
               متابعة التسوق
-            </Button>
-          </Link>
-          <Button
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+          &lt;Button
             variant="secondary"
-            onClick={() => window.print()}
-          >
-            <Printer className="w-5 h-5 ml-2" />
+            onClick={() =&gt; window.print()}
+          &gt;
+            &lt;Printer className="w-5 h-5 ml-2" /&gt;
             طباعة الطلب
-          </Button>
-        </motion.div>
+          &lt;/Button&gt;
+        &lt;/motion.div&gt;
 
         {/* Email Notice */}
-        <p className="mt-8 text-gray-400 text-sm text-center">
+        &lt;p className="mt-8 text-gray-400 text-sm text-center"&gt;
           سيتم إرسال تفاصيل الطلب إلى بريدك الإلكتروني.
-        </p>
-      </div>
-    </Container>
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/Container&gt;
   );
 }</code></pre>
         </div>
@@ -838,13 +907,13 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
-  useEffect(() => {
+  useEffect(() =&gt; {
     if (userId) {
       fetchOrders();
     }
   }, [userId]);
 
-  const fetchOrders = async () => {
+  const fetchOrders = async () =&gt; {
     try {
       const response = await fetch(`/api/orders?userId=${userId}`);
       const data = await response.json();
@@ -858,127 +927,127 @@ export default function OrdersPage() {
 
   const filteredOrders = filter === 'all' 
     ? orders 
-    : orders.filter(order => order.status === filter);
+    : orders.filter(order =&gt; order.status === filter);
 
   if (loading) {
     return (
-      <Container className="py-16">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <p className="mt-4 text-gray-400">جاري تحميل الطلبات...</p>
-        </div>
-      </Container>
+      &lt;Container className="py-16"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" /&gt;
+          &lt;p className="mt-4 text-gray-400"&gt;جاري تحميل الطلبات...&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/Container&gt;
     );
   }
 
   return (
-    <Container className="py-16">
-      <div className="max-w-4xl mx-auto">
+    &lt;Container className="py-16"&gt;
+      &lt;div className="max-w-4xl mx-auto"&gt;
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">طلباتي</h1>
-          <p className="text-gray-400">
+        &lt;div className="mb-8"&gt;
+          &lt;h1 className="text-3xl font-bold text-white mb-2"&gt;طلباتي&lt;/h1&gt;
+          &lt;p className="text-gray-400"&gt;
             تتبع وإدارة جميع طلباتك
-          </p>
-        </div>
+          &lt;/p&gt;
+        &lt;/div&gt;
 
         {/* Filter Tabs */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          <button
-            onClick={() => setFilter('all')}
+        &lt;div className="flex flex-wrap gap-2 mb-8"&gt;
+          &lt;button
+            onClick={() =&gt; setFilter('all')}
             className={`px-4 py-2 rounded-xl transition-all ${
               filter === 'all'
                 ? 'bg-indigo-500 text-white'
                 : 'bg-white/5 text-gray-400 hover:bg-white/10'
             }`}
-          >
+          &gt;
             الكل ({orders.length})
-          </button>
-          {Object.entries(statusConfig).map(([key, config]) => {
-            const count = orders.filter(o => o.status === key).length;
+          &lt;/button&gt;
+          {Object.entries(statusConfig).map(([key, config]) =&gt; {
+            const count = orders.filter(o =&gt; o.status === key).length;
             if (count === 0) return null;
             return (
-              <button
+              &lt;button
                 key={key}
-                onClick={() => setFilter(key)}
+                onClick={() =&gt; setFilter(key)}
                 className={`px-4 py-2 rounded-xl transition-all ${
                   filter === key
                     ? 'bg-indigo-500 text-white'
                     : 'bg-white/5 text-gray-400 hover:bg-white/10'
                 }`}
-              >
+              &gt;
                 {config.label} ({count})
-              </button>
+              &lt;/button&gt;
             );
           })}
-        </div>
+        &lt;/div&gt;
 
         {/* Orders List */}
         {filteredOrders.length === 0 ? (
-          <Card variant="glass" className="text-center py-12">
-            <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">
+          &lt;Card variant="glass" className="text-center py-12"&gt;
+            &lt;Package className="w-16 h-16 text-gray-500 mx-auto mb-4" /&gt;
+            &lt;h3 className="text-xl font-bold text-white mb-2"&gt;
               لا توجد طلبات
-            </h3>
-            <p className="text-gray-400 mb-6">
+            &lt;/h3&gt;
+            &lt;p className="text-gray-400 mb-6"&gt;
               لم تقم بأي طلبات بعد
-            </p>
-            <Link href="/products">
-              <Button>ابدأ التسوق</Button>
-            </Link>
-          </Card>
+            &lt;/p&gt;
+            &lt;Link href="/products"&gt;
+              &lt;Button&gt;ابدأ التسوق&lt;/Button&gt;
+            &lt;/Link&gt;
+          &lt;/Card&gt;
         ) : (
-          <div className="space-y-4">
-            {filteredOrders.map((order) => {
+          &lt;div className="space-y-4"&gt;
+            {filteredOrders.map((order) =&gt; {
               const statusInfo = statusConfig[order.status];
               const StatusIcon = statusInfo.icon;
 
               return (
-                <Card key={order.id} variant="glass">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-xl ${statusInfo.bgColor} flex items-center justify-center`}>
-                        <StatusIcon className={`w-6 h-6 ${statusInfo.color}`} />
-                      </div>
-                      <div>
-                        <p className="text-white font-medium">
+                &lt;Card key={order.id} variant="glass"&gt;
+                  &lt;div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"&gt;
+                    &lt;div className="flex items-center gap-4"&gt;
+                      &lt;div className={`w-12 h-12 rounded-xl ${statusInfo.bgColor} flex items-center justify-center`}&gt;
+                        &lt;StatusIcon className={`w-6 h-6 ${statusInfo.color}`} /&gt;
+                      &lt;/div&gt;
+                      &lt;div&gt;
+                        &lt;p className="text-white font-medium"&gt;
                           طلب #{order.id.slice(0, 8).toUpperCase()}
-                        </p>
-                        <p className="text-gray-400 text-sm">
+                        &lt;/p&gt;
+                        &lt;p className="text-gray-400 text-sm"&gt;
                           {new Date(order.created_at).toLocaleDateString('ar-SA')}
-                        </p>
-                      </div>
-                    </div>
+                        &lt;/p&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
 
-                    <div className="flex items-center gap-6">
-                      <div className="text-center">
-                        <p className="text-white font-bold text-lg">
+                    &lt;div className="flex items-center gap-6"&gt;
+                      &lt;div className="text-center"&gt;
+                        &lt;p className="text-white font-bold text-lg"&gt;
                           ${order.total.toFixed(2)}
-                        </p>
-                        <p className="text-gray-400 text-sm">
+                        &lt;/p&gt;
+                        &lt;p className="text-gray-400 text-sm"&gt;
                           {order.order_items?.length || 0} منتج
-                        </p>
-                      </div>
+                        &lt;/p&gt;
+                      &lt;/div&gt;
 
-                      <span className={`px-3 py-1 rounded-full text-sm ${statusInfo.bgColor} ${statusInfo.color}`}>
+                      &lt;span className={`px-3 py-1 rounded-full text-sm ${statusInfo.bgColor} ${statusInfo.color}`}&gt;
                         {statusInfo.label}
-                      </span>
+                      &lt;/span&gt;
 
-                      <Link href={`/orders/${order.id}`}>
-                        <Button variant="secondary" size="sm">
-                          <Eye className="w-4 h-4 ml-2" />
+                      &lt;Link href={`/orders/${order.id}`}&gt;
+                        &lt;Button variant="secondary" size="sm"&gt;
+                          &lt;Eye className="w-4 h-4 ml-2" /&gt;
                           التفاصيل
-                        </Button>
-                      </Link>
-                    </div>
-                  </div>
-                </Card>
+                        &lt;/Button&gt;
+                      &lt;/Link&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/Card&gt;
               );
             })}
-          </div>
+          &lt;/div&gt;
         )}
-      </div>
-    </Container>
+      &lt;/div&gt;
+    &lt;/Container&gt;
   );
 }</code></pre>
         </div>
@@ -1008,13 +1077,13 @@ export default function OrderDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  useEffect(() =&gt; {
     if (userId && params.id) {
       fetchOrder();
     }
   }, [userId, params.id]);
 
-  const fetchOrder = async () => {
+  const fetchOrder = async () =&gt; {
     try {
       const response = await fetch(`/api/orders/${params.id}?userId=${userId}`);
       if (!response.ok) {
@@ -1031,48 +1100,48 @@ export default function OrderDetailPage() {
 
   if (loading) {
     return (
-      <Container className="py-16">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <p className="mt-4 text-gray-400">جاري تحميل تفاصيل الطلب...</p>
-        </div>
-      </Container>
+      &lt;Container className="py-16"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" /&gt;
+          &lt;p className="mt-4 text-gray-400"&gt;جاري تحميل تفاصيل الطلب...&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/Container&gt;
     );
   }
 
   if (error || !order) {
     return (
-      <Container className="py-16">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">
+      &lt;Container className="py-16"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;h2 className="text-2xl font-bold text-white mb-4"&gt;
             {error || 'الطلب غير موجود'}
-          </h2>
-          <Link href="/orders">
-            <Button>
-              <ArrowLeft className="w-5 h-5 ml-2" />
+          &lt;/h2&gt;
+          &lt;Link href="/orders"&gt;
+            &lt;Button&gt;
+              &lt;ArrowLeft className="w-5 h-5 ml-2" /&gt;
               العودة للطلبات
-            </Button>
-          </Link>
-        </div>
-      </Container>
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+        &lt;/div&gt;
+      &lt;/Container&gt;
     );
   }
 
   return (
-    <Container className="py-16">
-      <div className="max-w-4xl mx-auto">
+    &lt;Container className="py-16"&gt;
+      &lt;div className="max-w-4xl mx-auto"&gt;
         {/* Back Button */}
-        <Link href="/orders" className="inline-flex items-center text-gray-400 hover:text-white mb-6 transition-colors">
-          <ArrowLeft className="w-5 h-5 ml-2" />
+        &lt;Link href="/orders" className="inline-flex items-center text-gray-400 hover:text-white mb-6 transition-colors"&gt;
+          &lt;ArrowLeft className="w-5 h-5 ml-2" /&gt;
           العودة للطلبات
-        </Link>
+        &lt;/Link&gt;
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+        &lt;div className="mb-8"&gt;
+          &lt;h1 className="text-3xl font-bold text-white mb-2"&gt;
             طلب #{order.id.slice(0, 8).toUpperCase()}
-          </h1>
-          <p className="text-gray-400">
+          &lt;/h1&gt;
+          &lt;p className="text-gray-400"&gt;
             تم الإنشاء في {new Date(order.created_at).toLocaleDateString('ar-SA', {
               year: 'numeric',
               month: 'long',
@@ -1080,133 +1149,133 @@ export default function OrderDetailPage() {
               hour: '2-digit',
               minute: '2-digit',
             })}
-          </p>
-        </div>
+          &lt;/p&gt;
+        &lt;/div&gt;
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        &lt;div className="grid lg:grid-cols-3 gap-8"&gt;
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          &lt;div className="lg:col-span-2 space-y-6"&gt;
             {/* Order Items */}
-            <Card variant="glass">
-              <h2 className="text-xl font-bold text-white mb-6">المنتجات</h2>
-              <div className="space-y-4">
-                {order.order_items?.map((item) => (
-                  <div
+            &lt;Card variant="glass"&gt;
+              &lt;h2 className="text-xl font-bold text-white mb-6"&gt;المنتجات&lt;/h2&gt;
+              &lt;div className="space-y-4"&gt;
+                {order.order_items?.map((item) =&gt; (
+                  &lt;div
                     key={item.id}
                     className="flex items-center gap-4 p-4 bg-white/5 rounded-xl"
-                  >
-                    <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-800">
+                  &gt;
+                    &lt;div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-800"&gt;
                       {item.products?.image && (
-                        <img
+                        &lt;img
                           src={item.products.image}
                           alt={item.products.name}
                           className="w-full h-full object-cover"
-                        />
+                        /&gt;
                       )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white font-medium">
+                    &lt;/div&gt;
+                    &lt;div className="flex-1 min-w-0"&gt;
+                      &lt;p className="text-white font-medium"&gt;
                         {item.products?.name}
-                      </p>
-                      <p className="text-gray-400 text-sm">
+                      &lt;/p&gt;
+                      &lt;p className="text-gray-400 text-sm"&gt;
                         {item.selected_size && `مقاس: ${item.selected_size}`}
                         {item.selected_size && item.selected_color && ' | '}
                         {item.selected_color && `لون: ${item.selected_color}`}
-                      </p>
-                      <p className="text-gray-400 text-sm">
+                      &lt;/p&gt;
+                      &lt;p className="text-gray-400 text-sm"&gt;
                         الكمية: {item.quantity}
-                      </p>
-                    </div>
-                    <div className="text-left">
-                      <p className="text-white font-bold">
+                      &lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;div className="text-left"&gt;
+                      &lt;p className="text-white font-bold"&gt;
                         ${(item.price * item.quantity).toFixed(2)}
-                      </p>
-                      <p className="text-gray-400 text-sm">
+                      &lt;/p&gt;
+                      &lt;p className="text-gray-400 text-sm"&gt;
                         ${item.price.toFixed(2)} × {item.quantity}
-                      </p>
-                    </div>
-                  </div>
+                      &lt;/p&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
                 ))}
-              </div>
-            </Card>
+              &lt;/div&gt;
+            &lt;/Card&gt;
 
             {/* Shipping Address */}
-            <Card variant="glass">
-              <div className="flex items-center gap-3 mb-4">
-                <MapPin className="w-5 h-5 text-indigo-400" />
-                <h3 className="text-lg font-bold text-white">عنوان الشحن</h3>
-              </div>
-              <div className="text-gray-300 space-y-1">
-                <p>{order.shipping_address?.firstName} {order.shipping_address?.lastName}</p>
-                <p>{order.shipping_address?.address}</p>
-                <p>{order.shipping_address?.city}, {order.shipping_address?.state} {order.shipping_address?.zipCode}</p>
-                <p>{order.shipping_address?.phone}</p>
-              </div>
-            </Card>
-          </div>
+            &lt;Card variant="glass"&gt;
+              &lt;div className="flex items-center gap-3 mb-4"&gt;
+                &lt;MapPin className="w-5 h-5 text-indigo-400" /&gt;
+                &lt;h3 className="text-lg font-bold text-white"&gt;عنوان الشحن&lt;/h3&gt;
+              &lt;/div&gt;
+              &lt;div className="text-gray-300 space-y-1"&gt;
+                &lt;p&gt;{order.shipping_address?.firstName} {order.shipping_address?.lastName}&lt;/p&gt;
+                &lt;p&gt;{order.shipping_address?.address}&lt;/p&gt;
+                &lt;p&gt;{order.shipping_address?.city}, {order.shipping_address?.state} {order.shipping_address?.zipCode}&lt;/p&gt;
+                &lt;p&gt;{order.shipping_address?.phone}&lt;/p&gt;
+              &lt;/div&gt;
+            &lt;/Card&gt;
+          &lt;/div&gt;
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          &lt;div className="space-y-6"&gt;
             {/* Order Summary */}
-            <Card variant="glass">
-              <h3 className="text-lg font-bold text-white mb-4">ملخص الطلب</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between text-gray-300">
-                  <span>المجموع الفرعي</span>
-                  <span>${order.subtotal?.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-gray-300">
-                  <span>الشحن</span>
-                  <span>
+            &lt;Card variant="glass"&gt;
+              &lt;h3 className="text-lg font-bold text-white mb-4"&gt;ملخص الطلب&lt;/h3&gt;
+              &lt;div className="space-y-3"&gt;
+                &lt;div className="flex justify-between text-gray-300"&gt;
+                  &lt;span&gt;المجموع الفرعي&lt;/span&gt;
+                  &lt;span&gt;${order.subtotal?.toFixed(2)}&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div className="flex justify-between text-gray-300"&gt;
+                  &lt;span&gt;الشحن&lt;/span&gt;
+                  &lt;span&gt;
                     {order.shipping_cost === 0 ? (
-                      <span className="text-green-400">مجاني</span>
+                      &lt;span className="text-green-400"&gt;مجاني&lt;/span&gt;
                     ) : (
                       `$${order.shipping_cost?.toFixed(2)}`
                     )}
-                  </span>
-                </div>
-                <div className="flex justify-between text-gray-300">
-                  <span>الضرائب</span>
-                  <span>${order.tax?.toFixed(2)}</span>
-                </div>
-                <div className="border-t border-white/10 pt-3">
-                  <div className="flex justify-between text-white font-bold text-lg">
-                    <span>الإجمالي</span>
-                    <span>${order.total?.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-            </Card>
+                  &lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div className="flex justify-between text-gray-300"&gt;
+                  &lt;span&gt;الضرائب&lt;/span&gt;
+                  &lt;span&gt;${order.tax?.toFixed(2)}&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div className="border-t border-white/10 pt-3"&gt;
+                  &lt;div className="flex justify-between text-white font-bold text-lg"&gt;
+                    &lt;span&gt;الإجمالي&lt;/span&gt;
+                    &lt;span&gt;${order.total?.toFixed(2)}&lt;/span&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/Card&gt;
 
             {/* Payment Info */}
-            <Card variant="glass">
-              <div className="flex items-center gap-3 mb-4">
-                <CreditCard className="w-5 h-5 text-indigo-400" />
-                <h3 className="text-lg font-bold text-white">الدفع</h3>
-              </div>
-              <div className="space-y-2">
-                <p className="text-gray-300">
+            &lt;Card variant="glass"&gt;
+              &lt;div className="flex items-center gap-3 mb-4"&gt;
+                &lt;CreditCard className="w-5 h-5 text-indigo-400" /&gt;
+                &lt;h3 className="text-lg font-bold text-white"&gt;الدفع&lt;/h3&gt;
+              &lt;/div&gt;
+              &lt;div className="space-y-2"&gt;
+                &lt;p className="text-gray-300"&gt;
                   الطريقة: {
                     order.payment_method === 'credit_card' ? 'بطاقة ائتمان' :
                     order.payment_method === 'apple_pay' ? 'Apple Pay' :
                     'الدفع عند الاستلام'
                   }
-                </p>
-                <p className="text-gray-300">
-                  الحالة: <span className={
+                &lt;/p&gt;
+                &lt;p className="text-gray-300"&gt;
+                  الحالة: &lt;span className={
                     order.payment_status === 'paid' ? 'text-green-400' : 'text-yellow-400'
-                  }>
+                  }&gt;
                     {order.payment_status === 'paid' ? 'مدفوع' : 'في الانتظار'}
-                  </span>
-                </p>
-              </div>
-            </Card>
+                  &lt;/span&gt;
+                &lt;/p&gt;
+              &lt;/div&gt;
+            &lt;/Card&gt;
 
             {/* Order Status */}
-            <Card variant="glass">
-              <h3 className="text-lg font-bold text-white mb-4">حالة الطلب</h3>
-              <div className="space-y-3">
-                {['pending', 'confirmed', 'processing', 'shipped', 'delivered'].map((status, index) => {
+            &lt;Card variant="glass"&gt;
+              &lt;h3 className="text-lg font-bold text-white mb-4"&gt;حالة الطلب&lt;/h3&gt;
+              &lt;div className="space-y-3"&gt;
+                {['pending', 'confirmed', 'processing', 'shipped', 'delivered'].map((status, index) =&gt; {
                   const statusLabels = {
                     pending: 'قيد الانتظار',
                     confirmed: 'تم التأكيد',
@@ -1218,28 +1287,28 @@ export default function OrderDetailPage() {
                     .indexOf(order.status) >= index;
                   
                   return (
-                    <div key={status} className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    &lt;div key={status} className="flex items-center gap-3"&gt;
+                      &lt;div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                         isCompleted ? 'bg-indigo-500' : 'bg-gray-700'
-                      }`}>
+                      }`}&gt;
                         {isCompleted ? (
-                          <CheckCircle className="w-4 h-4 text-white" />
+                          &lt;CheckCircle className="w-4 h-4 text-white" /&gt;
                         ) : (
-                          <Clock className="w-4 h-4 text-gray-400" />
+                          &lt;Clock className="w-4 h-4 text-gray-400" /&gt;
                         )}
-                      </div>
-                      <span className={isCompleted ? 'text-white' : 'text-gray-500'}>
+                      &lt;/div&gt;
+                      &lt;span className={isCompleted ? 'text-white' : 'text-gray-500'}&gt;
                         {statusLabels[status]}
-                      </span>
-                    </div>
+                      &lt;/span&gt;
+                    &lt;/div&gt;
                   );
                 })}
-              </div>
-            </Card>
-          </div>
-        </div>
-      </div>
-    </Container>
+              &lt;/div&gt;
+            &lt;/Card&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/Container&gt;
   );
 }</code></pre>
         </div>

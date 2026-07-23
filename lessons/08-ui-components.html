@@ -54,8 +54,16 @@
           <li>استخدام دالة cn() لدمج الفئات</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 مقدمة في مكونات UI</div>
+          <div class="callout-content">
+            <p>مرحب بيك في الدرس الثامن! الدرس ده من أهم الدروس في الكورس لأننا هنبني هنا المكونات الأساسية اللي هنستخدمها في كل المشروع. فكر كده إنك بتبني صندوق أدوات (Toolbox) فيه كل الأدوات اللي هتحتاجها لبناء أي صفحة في المتجر.</p>
+            <p>المكونات (Components) هي بلوكات البناء الأساسية في React. كل حاجة في الصفحة زر، حقل إدخال، بطاقة، شاشة إشعار — كلها مكونات. والهدف هنا إننا نبني مكونات ذكية قابلة لإعادة الاستخدام، يعني نكتبها مرة واحدة ونستخدمها في حتت كتير في المشروع.</p>
+          </div>
+        </div>
+
         <h2>📦 هيكل مجلد المكونات</h2>
-        <p>هنبدأ بإنشاء هيكل المكونات في المشروع:</p>
+        <p>هنبدأ بإنشاء هيكل المكونات في المشروع. الترتيب هنا مهم جداً عشان نحافظ على نظافة الكود ونقدر نلاقي أي مكون بسهولة. المكونات الأساسية هنحطها في مجلد <code>ui</code> عشان نميزها عن المكونات الخاصة بالمنتج أو الصفحة.</p>
 
         <div class="file-tree">
           <div class="file-tree-item folder">📁 components/</div>
@@ -70,8 +78,24 @@
           <div class="file-tree-item file">└── 📁 products/</div>
         </div>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه المكونات الأساسية في مجلد منفصل؟</div>
+          <div class="callout-content">
+            <p>في تطوير الواجهات، في نوعين من المكونات:</p>
+            <ul>
+              <li><strong>مكونات أساسية (UI Components)</strong>: زر، حقل إدخال، بطاقة — مكونات عامة تستخدم في أي مكان</li>
+              <li><strong>مكونات خاصة (Feature Components)</strong>: كارت منتج، فلتر منتجات — مكونات مرتبطة بمكان معين</li>
+            </ul>
+            <p>الفصل بينهم بيسهل عليك تطور المشروع وصيانته لاحقاً.</p>
+          </div>
+        </div>
+
         <h2>🔧 الخطوة 1: دالة cn() المساعدة</h2>
-        <p>دالة <code>cn()</code> هي دالة مهمة لدمج فئات Tailwind بشكل ذكي. هنستخدم مكتبة <code>clsx</code> و <code>tailwind-merge</code>:</p>
+        <p>قبل ما نبدأ في بناء المكونات، محتاجين دالة مهمة جداً اسمها <code>cn()</code>. الدالة دي هتساعدنا ندمج فئات CSS (Tailwind classes) بشكل ذكي ومنظم.</p>
+
+        <p>لما تشتغل مع Tailwind، هتلاقي نفسك بتكتب فئات كتير على العنصر الواحد. أحياناً محتاج تضيف فئات شرطية (مثلاً لو الحالة active، ضيف لون معين). هنا بتيجي المشكلة: إزاي تدمج الفئات دي بذكاء من غير ما تكرر أو تغلط؟</p>
+
+        <p>الحل هو استخدام مكتبتين: <code>clsx</code> و <code>tailwind-merge</code>. الأولى بتساعدك تدمج شروط، والتانية بتمزج الفئات المتشابهة بذكاء.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -91,6 +115,13 @@ export function cn(...inputs) {
 // cn("text-red-500", className) // يمكن تجاوز الألوان</code></pre>
         </div>
 
+        <p>خلينا نفهم الكود خطوة بخطوة:</p>
+        <ul>
+          <li><code>clsx(inputs)</code>: بتاخد البارامترات وبتتحولها لسلسلة نصية واحدة. لو في شروط، بتحقق منها. مثلاً <code>clsx("px-4", true && "bg-blue")</code> تبقى <code>"px-4 bg-blue"</code></li>
+          <li><code>twMerge(...)</code>: بتاخد الناتج وبتدمج الفئات المتشابهة. مثلاً لو عندك <code>"px-4 px-8"</code> هتبقى <code>"px-8"</code> بس، لأن الـ px-8 بياخد الأولوية</li>
+          <li><code>...inputs</code>: ده spread operator، بيسمحلك تمرر عدد غير محدد من الأ参数</li>
+        </ul>
+
         <div class="callout callout-info">
           <div class="callout-title">💡 لماذا نحتاج cn()؟</div>
           <div class="callout-content">
@@ -103,8 +134,49 @@ export function cn(...inputs) {
           </div>
         </div>
 
+        <h3>أمثلة على استخدام cn()</h3>
+        <p>خلينا نشوف أمثلة عملية على إزاي هنستخدم الدالة دي:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">أمثلة على cn()</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>// مثال 1: دمج بسيط
+cn("px-4", "py-2") // → "px-4 py-2"
+
+// مثال 2: شرط منطقي
+const isActive = true;
+cn("text-gray-500", isActive && "text-white") // → "text-white"
+
+// مثال 3: تجاوز الفئات
+cn("px-4 py-2", "px-8") // → "px-8 py-2" (px-8 بياخد الأولوية)
+
+// مثال 4: استخدام مع مكون
+cn(
+  "base-classes",
+  condition && "conditional-class",
+  userClassName // السماح للمستخدم بتخصيص
+)</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ أخطاء شائعة مع cn()</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الخطأ</strong>: استخدام <code>className</code> مباشرة بدون <code>cn()</code> — النتيجة: الفئات بتتداخل ومش بتشتغل صح</li>
+              <li><strong>الخطأ</strong>: نسيان تمرير الـ <code>className</code> للمكون — النتيجة: المستخدم مش هيقدر يخصص المكون</li>
+              <li><strong>الحل</strong>: دايماً استخدم <code>cn()</code> في كل مكون واعمل الـ <code>className</code> آخر حاجة</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>🎨 الخطوة 2: مكون Button</h2>
-        <p>مكون Button هو من أهم المكونات. هنشئه بعدة أشكال:</p>
+        <p>مكون Button هو من أهم المكونات في أي مشروع واجهة. في المتجر هنحتاجه في أماكن كتير: زر "أضف للسلة"، زر "شراء"، زر "إلغاء"، أزرار التنقل، وغيرهم.</p>
+
+        <p>الحاجة الأهم في المكون ده إننا نعمله مرن وقابل لإعادة الاستخدام. يعني يقدر يكون بلون أساسي أو ثانوي أو شبحي، وينفع يكون صغير أو كبير. وكل ده بنحققه باستخدام <code>variants</code> و <code>sizes</code>.</p>
+
+        <p>فكّر كده: بدل ما تعمل 10 أنواع أزرار مختلفة، تعمل زر واحد فيه 10 أشكال مختلفة. ده بيوفر عليك وقت وبيخلي الكود أنظف.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -159,7 +231,7 @@ export default function Button({
       disabled={disabled || isLoading}
       {...props}
     &gt;
-      {isLoading && (
+      {isLoading &amp;&amp; (
         &lt;Loader2 className="w-4 h-4 ml-2 animate-spin" /&gt;
       )}
       {children}
@@ -168,7 +240,19 @@ export default function Button({
 }</code></pre>
         </div>
 
+        <p>خلينا نفهم كل جزء في الكود ده:</p>
+        <ul>
+          <li><strong>buttonVariants</strong>: ده Object فيه كل الأنواع. كل نوع ليه فئات Tailwind محددة. مثلاً الـ primary عليه تدرج ألوان وظل، والـ ghost شفاف وبيظهر لونه بس لما تمرر الماوس عليه</li>
+          <li><strong>buttonSizes</strong>: ده Object فيه الأحجام. كل حجم ليه padding وخط مناسب</li>
+          <li><strong>"use client"</strong>: ده مهم عشان المكون ده فيه تفاعل (isLoading، disabled) فمحتاج يكون Client Component</li>
+          <li><strong>...props</strong>: ده بيسمحلك تمرر أي خصائص إضافية للزرار زي <code>onClick</code> و <code>type</code></li>
+          <li><strong>isLoading</strong>: لو true، بيظهر Loading spinner وبيخلي الزرار disabled</li>
+          <li><strong>disabled</strong>: لو true، الزرار بيبقى رمادي ومش بيستجيب للنقر</li>
+        </ul>
+
         <h3>استخدام مكون Button:</h3>
+        <p>الآن خلینا نشوف إزاي نستخدم المكون ده في الأكواد بتاعتنا:</p>
+
         <div class="code-block">
           <div class="code-block-header">
             <span class="code-block-title">مثال الاستخدام</span>
@@ -192,8 +276,23 @@ export default function Button({
 &lt;Button isLoading&gt;جاري الحفظ...&lt;/Button&gt;</code></pre>
         </div>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصائح لاستخدام Button</div>
+          <div class="callout-content">
+            <ul>
+              <li>استخدم <code>primary</code> للإجراءات الرئيسية (شراء، إضافة للسلة)</li>
+              <li>استخدم <code>secondary</code> للإجراءات الثانوية (عرض المزيد)</li>
+              <li>استخدم <code>danger</code> للإجراءات الخطيرة (حذف، إلغاء)</li>
+              <li>استخدم <code>ghost</code> للأزرار البسيطة (إغلاق، رجوع)</li>
+              <li>دايماً حط <code>isLoading</code> أثناء الاتصال بالخادم عشان المستخدم يعرف إن في حاجة بتحصل</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>📝 الخطوة 3: مكون Input</h2>
-        <p>مكون Input مع Label وحالات الخطأ:</p>
+        <p>مكون Input هو zrooofy الأساسي في أي نموذج (form). هنستخدمه في البحث، تسجيل الدخول، إدخال العنوان، وغيرهم. المكون ده محتاج يكون فيه Label عشان المستخدم يعرف الحقل ده لميه، ورسائل خطأ عشان يعرف لو في مشكلة في الإدخال.</p>
+
+        <p>الميزة الأهم في المكون ده استخدام <code>forwardRef</code>. ده بيسمح للparent يوصل للـ input trực tiếp. مثلاً لما تحب تfocus على الحقل تلقائياً لما الصفحة تفتح. لو مش هتستخدم特性 ده، ممكن تحذفها بس الأفضل تسيبها.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -215,7 +314,7 @@ const Input = forwardRef(({
   return (
     &lt;div className="w-full"&gt;
       {/* Label */}
-      {label && (
+      {label &amp;&amp; (
         &lt;label className="block text-sm font-medium text-gray-200 mb-2"&gt;
           {label}
         &lt;/label&gt;
@@ -240,7 +339,7 @@ const Input = forwardRef(({
       /&gt;
       
       {/* رسالة الخطأ */}
-      {error && (
+      {error &amp;&amp; (
         &lt;p className="mt-2 text-sm text-red-400 flex items-center gap-2"&gt;
           &lt;svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"&gt;
             &lt;path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /&gt;
@@ -256,6 +355,16 @@ Input.displayName = 'Input';
 
 export default Input;</code></pre>
         </div>
+
+        <p>خلينا نفهم المكون ده بالتفصيل:</p>
+        <ul>
+          <li><strong>forwardRef</strong>: ده Hook من React بيسمحلك تمرر ref للمكون. في المكونات العادية، الـ ref بيوصلك للـ HTML element، بس في المكونات المخصصة، محتاج <code>forwardRef</code> عشان يشتغل</li>
+          <li><strong>ref</strong>: ده بيتم تمريره للـ input عشان الـ parent يقدر يتحكم فيه مباشرة</li>
+          <li><strong>label</strong>: لو موجود، بيظهر فوق الحقل. لو مش موجود، مش بيظهر حاجة</li>
+          <li><strong>error</strong>: لو موجود، بيغير لون الحقل لأحمر وبيظهر رسالة الخطأ تحته</li>
+          <li><strong>type</strong>: نوع الحقل (text, email, password, etc). القيمة الافتراضية text</li>
+          <li><strong>placeholder</strong>: ده نص توضيحي بيظهر جوه الحقل فاضي</li>
+        </ul>
 
         <h3>استخدام مكون Input:</h3>
         <div class="code-block">
@@ -279,8 +388,22 @@ export default Input;</code></pre>
 /&gt;</code></pre>
         </div>
 
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ أخطاء شائعة مع Input</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الخطأ</strong>: نسيان type="email" أو type="password" — النتيجة: المتصفح مش هيعمل validation صحيح</li>
+              <li><strong>الخطأ</strong>: استخدام placeholder بدل label — النتيجة: مش بيساعد في Accessibility</li>
+              <li><strong>الخطأ</strong>: نسيان رسالة الخطأ — النتيجة: المستخدم مش ه يعرف فين الغلط</li>
+              <li><strong>الحل</strong>: دايماً استخدم Label مع كل Input، واستخدم error لما يكون فيه مشكلة</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>🃏 الخطوة 4: مكون Card</h2>
-        <p>مكون Card بتأثير Glass للعروض والمنتجات:</p>
+        <p>مكون Card هو المكون اللي بيعرض المعلومات بشكل منظم وجميل. في المتجر هنستخدمه في عرض المنتجات، عروض التخفيضات، معلومات المستخدم، وغيرهم.</p>
+
+        <p>الميزة الأهم في Card بتاعتنا هي تأثير الـ Glass. ده تأثير بيخلي البطاقة شفافة شوية وتمسك الزجاج المصنفر (backdrop-blur). النتيجة: شكل حديث واحترافي جداً. خصوصاً مع الخلفية الداكنة اللي في المتجر بتاعنا.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -311,7 +434,7 @@ export default function Card({
         // النوع
         cardVariants[variant],
         // تأثير Hover
-        hover && "hover:scale-105 hover:shadow-2xl transition-all duration-300",
+        hover &amp;&amp; "hover:scale-105 hover:shadow-2xl transition-all duration-300",
         // الفئات الإضافية
         className
       )}
@@ -350,6 +473,8 @@ Card.Footer = function CardFooter({ children, className }) {
 };</code></pre>
         </div>
 
+        <p>ملاحظة مهمة: مكون Card بيلحق عليه مكونات فرعية (Header, Content, Footer). ده نمط اسمه Compound Components. بيسمحلك تنظم المحتوى جوه البطاقة بسهولة. كل مكون فرعي ليه تنسيقاته الخاصة.</p>
+
         <h3>استخدام مكون Card:</h3>
         <div class="code-block">
           <div class="code-block-header">
@@ -383,8 +508,23 @@ Card.Footer = function CardFooter({ children, className }) {
 &lt;/Card&gt;</code></pre>
         </div>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 متى نستخدم كل نوع Card؟</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>default</strong>: للبطاقات العادية في الخلفية الداكنة</li>
+              <li><strong>glass</strong>: للبطاقات اللي عايزها تبان شفافة وتحديثية</li>
+              <li><strong>solid</strong>: للبطاقات اللي محتاجة خلفية صلبة (زي النماذج)</li>
+              <li><strong>gradient</strong>: للبطاقات اللي عايزها تبان فاخرة</li>
+              <li><strong>hover={false}</strong>: استخدمه لما البطاقة تكون interactable بس ما تبيج كـ hover</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>🏷️ الخطوة 5: مكون Badge</h2>
-        <p>مكون Badge للتصنيفات والحالات:</p>
+        <p>مكون Badge هو تاق صغير بيستخدم لإظهار معلومات سريعة زي الحالة (متوفر، نفذ)، التصنيف، العدد، وغيرهم. مكون بسيط بس مهم جداً لتحسين تجربة المستخدم.</p>
+
+        <p>في المتجر هنستخدمه في أماكن كتير: badge الخصم على المنتج، حالة المخزون، تصنيف المنتج، عدد الإشعارات، وغيرهم.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -426,15 +566,15 @@ export default function Badge({
       )}
       {...props}
     &gt;
-      {dot && (
+      {dot &amp;&amp; (
         &lt;span className={cn(
           "w-1.5 h-1.5 rounded-full",
-          variant === "success" && "bg-green-400",
-          variant === "warning" && "bg-yellow-400",
-          variant === "danger" && "bg-red-400",
-          variant === "info" && "bg-blue-400",
-          variant === "primary" && "bg-indigo-400",
-          variant === "default" && "bg-white"
+          variant === "success" &amp;&amp; "bg-green-400",
+          variant === "warning" &amp;&amp; "bg-yellow-400",
+          variant === "danger" &amp;&amp; "bg-red-400",
+          variant === "info" &amp;&amp; "bg-blue-400",
+          variant === "primary" &amp;&amp; "bg-indigo-400",
+          variant === "default" &amp;&amp; "bg-white"
         )} /&gt;
       )}
       {children}
@@ -442,6 +582,8 @@ export default function Badge({
   );
 }</code></pre>
         </div>
+
+        <p>ملاحظة خفيفة: الميزة <code>dot</code> بتبين نقطة صغيرة جنب النص. مفيدة جداً لما تحب تبيّن إن المنتج جديد أو عليه عرض من غير ما تكتب كلام كتير.</p>
 
         <h3>استخدام مكون Badge:</h3>
         <div class="code-block">
@@ -466,8 +608,23 @@ export default function Badge({
 &lt;Badge variant="primary" size="lg"&gt;خصم 50%&lt;/Badge&gt;</code></pre>
         </div>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 متى نستخدم كل لون Badge؟</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>success (أخضر)</strong>: للحالة الإيجابية — متوفر، تم التوصيل، نجح</li>
+              <li><strong>danger (أحمر)</strong>: للحالة السلبية — نفذ، خطأ، مرفوض</li>
+              <li><strong>warning (أصفر)</strong>: للتحذيرات — قليل، يحتاج مراجعة</li>
+              <li><strong>info (أزرق)</strong>: للمعلومات — جديد، قادم</li>
+              <li><strong>primary (بنفسجي)</strong>: للتمييز — عرض خاص، مميز</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>🔔 الخطوة 6: مكون Toast</h2>
-        <p>مكون Toast للإشعارات:</p>
+        <p>مكون Toast هو نظام الإشعارات اللي بيظهر في أسفل الشاشة عشان يبلغ المستخدم بنتيجة الإجراء اللي عمله. مثلاً لما يضيف منتج للسلة، بيتظهر Toast "تمت الإضافة بنجاح!". أو لما يكون في خطأ، بيتظهر Toast أحمر.</p>
+
+        <p>المكون ده معقد شوية لأن فيه أجزاء كتير: Context عشان يتبث في كل مكان، Provider عشان يغطي كل التطبيق، ودالة <code>useToast</code> عشان أي مكون يقدر يستخدم الـ Toast من غير ما يمرر props.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -571,6 +728,15 @@ function Toast({ message, type = "info", onClose }) {
 }</code></pre>
         </div>
 
+        <p>خلينا نشرح الكود بالتفصيل:</p>
+        <ul>
+          <li><strong>ToastContext</strong>: ده Context من React بيسمح لأي مكون في التطبيق يوصل لدالة <code>addToast</code></li>
+          <li><strong>ToastProvider</strong>: ده المزود (Provider) اللي بيغطي التطبيق كله وبيخلي الـ Toast متاح في كل مكان</li>
+          <li><strong>useToast()</strong>: ده Hook مخصص بيسمحلك تستخدم الـ Toast من أي مكون</li>
+          <li><strong>addToast(message, type, duration)</strong>: الدالة اللي بتضيف Toast جديد. type ممكن يكون success, error, warning, info. وduration هو المدة بالميللي ثانية (3000 = 3 ثواني)</li>
+          <li><strong>setTimeout</strong>: بعد المدة المحددة، الـ Toast بيتشال تلقائياً</li>
+        </ul>
+
         <h3>استخدام Toast:</h3>
         <div class="code-block">
           <div class="code-block-header">
@@ -624,7 +790,9 @@ export default function RootLayout({ children }) {
         </div>
 
         <h2>📦 الخطوة 7: مكون Container</h2>
-        <p>مكون Container لتخطيط المحتوى:</p>
+        <p>مكون Container هو مكون بسيط بس مهم جداً. دوره إنه يحدد عرض المحتوى ويوصله بالنص عشان يبقى سهل القراءة. من غير Container، المحتوى هيملا الشاشة كلها والقراءة هتكون صعبة.</p>
+
+        <p>في التصميمات الحديثة، المحتوى عادة بيكون في عرض ثابت (زي 1200px مثلاً) والباقي فاضي. ده بيخلي المحتوى منظم وجميل. Container بتاعنا فيه 4 أنواع تناسب احتياجات مختلفة.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -656,6 +824,36 @@ export default function Container({
     &lt;/Component&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>ملاحظة مثيرة للاهتمام: المكون ده بيستخدم <code>as: Component = "div"</code>. ده بيسمحلك تغير الـ HTML element اللي بيستخدم. مثلاً ممكن تكتب <code>&lt;Container as="section"&gt;</code> عشان تستخدم section بدل div. ميزة ذكية بتساعد في SEO والهيكلة.</p>
+
+        <h2>🚨 أخطاء شائعة يجب تجنبها</h2>
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ الأخطاء اللي لازم تتجنبها</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الخطأ 1</strong>: استخدام <code>&lt;button&gt;</code> عادي بدل <code>&lt;Button&gt;</code> — النتيجة: مش هيبقى عليه التنسيقات الحلوة</li>
+              <li><strong>الخطأ 2</strong>: نسيان <code>"use client"</code> في المكونات اللي فيها تفاعل — النتيجة: هtaiba خطأ في الـ console</li>
+              <li><strong>الخطأ 3</strong>: استخدام ألوان Tailwind مباشرة بدل الـ variants — النتيجة: الكود يبقى مكرر وصعب الصيانة</li>
+              <li><strong>الخطأ 4</strong>: نسيان <code>disabled</code> على الأزرار أثناء التحميل — النتيجة: المستخدم ممكن يضغط كتير ويسبب مشاكل</li>
+              <li><strong>الخطأ 5</strong>: نسيان تمرير <code>className</code> في المكونات — النتيجة: المستخدم مش هيقدر يخصص المكون</li>
+              <li><strong>الخطأ 6</strong>: استخدام <code>useState</code> في كل مرة بدل الـ variants — النتيجة: كود مكرر وأداء أبطأ</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>✅ تمارين عملية للتدرب</h2>
+        <div class="callout callout-success">
+          <div class="callout-title">📝 جرّب اللي اتعلمتة!</div>
+          <div class="callout-content">
+            <p><strong>التمرين 1</strong>: أنشئ مكون <code>LinkButton</code> يجمع بين الـ Button وروابط Next.js. المكون ده يقبل <code>href</code> ويعمل redirect.</p>
+            <p><strong>التمرين 2</strong>: أضف نوع جديد لـ Button اسمه <code>"link"</code> بيشبه الـ ghost بس بخط تحت (underline).</p>
+            <p><strong>التمرين 3</strong>: أنشئ مكون <code>Select</code> بنفس نمط Input ( مع Label و error ). استخدم <code>&lt;select&gt;</code> العادي.</p>
+            <p><strong>التمرين 4</strong>: أضف خاصية <code>icon</code> لـ Button تسمح بتمرير أيكون قبل النص.</p>
+            <p><strong>التمرين 5</strong>: أنشئ مكون <code>Avatar</code> يعرض صورة المستخدم مع Badge صغير للحالة (online/offline).</p>
+            <p><strong>التمرين 6</strong>: عدّل مكون Badge يقبل خاصية <code>removable</code> تظهر زرار X لحذف الـ Badge.</p>
+          </div>
         </div>
 
         <h2>📋 ملخص المكونات</h2>
@@ -715,10 +913,12 @@ export default function Container({
           <li>✅ مكون Container للتخطيط</li>
         </ul>
 
+        <p>الدرس ده كان حملاً معلوماتياً بس مهم جداً. المكونات دي هي أساس كل حاجة هنبنيها في الباقي. لو حاسس إنك مش فاهم حاجة، رجع تاني للمكونات وجرّب تعدل فيها. الممارسة هي السر!</p>
+
         <div class="callout callout-success">
           <div class="callout-title">🎉 الدرس الجاي</div>
           <div class="callout-content">
-            في الدرس الجاي هنبني <strong>نظام التخطيط (Layout System)</strong> - Header و Footer و AdminLayout.
+            في الدرس الجاي هنبني <strong>نظام التخطيط (Layout System)</strong> - Header و Footer و AdminLayout. هنستخدم المكونات اللي ابنيناها النهارده في بناء هيكل الصفحة كله.
           </div>
         </div>
 

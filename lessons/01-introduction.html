@@ -34,7 +34,7 @@
         </div>
         <h1>مقدمة عن المشروع والتقنيات</h1>
         <div class="meta">
-          <span>⏱️ 15 دقيقة</span>
+          <span>⏱️ 20 دقيقة</span>
           <span>📖 نظري</span>
           <span>الوحدة 1: الأساسيات</span>
         </div>
@@ -44,29 +44,67 @@
       <div class="lesson-body">
 
         <h2>🎯 أهداف الدرس</h2>
+        <p>في الدرس ده هنتعلم:</p>
         <ul>
-          <li>فهم المشروع اللي هنبنيه</li>
-          <li>التعرف على التقنيات المستخدمة</li>
-          <li>معرفة المميزات اللي هنضيفها</li>
+          <li>إيه هو المشروع اللي هنبنيه وهنشوف المميزات اللي هنضيفها</li>
+          <li>ليه اختارنا التقنيات دي بالذات (Next.js, Clerk, Supabase, Tailwind)</li>
+          <li>إزاي كل التقنيات دي بتشتغل مع بعض</li>
+          <li>هيكل المشروع الكامل وإيه وظيفة كل مجلد</li>
+          <li>مسار التعلم الكامل من البداية للنهاية</li>
         </ul>
 
-        <h2>📦 المشروع ده إيه؟</h2>
-        <p>ده <strong>متجر إلكتروني كامل</strong> (E-Commerce) بنience من الصفر. المشروع بيشمل كل حاجة محتاجها متجر حقيقي:</p>
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ملاحظة للمبتدئين</div>
+          <div class="callout-content">
+            لو أنت لسه مبتدئ في البرمجة، لا تقلق! الكورس ده مصمم يبدأ من الصفر. كل مصطلح جديد هنشرحه بالتفصيل. المهم إنك تقرأ كل درس بتركيز وتجرب الكود بنفسك.
+          </div>
+        </div>
+
+        <h2>📦 المشروع ده إيه بالظبط؟</h2>
+        <p>ده <strong>متجر إلكتروني كامل</strong> (E-Commerce Template) بنience من الصفر. تقدر تتخيله زي Amazon أو Noon بس بحجم أصغر ومناسب لمشاريعك.</p>
         
+        <p>المشروع ده مش مجرد موقع عادي - ده <strong>قالب احترافي</strong> تقدر:</p>
         <ul>
-          <li>🏠 <strong>صفحة رئيسية</strong> جميلة مع Hero Section و Featured Products</li>
-          <li>🛍️ <strong>صفحة المنتجات</strong> مع بحث وفلتر وتصفح</li>
-          <li>📦 <strong>صفحة تفاصيل المنتج</strong> بالصور والمراجعات</li>
-          <li>🛒 <strong>سلة مشتريات</strong> كاملة</li>
-          <li>❤️ <strong>نظام مفضلة</strong> (Wishlist)</li>
-          <li>🔐 <strong>نظام تسجيل دخول</strong> احترافي</li>
-          <li>💳 <strong>صفحة Checkout</strong></li>
-          <li>📋 <strong>نظام طلبات</strong></li>
-          <li>📊 <strong>Admin Dashboard</strong> كامل</li>
+          <li>تستخدمه كأساس لمتجرك الإلكتروني</li>
+          <li>تبيعه كقالب جاهز على منصات زي ThemeForest</li>
+          <li>تتعلم منه إزاي تبني مشاريع حقيقية</li>
+          <li>تضيفه لـ portfolio الخاص بيك</li>
         </ul>
 
-        <h2>🛠️ التقنيات المستخدمة</h2>
+        <h3>🛍️ المميزات اللي هنضيفها:</h3>
         
+        <h4>1. صفحات المتجر (Shop Pages)</h4>
+        <ul>
+          <li>🏠 <strong>صفحة رئيسية</strong> - فيها Hero Section كبير وقسم المنتجات المميزة وأقسام المتجر</li>
+          <li>🛍️ <strong>صفحة المنتجات</strong> - عرض كل المنتجات مع إمكانية البحث والفلتر حسب التصنيف والسعر</li>
+          <li>📦 <strong>صفحة تفاصيل المنتج</strong> - صور عالية الجودة ووصف تفصيلي وتقييمات العملاء</li>
+        </ul>
+
+        <h4>2. نظام المشتريات (Shopping System)</h4>
+        <ul>
+          <li>🛒 <strong>سلة مشتريات</strong> - إضافة المنتجات وحذفها وتعديل الكمية مع حساب تلقائي للإجمالي</li>
+          <li>❤️ <strong>نظام مفضلة</strong> (Wishlist) - حفظ المنتجات اللي عجبتك للشراء لاحقاً</li>
+          <li>💳 <strong>صفحة Checkout</strong> - إدخال بيانات الشحن والدفع</li>
+        </ul>
+
+        <h4>3. نظام المستخدمين (User System)</h4>
+        <ul>
+          <li>🔐 <strong>تسجيل دخول وتسجيل جديد</strong> - نظام احترافي مع Clerk</li>
+          <li>👤 <strong>صفحة الملف الشخصي</strong> - عرض وتعديل بيانات المستخدم</li>
+          <li>📋 <strong>سجل الطلبات</strong> - عرض كل الطلبات السابقة مع تفاصيلها وحالتها</li>
+        </ul>
+
+        <h4>4. لوحة تحكم الإدارة (Admin Dashboard)</h4>
+        <ul>
+          <li>📊 <strong>لوحة تحكم</strong> - إحصائيات المبيعات والمنتجات والطلبات</li>
+          <li>📦 <strong>إدارة المنتجات</strong> - إضافة وتعديل وحذف المنتجات مع رفع الصور</li>
+          <li>📋 <strong>إدارة الطلبات</strong> - عرض الطلبات وتحديث حالتها (قيد المعالجة، تم الشحن، تم التوصيل)</li>
+        </ul>
+
+        <h2>🛠️ التقنيات المستخدمة وليه اختارناها</h2>
+        
+        <p>ممكن تتساءل: ليه اختارنا تقنيات معينة من بين مئات الخيارات؟ كل اختيار ليه سبب:</p>
+
         <div class="table-wrapper">
           <table>
             <thead>
@@ -74,141 +112,278 @@
                 <th>التقنية</th>
                 <th>الإصدار</th>
                 <th>الوظيفة</th>
+                <th>ليه اختارناها؟</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td><strong>Next.js</strong></td>
-                <td>16.2.11</td>
-                <td> إطار عمل React مع App Router</td>
+                <td>16</td>
+                <td>إطار عمل React</td>
+                <td>أسرع وأحدث إطار عمل. يدعم Server Components و App Router</td>
               </tr>
               <tr>
                 <td><strong>React</strong></td>
-                <td>19.2.4</td>
-                <td>مكتبة بناء واجهات المستخدم</td>
+                <td>19</td>
+                <td>بناء واجهات المستخدم</td>
+                <td>أشهر مكتبة في العالم. مطلوبة في كل وظائف البرمجة</td>
               </tr>
               <tr>
                 <td><strong>Tailwind CSS</strong></td>
                 <td>4</td>
-                <td>إطار عمل CSS للتصميم</td>
+                <td>تصميم الواجهات</td>
+                <td>أسرع طريقة لتصميم مواقع جميلة بدون CSS كتير</td>
               </tr>
               <tr>
                 <td><strong>Clerk</strong></td>
-                <td>7.5.22</td>
-                <td>نظام المصادقة والمستخدمين</td>
+                <td>7.5</td>
+                <td>المصادقة والمستخدمين</td>
+                <td>أسهل نظام تسجيل دخول. جاهز في دقائق بدون كود معقد</td>
               </tr>
               <tr>
                 <td><strong>Supabase</strong></td>
-                <td>2.110.8</td>
-                <td>قاعدة البيانات والتخزين السحابي</td>
+                <td>2.110</td>
+                <td>قاعدة البيانات</td>
+                <td>بديل مجاني لـ Firebase. سهل وسريع ومجاني</td>
               </tr>
               <tr>
                 <td><strong>Framer Motion</strong></td>
-                <td>12.42.2</td>
-                <td>حركات وتأثيرات احترافية</td>
+                <td>12.42</td>
+                <td>حركات وتأثيرات</td>
+                <td>أسهل مكتبة للحركات. بتخلي الموقع يتحرك بسلاسة</td>
               </tr>
               <tr>
                 <td><strong>Lucide React</strong></td>
-                <td>1.25.0</td>
-                <td>مكتبة أيقونات جميلة</td>
+                <td>1.25</td>
+                <td>أيقونات</td>
+                <td>أيقونات جميلة وخفيفة ومتوافقة مع Tailwind</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h2>✨ مميزات المشروع</h2>
-
-        <h3>🎨 تصميم Glassmorphism</h3>
-        <p>التصميم بيعتمد على تأثير <strong>Glassmorphism</strong> (الزجاج) اللي بيعطي شكل حديث وجميل للموقع. التصميم بيشمل:</p>
+        <h3>ليه Next.js وليس React العادي؟</h3>
+        <p>React هو مجرد مكتبة لبناء واجهات المستخدم. لكن Next.js هو <strong>إطار عمل كامل</strong> بيوفرلك كل حاجة محتاجها:</p>
         <ul>
-          <li>خلفيات شفافة مع تأثير blur</li>
-          <li>ظلال ناعمة ومتدرجة</li>
-          <li>ألوان Indigo/Purple متناسقة</li>
-          <li>حركات سلسة مع Framer Motion</li>
+          <li>✅ <strong>Server Components</strong> - الصفحة بتتحمل على السيرفر وبعدين بتتبعت للمتصفح. ده بيخلي الموقع أسرع بكتير</li>
+          <li>✅ <strong>App Router</strong> - نظام توجيه حديث و أسهل من نظام routing القديم</li>
+          <li>✅ <strong>File-based Routing</strong> - كل ملف في مجلد app يمثل صفحة. مفيش حاجة اسمها routes file معقدة</li>
+          <li>✅ <strong>API Routes</strong> - تقدر تعمل backend endpoints جوه المشروع نفسه</li>
+          <li>✅ <strong>Image Optimization</strong> - تحسين تلقائي للصور</li>
+          <li>✅ <strong>SEO ممتاز</strong> - محركات البحث بتحب المواقع المبنية بـ Next.js</li>
         </ul>
 
-        <h3>📱 Responsive Design</h3>
-        <p>الموقع بيشتغل على كل الأجهزة:</p>
+        <h3>ليه Clerk وليس Firebase Auth؟</h3>
+        <p>Clerk هو نظام مصادقة حديث مصمم خصيصاً لـ React و Next.js:</p>
         <ul>
-          <li>موبايل 📱</li>
-          <li>تابلت 📱</li>
-          <li>لابتوب 💻</li>
-          <li>شاشات كبيرة 🖥️</li>
+          <li>✅ واجهة تسجيل دخول جاهزة وجميلة - بدون ما تكتب CSS</li>
+          <li>✅ دعم تسجيل بالبريد أو Google أو GitHub</li>
+          <li>✅ حماية المسارات بسطر واحد من الكود</li>
+          <li>✅ لوحة تحكم مجانية لإدارة المستخدمين</li>
         </ul>
 
-        <h3>⚡ أداء عالي</h3>
+        <h3>ليه Supabase وليس Firebase؟</h3>
+        <p>Supabase هو بديل مفتوح المصدر لـ Firebase:</p>
         <ul>
-          <li>Server Components لتحميل أسرع</li>
-          <li>Image Optimization مع Next.js</li>
-          <li>Code Splitting تلقائي</li>
-          <li>Static Generation للصفحات الثابتة</li>
+          <li>✅ <strong>PostgreSQL</strong> - قاعدة بيانات قوية وموثوقة (نفس قاعدة بيانات GitHub و Instagram)</li>
+          <li>✅ <strong>مجاني</strong> - حتى للمشاريع الكبيرة</li>
+          <li>✅ <strong>SQL مباشر</strong> - تقدر تكتب استعلامات مباشرة</li>
+          <li>✅ <strong>تخزين سحابي</strong> - لرفع الصور والملفات</li>
         </ul>
 
-        <h2>📁 هيكل المشروع</h2>
+        <h2>🔄 إزاي التقنيات دي بتشتغل مع بعض؟</h2>
+        
+        <p>تخيل إنك بتبني بيت:</p>
+        <ul>
+          <li>🏗️ <strong>Next.js</strong> = الهيكل الرئيسي للبيت (الجدران والسقف)</li>
+          <li>🎨 <strong>Tailwind CSS</strong> = الدهان والديكور (الشكل الجميل)</li>
+          <li>🔐 <strong>Clerk</strong> = الباب والقفل (نظام الدخول والخروج)</li>
+          <li>🗄️ <strong>Supabase</strong> = المخزن (مكان حفظ كل حاجة)</li>
+          <li>✨ <strong>Framer Motion</strong> = الحركات والتأثيرات (اللي بيخلي البيت حي)</li>
+        </ul>
 
-        <div class="file-tree">
-          <div class="file-tree-item folder">📁 market/</div>
-          <div class="file-tree-item file">├── 📁 app/                    # صفحات المشروع</div>
-          <div class="file-tree-item file">│   ├── 📁 (shop)/             # صفحات المتجر</div>
-          <div class="file-tree-item file">│   ├── 📁 (admin)/            # صفحات Dashboard</div>
-          <div class="file-tree-item file">│   ├── 📁 (auth)/             # صفحات Login/Register</div>
-          <div class="file-tree-item file">│   └── 📄 layout.js           # التخطيط الرئيسي</div>
-          <div class="file-tree-item file">├── 📁 components/             # المكونات</div>
-          <div class="file-tree-item file">│   ├── 📁 ui/                 # مكونات أساسية</div>
-          <div class="file-tree-item file">│   ├── 📁 layout/             # Header, Footer</div>
-          <div class="file-tree-item file">│   └── 📁 products/           # مكونات المنتجات</div>
-          <div class="file-tree-item file">├── 📁 context/                # إدارة الحالة</div>
-          <div class="file-tree-item file">├── 📁 services/               # خدمات قاعدة البيانات</div>
-          <div class="file-tree-item file">├── 📁 utils/                  # دوال مساعدة</div>
-          <div class="file-tree-item file">└── 📄 middleware.js           # حماية المسارات</div>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">كيفية تدفق البيانات</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>المستخدم يفتح الصفحة
+    ↓
+Next.js يتحمل الصفحة على السيرفر
+    ↓
+يجلب البيانات من Supabase
+    ↓
+يعرض الصفحة بتصميم Tailwind CSS
+    ↓
+يتحقق Clerk هل المستخدم مسجل دخول
+    ↓
+يعرض المحتوى المناسب</code></pre>
         </div>
 
-        <h2>🔄 مسار التعلم</h2>
-        
+        <h2>✨ مميزات المشروع التفصيلية</h2>
+
+        <h3>🎨 1. تصميم Glassmorphism</h3>
+        <p>التصميم بيعتمد على تأثير <strong>Glassmorphism</strong> (تأثير الزجاج) اللي هو أحدث ترند في تصميم المواقع. التصميم بيشمل:</p>
+        <ul>
+          <li><strong>خلفيات شفافة</strong> مع تأثير blur (ضبابي) - زي الزجاج المصنفر</li>
+          <li><strong>ظلال ناعمة ومتدرجة</strong> - بتعطي عمق وجمالية للموقع</li>
+          <li><strong>ألوان Indigo/Purple</strong> متناسقة - ألوان عصرية واحترافية</li>
+          <li><strong>حركات سلسة</strong> مع Framer Motion - لما تضغط على زر أو تفتح صفحة، الحركة بتبقى سلسة وجميلة</li>
+        </ul>
+
+        <h3>📱 2. Responsive Design (تصميم متجاوب)</h3>
+        <p>الموقع بيشتغل بشكل مثالي على <strong>كل الأجهزة</strong>:</p>
+        <ul>
+          <li>📱 <strong>موبايل</strong> - تصميم خاص بالموبايل مع قوائم جانبية</li>
+          <li>📱 <strong>تابلت</strong> - تصميم متوسط بين الموبايل والحاسوب</li>
+          <li>💻 <strong>لابتوب</strong> - التصميم الكامل</li>
+          <li>🖥️ <strong>شاشات كبيرة</strong> - تصميم متوسع للشاشات العريضة</li>
+        </ul>
+
         <div class="callout callout-info">
-          <div class="callout-title">💡 نصيحة</div>
+          <div class="callout-title">💡 ليه التصميم المتجاوب مهم؟</div>
           <div class="callout-content">
-            الكورس مصمم يتم بالترتيب. كل درس بيبني على اللي قبله. خلّيك تكمل كل درس قبل ما تنتقل للتالي.
+            أكتر من 60% من زيارات المواقع بتيجي من الموبايل. لو موقعك مش شغال كويس على الموبايل، هتخسر أكتر من نص الزوار!
           </div>
         </div>
 
+        <h3>⚡ 3. أداء عالي</h3>
+        <ul>
+          <li><strong>Server Components</strong> - الصفحة بتتحمل على السيرفر أولاً، ده بيخلي التحميل أسرع بكتير</li>
+          <li><strong>Image Optimization</strong> - الصور بتتضغط وتحمّل بالحجم المناسب تلقائياً</li>
+          <li><strong>Code Splitting</strong> - الكود بينقسم لأجزاء صغيرة. كل صفحة بتتحمل بس الكود اللي محتاجاه</li>
+          <li><strong>Static Generation</strong> - الصفحات الثابتة بتتبنى مرة واحدة وبتتعرض بسرعة كبيرة</li>
+        </ul>
+
+        <h3>🔐 4. أمان وحماية</h3>
+        <ul>
+          <li>حماية صفحات Admin - بس المدير يقدر يدخل</li>
+          <li>حماية بيانات المستخدمين - مع Clerk و encryption</li>
+          <li>التحقق من صحة البيانات - على السيرفر والعميل</li>
+          <li>حماية API endpoints - بس المستخدمين المسجلين يقدروا يستخدموا</li>
+        </ul>
+
+        <h2>📁 هيكل المشروع الكامل</h2>
+        <p>هيكل المشروع مهم جداً عشان تعرف كل حاجة فين. خلينا نشوف التفاصيل:</p>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 market/</div>
+          <div class="file-tree-item file">├── 📁 app/                    # صفحات المشروع (App Router)</div>
+          <div class="file-tree-item file">│   ├── 📁 (shop)/             # صفحات المتجر للزوار</div>
+          <div class="file-tree-item file">│   │   ├── 📁 products/       # صفحة المنتجات وتفاصيلها</div>
+          <div class="file-tree-item file">│   │   ├── 📁 cart/           # صفحة السلة</div>
+          <div class="file-tree-item file">│   │   ├── 📁 checkout/       # صفحة الدفع</div>
+          <div class="file-tree-item file">│   │   ├── 📁 orders/         # سجل الطلبات</div>
+          <div class="file-tree-item file">│   │   └── 📁 wishlist/       # المفضلة</div>
+          <div class="file-tree-item file">│   ├── 📁 (admin)/            # لوحة تحكم المدير</div>
+          <div class="file-tree-item file">│   │   └── 📁 dashboard/      # الإحصائيات والإدارة</div>
+          <div class="file-tree-item file">│   ├── 📁 (auth)/             # صفحات تسجيل الدخول</div>
+          <div class="file-tree-item file">│   ├── 📄 layout.js           # التخطيط الرئيسي لكل الصفحات</div>
+          <div class="file-tree-item file">│   ├── 📄 page.js             # الصفحة الرئيسية</div>
+          <div class="file-tree-item file">│   ├── 📄 globals.css         # الأنماط العامة</div>
+          <div class="file-tree-item file">│   └── 📄 not-found.js        # صفحة الخطأ 404</div>
+          <div class="file-tree-item file">├── 📁 components/             # المكونات القابلة لإعادة الاستخدام</div>
+          <div class="file-tree-item file">│   ├── 📁 ui/                 # مكونات أساسية (Button, Input, Card)</div>
+          <div class="file-tree-item file">│   ├── 📁 layout/             # Header و Footer</div>
+          <div class="file-tree-item file">│   ├── 📁 products/           # مكونات عرض المنتجات</div>
+          <div class="file-tree-item file">│   └── 📁 cart/               # مكونات السلة</div>
+          <div class="file-tree-item file">├── 📁 context/                # إدارة الحالة (Cart, Wishlist)</div>
+          <div class="file-tree-item file">├── 📁 services/               # خدمات قاعدة البيانات</div>
+          <div class="file-tree-item file">├── 📁 lib/                    # مكتبات مساعدة (Supabase client)</div>
+          <div class="file-tree-item file">├── 📁 utils/                  # دوال مساعدة وألوان ثابتة</div>
+          <div class="file-tree-item file">├── 📁 public/                 # الصور والأيقونات الثابتة</div>
+          <div class="file-tree-item file">├── 📄 middleware.js           # حماية المسارات (Auth)</div>
+          <div class="file-tree-item file">├── 📄 next.config.mjs         # إعدادات Next.js</div>
+          <div class="file-tree-item file">├── 📄 package.json            # حزم المشروع</div>
+          <div class="file-tree-item file">├── 📄 .env.local              # المفاتيح السرية (لا ترفعها!)</div>
+          <div class="file-tree-item file">└── 📄 .gitignore              # ملفات تجاهل Git</div>
+        </div>
+
+        <h3>شرح تفصيلي لكل مجلد:</h3>
+
+        <h4>📁 مجلد app/ - صفحات المشروع</h4>
+        <p>ده أهم مجلد في المشروع. كل ملف جواه بيمثل صفحة في الموقع. الأسماء بين الأقواس زي <code>(shop)</code> و <code>(admin)</code> اسمها "Route Groups" - وظيفتها تنظيم الصفحات بدون ما تأثر على الرابط.</p>
+        <ul>
+          <li><code>(shop)/</code> - الصفحات اللي الزوار العاديين بيسيبوها (المنتجات، السلة، Checkout)</li>
+          <li><code>(admin)/</code> - صفحات لوحة تحكم المدير بس</li>
+          <li><code>(auth)/</code> - صفحات تسجيل الدخول والتسجيل الجديد</li>
+        </ul>
+
+        <h4>📁 مجلد components/ - المكونات</h4>
+        <p>المكونات هي الأجزاء الصغيرة اللي بتتكرر في الموقع. زي مثلاً زرار "أضف للسلة" - ده مكون واحد بيتعمل فيه مرة واحدة وبيتكرر في كل صفحة منتج.</p>
+
+        <h4>📁 مجلد context/ - إدارة الحالة</h4>
+        <p>Context هو نظام لحفظ البيانات اللي بتتشارك بين صفحات كتير. مثلاً بيانات السلة (المنتجات اللي اضفتها) محتاجة تظهر في الصفحة الرئيسية وصفحة السلة وصفحة Checkout. Context بيخلي البيانات دي متاحة في كل مكان.</p>
+
+        <h4>📁 مجلد services/ - خدمات قاعدة البيانات</h4>
+        <p>الخدمات دي بتشتغل كـ "وسيط" بين المشروع وقاعدة البيانات. بدل ما تكتب SQL في كل مكان، بكتب الدوال مرة واحدة في Services وبتستخدمها في أي مكان.</p>
+
+        <h4>📄 ملف middleware.js - حماية المسارات</h4>
+        <p>ده ملف مهم جداً. بيشتغل <strong>قبل</strong> ما أي صفحة تتحمل. وظيفته يتحقق: هل المستخدم مسجل دخول؟ هل عنده صلاحية يدخل الصفحة دي؟ لو لأ، بيرجعه لصفحة تسجيل الدخول.</p>
+
+        <h2>🔄 مسار التعلم الكامل</h2>
+        
+        <p>الكورس مقسم لـ 7 وحدات، كل وحدة بتبني على اللي قبلها:</p>
+
         <ol class="step-list">
           <li>
-            <strong>الأساسيات</strong> - إعداد البيئة وفهم Next.js
+            <strong>الأساسيات (4 دروس)</strong>
+            <br>هنتعلم إزاي نجهز بيئة التطوير ونفهم Next.js و Tailwind CSS
+            <br><em>النتيجة: مشروع فاضي شغال على جهازك</em>
           </li>
           <li>
-            <strong>قاعدة البيانات</strong> - Supabase و Clerk
+            <strong>قاعدة البيانات والمصادقة (3 دروس)</strong>
+            <br>هنتعلم إزاي نعمل قاعدة بيانات ونضيف تسجيل دخول
+            <br><em>النتيجة: المستخدمين يقدروا يسجلوا دخول ويضيفوا بيانات</em>
           </li>
           <li>
-            <strong>واجهة المستخدم</strong> - بناء المكونات والصفحات
+            <strong>واجهة المستخدم (5 دروس)</strong>
+            <br>هنبني كل الصفحات والتصميم الأساسي
+            <br><em>النتيجة: موقع شكله جميل بس بدون داتا</em>
           </li>
           <li>
-            <strong>المميزات</strong> - السلة والطلبات والمفضلة
+            <strong>المميزات الأساسية (4 دروس)</strong>
+            <br>هنشغل السلة والطلبات والمفضلة
+            <br><em>النتيجة: المتجر شغال بالكامل</em>
           </li>
           <li>
-            <strong>Admin</strong> - لوحة التحكم
+            <strong>Admin Dashboard (3 دروس)</strong>
+            <br>هنبني لوحة تحكم المدير
+            <br><em>النتيجة: تقدر تدير المتجر من لوحة تحكم</em>
           </li>
           <li>
-            <strong>التحسين</strong> - الأداء والـ SEO
+            <strong>التحسينات (3 دروس)</strong>
+            <br>هنشتغل على الأداء والـ SEO ومعالجة الأخطاء
+            <br><em>النتيجة: موقع سريع ومتوافق مع محركات البحث</em>
           </li>
           <li>
-            <strong>النشر</strong> - رفع المشروع وبيعه
+            <strong>النشر والبيع (3 دروس)</strong>
+            <br>هنشغل الموقع على الإنترنت ونتعلم إزاي نبيع القالب
+            <br><em>النتيجة: موقع شغال على الإنترنت وقلّك جاهز للبيع</em>
           </li>
         </ol>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ نصيحة مهمة جداً</div>
+          <div class="callout-content">
+            <strong>لا ت SKIP أي درس!</strong> الكورس مصمم يتم بالترتيب. كل درس بيبني على اللي قبله. لو سبت درس، مش هتفهم اللي بعده. خلّيك تكمل كل درس وتجرب الكود قبل ما تنتقل للتالي.
+          </div>
+        </div>
 
         <h2>📝 ملخص الدرس</h2>
         <p>في الدرس ده اتعرفنا على:</p>
         <ul>
-          <li>✅ المشروع اللي هنبنيه (متجر إلكتروني كامل)</li>
-          <li>✅ التقنيات المستخدمة (Next.js, Clerk, Supabase, Tailwind)</li>
-          <li>✅ هيكل المشروع</li>
-          <li>✅ مسار التعلم</li>
+          <li>✅ <strong>المشروع</strong> - متجر إلكتروني كامل (Template) تقدر تستخدمه أو تبيعه</li>
+          <li>✅ <strong>التقنيات</strong> - Next.js 16, React 19, Tailwind CSS 4, Clerk, Supabase, Framer Motion</li>
+          <li>✅ <strong>المميزات</strong> - صفحة رئيسية، منتجات، سلة، طلبات، مفضلة، Admin Dashboard</li>
+          <li>✅ <strong>هيكل المشروع</strong> - app, components, context, services, lib, utils</li>
+          <li>✅ <strong>مسار التعلم</strong> - 7 وحدات من الأساسيات للنشر</li>
         </ul>
 
         <div class="callout callout-success">
           <div class="callout-title">🎉 الدرس الجاي</div>
           <div class="callout-content">
-            في الدرس الجاي هنعمل <strong>إعداد بيئة التطوير</strong> - هنثبّت كل الأدوات ونجهز المشروع.
+            في الدرس الجاي هنعمل <strong>إعداد بيئة التطوير</strong> - هنثبّت Node.js و VS Code ونعمل مشروع Next.js جديد ونشغله على جهازك. جهّز جهازك وخليك جاهز!
           </div>
         </div>
 

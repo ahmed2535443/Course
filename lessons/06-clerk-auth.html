@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -44,26 +44,67 @@
       <div class="lesson-body">
 
         <h2>🎯 أهداف الدرس</h2>
+        <p>أهلاً بيك في الدرس السادس! في الدرس ده هنتعلم إزاي نضيف نظام تسجيل دخول للمتجر. أي متجر إلكتروني محتاج نظام حسابات عشان المستخدمين يقدروا يشتروا ويتتبعوا طلباتهم.</p>
+        <p>نظام المصادقة (Authentication) هو أساس أي مشروع إلكتروني. من غيره، مش هتعرف مين المستخدم، ومش هتقدر تحفظ طلباته أو تقدمه مميزات مخصصة.</p>
         <ul>
           <li>إنشاء مشروع Clerk جديد</li>
           <li>تثبيت Clerk في Next.js</li>
           <li>إضافة مكونات SignIn و SignUp</li>
           <li>استخدام useAuth hook</li>
           <li>إضافة UserButton للمستخدمين</li>
+          <li>حماية الصفحات</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه Clerk؟</div>
+          <div class="callout-content">
+            Clerk هو أسهل طريقة لإضافة نظام مصادقة في أي مشروع. بيوفر واجهات جاهزة وAPI سهلة. كمان فيه خطة مجانية تكفي لـ 10,000 مستخدم - يعني كافية للمشاريع الصغيرة والمتوسطة. لو كنت هتبني نظام تسجيل دخول من الصفر، هتاخد أسابيع. Clerk بيوفره عليك في دقائق!
+          </div>
+        </div>
+
         <h2>🔐什么是 Clerk؟</h2>
-        <p><strong>Clerk</strong> هو خدمة للمصادقة (Authentication) بتقدم واجهات جاهزة و API سهلة. بتوفر تسجيل الدخول والخروج وإدارة المستخدمين بسهولة.</p>
+        <p><strong>Clerk</strong> هو خدمة للمصادقة (Authentication) بتقدم واجهات جاهزة و API سهلة. بتوفر تسجيل الدخول والخروج وإدارة المستخدمين بسهولة. يعني بدل ما تبني نظام تسجيل دخول من الصفر، بتستخدم Clerk وخلال دقائق عندك نظام كامل!</p>
 
         <h3>مميزات Clerk:</h3>
         <ul>
-          <li><strong>واجهات جاهزة</strong> - مكونات UI جاهزة للتسجيل</li>
-          <li><strong>دعم متعدد</strong> - Email, Password, Social Login</li>
+          <li><strong>واجهات جاهزة</strong> - مكونات UI جاهزة للتسجيل (beautiful و responsive)</li>
+          <li><strong>دعم متعدد</strong> - Email, Password, Social Login (Google, GitHub)</li>
           <li><strong>Middleware</strong> - حماية المسارات بسهولة</li>
-          <li><strong>User Management</strong> - إدارة المستخدمين</li>
-          <li><strong>Webhooks</strong> - تحديثات مباشرة</li>
-          <li><strong>مجاني</strong> - خطة مجانية لـ 10,000 مستخدم</li>
+          <li><strong>User Management</strong> - إدارة المستخدمين من Dashboard</li>
+          <li><strong>Webhooks</strong> - تحديثات مباشرة لما حد يسجّل دخول</li>
+          <li>مجاني - خطة مجانية لـ 10,000 مستخدم نشط شهرياً</li>
+          <li><strong>أمان عالي</strong> - بيتكلم مع أحدث معايير الأمان</li>
         </ul>
+
+        <h3>الفرق بين Clerk وأدوات تانية</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الأداة</th>
+                <th>المميزات</th>
+                <th>العيب</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Clerk</strong></td>
+                <td>واجهات جاهزة، سهل جداً</td>
+                <td>محدود في الخطة المجانية</td>
+              </tr>
+              <tr>
+                <td><strong>NextAuth.js</strong></td>
+                <td>مجاني و مفتوح المصدر</td>
+                <td>محتاج إعداد أكتر</td>
+              </tr>
+              <tr>
+                <td><strong>Firebase Auth</strong></td>
+                <td>مجاني و مدعوم من Google</td>
+                <td>معقد شوية للمبتدئين</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <h2>🚀 الخطوة 1: إنشاء مشروع Clerk</h2>
 
@@ -84,13 +125,13 @@
             </ul>
           </li>
           <li>اختار طرق تسجيل الدخول (مثلاً: Email, Google)</li>
-          <li>اض唾 "Create application"</li>
+          <li>اضغط "Create application"</li>
         </ol>
 
         <div class="callout callout-info">
           <div class="callout-title">💡 نصيحة</div>
           <div class="callout-content">
-            بعد الإنشاء، هتلاقي API keys في Dashboard → API Keys. محتاجين <strong>Publishable Key</strong> و <strong>Secret Key</strong>.
+            بعد الإنشاء، هتلاقي API keys في Dashboard → API Keys. محتاجين <strong>Publishable Key</strong> و <strong>Secret Key</strong>. احتفظ بيهم في مكان آمن!
           </div>
         </div>
 
@@ -125,7 +166,7 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/</code></pre>
         </div>
 
         <h3>2.3 إضافة ClerkProvider</h3>
-        <p>محتاجين نلّف التطبيق بـ <code>ClerkProvider</code>:</p>
+        <p>محتاجين نلّف التطبيق بـ <code>ClerkProvider</code>. ده بيخلي كل المكونات تقدر تستخدم Clerk:</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -151,6 +192,13 @@ export default function RootLayout({ children }) {
     &lt;/ClerkProvider&gt;
   );
 }</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ مهم</div>
+          <div class="callout-content">
+            لازم <code>ClerkProvider</code> يلف كل التطبيق (يكون around الـ html). لو حطيته في مكان غلط، بعض الصفحات مش هتشتغل صح. كمان تأكد إنك ما نسيتش تضيف الـ import في الأول.
+          </div>
         </div>
 
         <h2>📄 الخطوة 3: إضافة صفحات تسجيل الدخول</h2>
@@ -204,7 +252,7 @@ export default function SignUpPage() {
         <div class="callout callout-info">
           <div class="callout-title">💡 شرح [[...sign-in]]</div>
           <div class="callout-content">
-            الأقواس المزدوجة <code>[[...]]</code> بتعني optional catch-all route. يعني الصفحة هتشتغل على <code>/sign-in</code> و كمان <code>/sign-in/sso-callback</code> وغيرها.
+            الأقواس المزدوجة <code>[[...]]</code> بتعني optional catch-all route. يعني الصفحة هتشتغل على <code>/sign-in</code> و كمان <code>/sign-in/sso-callback</code> وغيرها. Clerk محتاج الـ route يبقى كده عشان يشتغل صح مع كل حالات تسجيل الدخول (زي السوشيال لوجن).
           </div>
         </div>
 
@@ -224,7 +272,7 @@ export default function SignUpPage() {
         </div>
 
         <h2>🧭 الخطوة 4: إضافة UserButton</h2>
-        <p>UserButton هو مكون جاهز بيعرض صورة المستخدم ويوفر قائمة بخيارات الحساب.</p>
+        <p>UserButton هو مكون جاهز بيعرض صورة المستخدم ويوفر قائمة بخيارات الحساب (الملف الشخصي، تسجيل الخروج، إلخ). ده المكون اللي بيظهر في أعلى الصفحة لما المستخدم يسجّل دخول.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -271,8 +319,10 @@ export default function Header() {
 }</code></pre>
         </div>
 
+        <p>لاحظ إننا استخدمنا <code>SignedIn</code> و <code>SignedOut</code>. أول واحد بيظهر بس لما المستخدم يكون مسجل دخول، والتاني بيظهر بس لما ما يكونش مسجل. ده بيخلي تجربة المستخدم أسهل.</p>
+
         <h2>🎣 الخطوة 5: استخدام useAuth hook</h2>
-        <p>Hook الـ <code>useAuth</code> بيديك معلومات عن حالة المستخدم:</p>
+        <p>Hook الـ <code>useAuth</code> بيديك معلومات عن حالة المستخدم الحالي. ممكن تعرف هو مسجل دخول ولا لأ، وممكن تعرف معلومات عن حسابه.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -377,6 +427,57 @@ export default function ProtectedPage() {
 }</code></pre>
         </div>
 
+        <h3>6.2 حماية صفحات كاملة مع Middleware</h3>
+        <p>لو عايز تحمي صفحة كاملة (يعني ما يدخلهاش غير اللي مسجل دخول)، ممكن تستخدم Middleware:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">middleware.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+
+// تعريف المسارات المحمية
+const protectedPaths = createRouteMatcher([
+  '/dashboard(.*)',
+  '/profile(.*)',
+  '/orders(.*)',
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  // إذا كان المسار محمي، تحقق من تسجيل الدخول
+  if (protectedPaths(req)) {
+    await auth.protect();
+  }
+});
+
+export const config = {
+  matcher: [
+    '/((?!_next|[^?]*\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+  ],
+};</code></pre>
+        </div>
+
+        <h2>🔍 استكشاف الأخطاء</h2>
+
+        <h3>مشكلة: ClerkProvider مش شغال</h3>
+        <p>لو ظهرت أخطاء تتعلق بـ Clerk:</p>
+        <ul>
+          <li>تأكد إن ClerkProvider يلف كل التطبيق (حول html و body)</li>
+          <li>تأكد إن المفاتيح في .env.local صحيحة</li>
+          <li>أعد تشغيل خادم التطوير بعد تعديل .env.local</li>
+          <li>تأكد إنك ما نسيتش تضيف Clerk في package.json</li>
+        </ul>
+
+        <h3>مشكلة: صفحة تسجيل الدخول فاضية</h3>
+        <ul>
+          <li>تأكد إنك حطيت ملف page.js في المسار الصح</li>
+          <li>تأكد إن المسار فيه [[...sign-in]] بالظبط</li>
+          <li>افتح Console في المتصفح وشوف لو في أخطاء</li>
+          <li>تأكد إن ClerkProvider موجود في layout.js الرئيسي</li>
+        </ul>
+
         <h2>📝 ملخص الدرس</h2>
         <p>في الدرس ده عملنا:</p>
         <ul>
@@ -387,12 +488,20 @@ export default function ProtectedPage() {
           <li>✅ إضافة UserButton</li>
           <li>✅ استخدام useAuth hook</li>
           <li>✅ حماية الصفحات باستخدام SignedIn/SignedOut</li>
+          <li>✅ حماية صفحات كاملة مع Middleware</li>
         </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة للممارسة</div>
+          <div class="callout-content">
+            جرّب تسجل دخول وخروج وشوف إزاي الصفحة بتتغير. كمان جرّب تفتح صفحات محمية وأنت مش مسجل دخول وشوف إزاي Clerk بيعيد توجيهك. الممارسة هي أحسن طريقة عشان تثبت اللي اتعلمتها!
+          </div>
+        </div>
 
         <div class="callout callout-success">
           <div class="callout-title">🎉 الدرس الجاي</div>
           <div class="callout-content">
-            في الدرس الجاي هنتعلم <strong>نظام Admin وحماية المسارات</strong> - هنشتغل على حماية صفحات Admin والتحكم في الصلاحيات.
+            في الدرس الجاي هنتعلم نظام Admin وحماية المسارات - هنشتغل على حماية صفحات Admin والتحكم في الصلاحيات. ده الدرس الأخير في الوحدة التانية!
           </div>
         </div>
 

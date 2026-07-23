@@ -52,6 +52,26 @@
           <li>استخدام Framer Motion للحركات</li>
         </ul>
 
+        <h2>💡 مقدمة عن حالات التحميل</h2>
+        <p>يعيش يا صديقي! انت في الدرس العشرين من الكورس، وده درس مهم جداً. خليني أقولك حاجة مهمة: لما مستخدم يفتح صفحة في موقعك والبيانات بتتحمل، لو مفيش أي مؤشر على إن في حاجة بيحصل، هو هيحس إن الموقع واقف أو مش شغال. وده أكبر عدو لأي متجر إلكتروني!</p>
+
+        <p>حالات التحميل (Loading States) هي בעצם الوضع اللي بيبين للمستخدم إن في عملية تحميل بتحصل. لما بتحط loading state كويس، المستخدم بيفضل ي等待 потому что بيشوف إن الموقع شغال ومحتاج وقت بسيط. لكن لو مفيش loading state، المستخدم ممكن يفكر إن الموقع عطلان ويرجع لورا.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه حالات التحميل مهمة؟</div>
+          <div class="callout-content">
+            <ul>
+              <li>بتقلل معدل الارتداد (Bounce Rate) لأن المستخدم بيفضل في الصفحة</li>
+              <li>بتحسن تجربة المستخدم بشكل كبير</li>
+              <li>بتدي انطباع احترافي للموقع</li>
+              <li>بتمنع المستخدم من الضغط على أزرار متكررة أثناء التحميل</li>
+              <li>بتقلل القلق والتوتر عند المستخدم</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>تخيل معايا الموقف ده: انت فتحت موقع عشان تشتري موبايل جديد. دوست على "إضافة للسلة" ومفيش أي رد. هتضغط تاني؟ هتضغط تالت؟ وبعدين هتلاقي عندك 4 موبايلات في السلة بدل واحد! الوضع ده بيحصل لما مفيش loading state كويس.</p>
+
         <h2>📁 هيكل ملفات حالات التحميل</h2>
 
         <div class="file-tree">
@@ -70,9 +90,18 @@
           <div class="file-tree-item file">└── 📄 PageLoader.jsx          # حامل صفحة كامل</div>
         </div>
 
+        <p>شوف يا صديقي، الهيكل ده بيبينلك ازاي تنظم ملفات التحميل. كل مجلد ممكن يكون عنده ملف loading.js خاص بيه. يعني مثلاً لو انت فتحت صفحة المنتجات، هيظهر تحميل خاص بالمنتجات. ولو فتحت تفاصيل منتج معين، هيظهر تحميل مختلف. الهدف إن كل صفحة يكون عندها تحميل يناسب محتواها.</p>
+
         <h2>⏳ الخطوة 1: ملفات loading.js في Next.js</h2>
 
-        <p>في Next.js App Router، يمكنك إنشاء ملف <code>loading.js</code> في أي مجلد لعرض حالة التحميل أثناء جلب البيانات. هذا الملف يظهر تلقائياً أثناء تحميل الصفحة:</p>
+        <p>في Next.js App Router، يمكنك إنشاء ملف <code>loading.js</code> في أي مجلد لعرض حالة التحميل أثناء جلب البيانات. هذا الملف يظهر تلقائياً أثناء تحميل الصفحة. يعني انت بس بتنشئ الملف وبتحط فيه التصميم اللي عايزه، وNext.js هتتولى باقي المهام.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ ملاحظة مهمة</div>
+          <div class="callout-content">
+            ملف loading.js لازم يكون في نفس المجلد مع page.js. يعني لو عندك مجلد app/products، لازم يكون في loading.js جوا مجلد products. لو حطيته في مجلد تاني، مش هيشتغل.
+          </div>
+        </div>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -81,21 +110,25 @@
           </div>
           <pre><code>export default function Loading() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-950">
-      <div className="text-center">
+    &lt;div className="min-h-screen flex items-center justify-center bg-gray-950"&gt;
+      &lt;div className="text-center"&gt;
         {/* Spinner */}
-        <div className="relative w-16 h-16 mx-auto mb-6">
-          <div className="absolute inset-0 border-4 border-indigo-500/20 rounded-full" />
-          <div className="absolute inset-0 border-4 border-transparent border-t-indigo-500 rounded-full animate-spin" />
-        </div>
+        &lt;div className="relative w-16 h-16 mx-auto mb-6"&gt;
+          &lt;div className="absolute inset-0 border-4 border-indigo-500/20 rounded-full" /&gt;
+          &lt;div className="absolute inset-0 border-4 border-transparent border-t-indigo-500 rounded-full animate-spin" /&gt;
+        &lt;/div&gt;
         
         {/* Text */}
-        <p className="text-gray-400 text-lg">جاري التحميل...</p>
-      </div>
-    </div>
+        &lt;p className="text-gray-400 text-lg"&gt;جاري التحميل...&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>
+
+        <p>شوف الكود ده يا صديقي. ايه اللي بيحصل هنا؟ احنا بنعمل دالة اسمها Loading وبترجع JSX فيه Spinner (الدوامة اللي بتدور) ونص بيقول "جاري التحميل". لما المستخدم يفتح أي صفحة، النسخة دي بتظهر لحد ما البيانات تتحمل.</p>
+
+        <p>الـ Spinner ده عبارة عن دائرة فاضية ودوامة جواها بتلف. الدائرة الفاضية بلون رمادي شفاف (border-indigo-500/20) والدوامة بلون نيلي (border-t-indigo-500). الحركة بتتعمل بـ animate-spin بتاع Tailwind CSS.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -106,32 +139,36 @@
 
 export default function ShopLoading() {
   return (
-    <div className="min-h-screen bg-gray-950 py-12">
-      <div className="container mx-auto px-4">
+    &lt;div className="min-h-screen bg-gray-950 py-12"&gt;
+      &lt;div className="container mx-auto px-4"&gt;
         {/* Header Skeleton */}
-        <div className="mb-8">
-          <div className="w-64 h-8 bg-gray-800 rounded animate-pulse mb-4" />
-          <div className="w-96 h-4 bg-gray-800 rounded animate-pulse" />
-        </div>
+        &lt;div className="mb-8"&gt;
+          &lt;div className="w-64 h-8 bg-gray-800 rounded animate-pulse mb-4" /&gt;
+          &lt;div className="w-96 h-4 bg-gray-800 rounded animate-pulse" /&gt;
+        &lt;/div&gt;
 
         {/* Filters Skeleton */}
-        <div className="flex gap-4 mb-8">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="w-24 h-10 bg-gray-800 rounded-xl animate-pulse" />
+        &lt;div className="flex gap-4 mb-8"&gt;
+          {[...Array(5)].map((_, i) =&gt; (
+            &lt;div key={i} className="w-24 h-10 bg-gray-800 rounded-xl animate-pulse" /&gt;
           ))}
-        </div>
+        &lt;/div&gt;
 
         {/* Products Grid Skeleton */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[...Array(8)].map((_, i) => (
-            <ProductCardSkeleton key={i} />
+        &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"&gt;
+          {[...Array(8)].map((_, i) =&gt; (
+            &lt;ProductCardSkeleton key={i} /&gt;
           ))}
-        </div>
-      </div>
-    </div>
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>
+
+        <p>في الملف ده، احنا بنعمل تحميل مخصص لصفحات المتجر. شوف ازاي بنحاكي التصميم النهائي: في عنوان ووصف في الأعلى، وبعدين فلاتر (فلاتر)، وبعدين شبكة منتجات. كل ده بني من مربعات رمادية متحركة (animate-pulse).</p>
+
+        <p>الـ Skeleton ده ميزة رائعة! بدل ما تظهر spinning circle بسيط، بتظهر للمستخدم شكل يحاكي المحتوى النهائي. يعني لو الصفحة فيها صور منتجات، بتظهر مربعات رمادية بحجم الصور. لو فيها نصوص، بتظهر خطوط رمادية. المستخدم بيشوف الصفحة بتترسم وبتترسم، وبكده بيحس إن الموقع شغال.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -142,56 +179,65 @@ export default function ShopLoading() {
 
 export default function ProductsLoading() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    &lt;div className="container mx-auto px-4 py-8"&gt;
       {/* Page Title */}
-      <div className="mb-8">
-        <div className="w-48 h-10 bg-gray-800 rounded animate-pulse mb-4" />
-        <div className="w-72 h-4 bg-gray-800 rounded animate-pulse" />
-      </div>
+      &lt;div className="mb-8"&gt;
+        &lt;div className="w-48 h-10 bg-gray-800 rounded animate-pulse mb-4" /&gt;
+        &lt;div className="w-72 h-4 bg-gray-800 rounded animate-pulse" /&gt;
+      &lt;/div&gt;
 
       {/* Sidebar + Content Layout */}
-      <div className="flex gap-8">
+      &lt;div className="flex gap-8"&gt;
         {/* Sidebar Skeleton */}
-        <div className="hidden lg:block w-64 flex-shrink-0">
-          <div className="bg-white/5 rounded-2xl p-6 space-y-6">
+        &lt;div className="hidden lg:block w-64 flex-shrink-0"&gt;
+          &lt;div className="bg-white/5 rounded-2xl p-6 space-y-6"&gt;
             {/* Search */}
-            <div className="w-full h-10 bg-gray-800 rounded-xl animate-pulse" />
+            &lt;div className="w-full h-10 bg-gray-800 rounded-xl animate-pulse" /&gt;
             
             {/* Categories */}
-            <div className="space-y-3">
-              <div className="w-24 h-4 bg-gray-800 rounded animate-pulse" />
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-4 h-4 bg-gray-800 rounded animate-pulse" />
-                  <div className="w-20 h-4 bg-gray-800 rounded animate-pulse" />
-                </div>
+            &lt;div className="space-y-3"&gt;
+              &lt;div className="w-24 h-4 bg-gray-800 rounded animate-pulse" /&gt;
+              {[...Array(6)].map((_, i) =&gt; (
+                &lt;div key={i} className="flex items-center gap-3"&gt;
+                  &lt;div className="w-4 h-4 bg-gray-800 rounded animate-pulse" /&gt;
+                  &lt;div className="w-20 h-4 bg-gray-800 rounded animate-pulse" /&gt;
+                &lt;/div&gt;
               ))}
-            </div>
+            &lt;/div&gt;
 
             {/* Price Range */}
-            <div className="space-y-3">
-              <div className="w-20 h-4 bg-gray-800 rounded animate-pulse" />
-              <div className="w-full h-2 bg-gray-800 rounded animate-pulse" />
-              <div className="flex justify-between">
-                <div className="w-12 h-4 bg-gray-800 rounded animate-pulse" />
-                <div className="w-12 h-4 bg-gray-800 rounded animate-pulse" />
-              </div>
-            </div>
-          </div>
-        </div>
+            &lt;div className="space-y-3"&gt;
+              &lt;div className="w-20 h-4 bg-gray-800 rounded animate-pulse" /&gt;
+              &lt;div className="w-full h-2 bg-gray-800 rounded animate-pulse" /&gt;
+              &lt;div className="flex justify-between"&gt;
+                &lt;div className="w-12 h-4 bg-gray-800 rounded animate-pulse" /&gt;
+                &lt;div className="w-12 h-4 bg-gray-800 rounded animate-pulse" /&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
 
         {/* Products Grid */}
-        <div className="flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-            {[...Array(9)].map((_, i) => (
-              <ProductCardSkeleton key={i} />
+        &lt;div className="flex-1"&gt;
+          &lt;div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"&gt;
+            {[...Array(9)].map((_, i) =&gt; (
+              &lt;ProductCardSkeleton key={i} /&gt;
             ))}
-          </div>
-        </div>
-      </div>
-    </div>
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>ده تحميل أدق للصفحة اللي فيها sidebar (شريط جانبي) والمنتجات. شوف ازاي بنحاكي كل العناصر: مربع البحث، التصنيفات، شريط نطاق الأسعار، والمنتجات. كل ده بيتعرض كـ skeleton قبل ما البيانات الحقيقية تتحمل.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة ذهبية</div>
+          <div class="callout-content">
+            حاول دايماً إن الـ skeleton يكون نفس حجم وشكل المحتوى الحقيقي. لو المنتج النهائي فيه صورة مربعة ونص وسعر، الـ skeleton لازم يكون فيه مربع رمادي وخط رمادي وخط رمادي أقصر. المستخدم لازم يحس إن الصفحة بتترسم وبتترسم.
+          </div>
         </div>
 
         <h2>💀 الخطوة 2: مكون Skeleton</h2>
@@ -207,50 +253,61 @@ import { cn } from '@/lib/cn';
 
 export function Skeleton({ className, ...props }) {
   return (
-    <div
+    &lt;div
       className={cn(
         "animate-pulse bg-gray-800 rounded",
         className
       )}
       {...props}
-    />
+    /&gt;
   );
 }
 
 export function SkeletonText({ lines = 3, className }) {
   return (
-    <div className={cn("space-y-2", className)}>
-      {[...Array(lines)].map((_, i) => (
-        <Skeleton
+    &lt;div className={cn("space-y-2", className)}&gt;
+      {[...Array(lines)].map((_, i) =&gt; (
+        &lt;Skeleton
           key={i}
           className={cn(
             "h-4",
             i === lines - 1 ? "w-3/4" : "w-full"
           )}
-        />
+        /&gt;
       ))}
-    </div>
+    &lt;/div&gt;
   );
 }
 
 export function SkeletonCircle({ size = 40, className }) {
   return (
-    <Skeleton
+    &lt;Skeleton
       className={cn("rounded-full", className)}
       style={{ width: size, height: size }}
-    />
+    /&gt;
   );
 }
 
 export function SkeletonRectangle({ width, height, className }) {
   return (
-    <Skeleton
+    &lt;Skeleton
       className={cn("rounded-lg", className)}
       style={{ width, height }}
-    />
+    /&gt;
   );
 }</code></pre>
         </div>
+
+        <p>ده المكون الأساسي للـ Skeleton. شوف ازاي عملنا 4 مكونات مختلفة:</p>
+
+        <ul>
+          <li><strong>Skeleton:</strong> المكون الأساسي. ده مربع رمادي متحرك. بتاع animate-pulse بيخلي المربع يظهر ويختفي ببطء (opacity goes up and down). وده بيخلي المربع يحسسك إنه حي ومش ثابت.</li>
+          <li><strong>SkeletonText:</strong> ده بيعرض أسطر نص رمادية. كل سطر فيه ارتفاع ثابت (h-4) والسطر الأخير بيكون أقصر (w-3/4) عشان يحاكي الشكل الطبيعي للنصوص.</li>
+          <li><strong>SkeletonCircle:</strong> ده دائرة رمادية. مفيد لصور البروفايل والأيقونات.</li>
+          <li><strong>SkeletonRectangle:</strong> ده مستطيل بالحجم اللي انت تختاره. مفيد للصور والبطاقات.</li>
+        </ul>
+
+        <p>الدالة cn اللي بنستخدمها دي مهمة جداً. هي بتمزج الأكلاسات بشكل ذكي. يعني لو انت عملت custom className وداخله animate-pulse كمان، الدالة هتمزجهم من غير ما يتكرروا.</p>
 
         <h2>🃏 الخطوة 3: بطاقة تحميل المنتج</h2>
 
@@ -263,36 +320,54 @@ export function SkeletonRectangle({ width, height, className }) {
 
 export default function ProductCardSkeleton() {
   return (
-    <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden">
+    &lt;div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden"&gt;
       {/* Image */}
-      <div className="aspect-square bg-gray-800 animate-pulse" />
+      &lt;div className="aspect-square bg-gray-800 animate-pulse" /&gt;
 
       {/* Content */}
-      <div className="p-4 space-y-3">
+      &lt;div className="p-4 space-y-3"&gt;
         {/* Category */}
-        <Skeleton className="w-16 h-4" />
+        &lt;Skeleton className="w-16 h-4" /&gt;
 
         {/* Title */}
-        <Skeleton className="w-3/4 h-5" />
+        &lt;Skeleton className="w-3/4 h-5" /&gt;
 
         {/* Rating */}
-        <div className="flex items-center gap-2">
-          <Skeleton className="w-20 h-4" />
-          <Skeleton className="w-8 h-4" />
-        </div>
+        &lt;div className="flex items-center gap-2"&gt;
+          &lt;Skeleton className="w-20 h-4" /&gt;
+          &lt;Skeleton className="w-8 h-4" /&gt;
+        &lt;/div&gt;
 
         {/* Price */}
-        <div className="flex items-center gap-2">
-          <Skeleton className="w-16 h-6" />
-          <Skeleton className="w-12 h-4" />
-        </div>
+        &lt;div className="flex items-center gap-2"&gt;
+          &lt;Skeleton className="w-16 h-6" /&gt;
+          &lt;Skeleton className="w-12 h-4" /&gt;
+        &lt;/div&gt;
 
         {/* Button */}
-        <Skeleton className="w-full h-10 rounded-xl" />
-      </div>
-    </div>
+        &lt;Skeleton className="w-full h-10 rounded-xl" /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>ده المكون اللي بيحاكي بطاقة المنتج. شوف ازاي عملنا:</p>
+
+        <ul>
+          <li><strong>صورة المنتج:</strong> مربع رمادي بحجم مربع (aspect-square) وخلفية رمادية. شكله زي الصورة الحقيقية بالظبط.</li>
+          <li><strong>التصنيف:</strong> سطر قصير رمادي (w-16 h-4). ده بيحاكي اسم التصنيف.</li>
+          <li><strong>العنوان:</strong> سطر أطول شوية (w-3/4 h-5). ده بيحاكي عنوان المنتج.</li>
+          <li><strong>التقييم:</strong> سطرين صغيرين. الأول أطول (للنجوم) والتاني أقصر (للرقم).</li>
+          <li><strong>السعر:</strong> سطرين كمان. الأول أطول (للسعر) والتاني أقصر (لعملة).</li>
+          <li><strong>الزرار:</strong> مستطيل كامل العرض (w-full h-10). ده بيحاكي زرار "إضافة للسلة".</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">✅ نقطة مهمة</div>
+          <div class="callout-content">
+            لاحظ إن backdrop-blur-lg و bg-white/5 و border border-white/10 دي نفس الأكلاسات اللي في البطاقة الحقيقية. الهدف إن الـ skeleton يكون شبه البطاقة الحقيقية قدر الإمكان.
+          </div>
         </div>
 
         <h2>⭕ الخطوة 4: مكون Spinner</h2>
@@ -327,25 +402,25 @@ export default function Spinner({
   };
 
   const spinner = (
-    <div className={cn("flex flex-col items-center justify-center gap-4", className)}>
-      <div
+    &lt;div className={cn("flex flex-col items-center justify-center gap-4", className)}&gt;
+      &lt;div
         className={cn(
           "rounded-full animate-spin",
           sizes[size],
           colorClasses[color]
         )}
-      />
-      {text && (
-        <p className="text-gray-400 text-sm">{text}</p>
+      /&gt;
+      {text &amp;&amp; (
+        &lt;p className="text-gray-400 text-sm"&gt;{text}&lt;/p&gt;
       )}
-    </div>
+    &lt;/div&gt;
   );
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 bg-gray-950/80 backdrop-blur-sm z-50 flex items-center justify-center">
+      &lt;div className="fixed inset-0 bg-gray-950/80 backdrop-blur-sm z-50 flex items-center justify-center"&gt;
         {spinner}
-      </div>
+      &lt;/div&gt;
     );
   }
 
@@ -355,14 +430,32 @@ export default function Spinner({
 // Inline Spinner for buttons
 export function ButtonSpinner({ className }) {
   return (
-    <div
+    &lt;div
       className={cn(
         "w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin",
         className
       )}
-    />
+    /&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>ده المكون اللي بيعمل الدوامة (Spinner). شوف ازاي عملناه مرن جداً:</p>
+
+        <ul>
+          <li><strong>الحجم (size):</strong> عندك 4 أحجام مختلفة. sm للأزرار الصغيرة، md للعناصر المتوسطة، lg للعناصر الكبيرة، xl للشاشات الكاملة.</li>
+          <li><strong>اللون (color):</strong> عندك 3 ألوان. indigo للون الأساسي، white للخلفيات الداكنة، gray للخلفيات الفاتحة.</li>
+          <li><strong>fullScreen:</strong> لو ضغطت true، هيبان في نص الشاشة مع خلفية شفافة وضبابية. مفيد للتحميل الكامل.</li>
+          <li><strong>text:</strong> لو حطيت نص، هيظهر تحت الـ Spinner. مفيد عشان توضح للمستخدم بيحصل ايه.</li>
+        </ul>
+
+        <p>الـ ButtonSpinner ده مكون صغير مخصص للأزرار. لما المستخدم يضغط على زرار "إضافة للسلة"، الـ Spinner ده بيظهر جوه الزرار.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ غلطة شائعة</div>
+          <div class="callout-content">
+            بعض المطورين بيستخدموا Spinner في كل مكان. الـ Spinner مفيد للعمليات القصيرة (أقل من 2 ثانية). لو العملية بتاخد أكتر من كده، استخدم Skeleton عشان المستخدم يفهم المحتوى اللي هيشوفه.
+          </div>
         </div>
 
         <h2>📄 الخطوة 5: حامل صفحة كامل</h2>
@@ -379,48 +472,59 @@ import { Loader2 } from 'lucide-react';
 
 export default function PageLoader({ text = 'جاري التحميل...' }) {
   return (
-    <div className="min-h-[400px] flex items-center justify-center">
-      <motion.div
+    &lt;div className="min-h-[400px] flex items-center justify-center"&gt;
+      &lt;motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         className="text-center"
-      >
+      &gt;
         {/* Animated Spinner */}
-        <div className="relative w-20 h-20 mx-auto mb-6">
+        &lt;div className="relative w-20 h-20 mx-auto mb-6"&gt;
           {/* Outer Ring */}
-          <motion.div
+          &lt;motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             className="absolute inset-0 border-4 border-indigo-500/20 rounded-full"
-          />
+          /&gt;
           
           {/* Inner Ring */}
-          <motion.div
+          &lt;motion.div
             animate={{ rotate: -360 }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
             className="absolute inset-2 border-4 border-transparent border-t-purple-500 rounded-full"
-          />
+          /&gt;
           
           {/* Center Icon */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
-          </div>
-        </div>
+          &lt;div className="absolute inset-0 flex items-center justify-center"&gt;
+            &lt;Loader2 className="w-6 h-6 text-indigo-400 animate-spin" /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
 
         {/* Text */}
-        <motion.p
+        &lt;motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="text-gray-400"
-        >
+        &gt;
           {text}
-        </motion.p>
-      </motion.div>
-    </div>
+        &lt;/motion.p&gt;
+      &lt;/motion.div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>
+
+        <p>ده مكون أنيق جداً للتحميل الكامل للصفحة. شوف ازاي عملنا حركات مع Framer Motion:</p>
+
+        <ul>
+          <li><strong>الحلقة الخارجية:</strong> بلف 360 درجة في 2 ثانية وبتكرر للأبد. السرعة ثابتة (ease: "linear").</li>
+          <li><strong>الحلقة الداخلية:</strong> بلف 360 درجة في الاتجاه المعاكس (-360) وفي 1.5 ثانية. ده بيخلق حركة مثيره للانتباه.</li>
+          <li><strong>الأيقونة الوسط:</strong> أيقونة Loader2 من مكتبة lucide-react وبتدور بدوران عادي (animate-spin).</li>
+          <li><strong>النص:</strong> بيظهر بعد 0.3 ثانية (delay: 0.3) عشان يظهر بعد الحركات.</li>
+        </ul>
+
+        <p>الـ motion.div الأولاني عنده initial: opacity 0 و scale 0.8. يعني بيبدأ مش ظاهر وصغير. وبعدين بيظهر (opacity: 1) وبيكبر (scale: 1) بحركة ناعمة. وده بيخلي التحميل يبدأ بتأثير جميل.</p>
 
         <h2>📊 الخطوة 6: هيكل تحميل للجدول</h2>
 
@@ -433,41 +537,59 @@ export default function PageLoader({ text = 'جاري التحميل...' }) {
 
 export default function TableSkeleton({ rows = 5, columns = 5 }) {
   return (
-    <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden">
+    &lt;div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden"&gt;
       {/* Header */}
-      <div className="flex items-center gap-4 p-4 border-b border-white/10">
-        {[...Array(columns)].map((_, i) => (
-          <Skeleton key={i} className="flex-1 h-4" />
+      &lt;div className="flex items-center gap-4 p-4 border-b border-white/10"&gt;
+        {[...Array(columns)].map((_, i) =&gt; (
+          &lt;Skeleton key={i} className="flex-1 h-4" /&gt;
         ))}
-      </div>
+      &lt;/div&gt;
 
       {/* Rows */}
-      <div className="divide-y divide-white/5">
-        {[...Array(rows)].map((_, rowIndex) => (
-          <div key={rowIndex} className="flex items-center gap-4 p-4 animate-pulse">
-            {[...Array(columns)].map((_, colIndex) => (
-              <div key={colIndex} className="flex-1">
+      &lt;div className="divide-y divide-white/5"&gt;
+        {[...Array(rows)].map((_, rowIndex) =&gt; (
+          &lt;div key={rowIndex} className="flex items-center gap-4 p-4 animate-pulse"&gt;
+            {[...Array(columns)].map((_, colIndex) =&gt; (
+              &lt;div key={colIndex} className="flex-1"&gt;
                 {colIndex === 0 ? (
-                  <div className="flex items-center gap-3">
-                    <Skeleton className="w-10 h-10 rounded-lg flex-shrink-0" />
-                    <Skeleton className="h-4 flex-1" />
-                  </div>
+                  &lt;div className="flex items-center gap-3"&gt;
+                    &lt;Skeleton className="w-10 h-10 rounded-lg flex-shrink-0" /&gt;
+                    &lt;Skeleton className="h-4 flex-1" /&gt;
+                  &lt;/div&gt;
                 ) : colIndex === columns - 1 ? (
-                  <div className="flex gap-2">
-                    <Skeleton className="w-8 h-8 rounded-lg" />
-                    <Skeleton className="w-8 h-8 rounded-lg" />
-                  </div>
+                  &lt;div className="flex gap-2"&gt;
+                    &lt;Skeleton className="w-8 h-8 rounded-lg" /&gt;
+                    &lt;Skeleton className="w-8 h-8 rounded-lg" /&gt;
+                  &lt;/div&gt;
                 ) : (
-                  <Skeleton className="h-4 w-3/4" />
+                  &lt;Skeleton className="h-4 w-3/4" /&gt;
                 )}
-              </div>
+              &lt;/div&gt;
             ))}
-          </div>
+          &lt;/div&gt;
         ))}
-      </div>
-    </div>
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>ده مكون لتحميل الجداول. شوف ازاي بنميّز بين الأعمدة المختلفة:</p>
+
+        <ul>
+          <li><strong>العمود الأول (colIndex === 0):</strong> فيه صورة صغيرة (مربع 10x10) ونص. ده بيحاكي صورة المنتج واسمه.</li>
+          <li><strong>العمود الأخير (colIndex === columns - 1):</strong> فيه زرين صغيرين. ده بيحاكي أزرار التعديل والحذف.</li>
+          <li><strong>باقي الأعمدة:</strong> مجرد سطر رمادي (Skeleton بحجم h-4 w-3/4).</li>
+        </ul>
+
+        <p>الـ props اللي في المكون (rows و columns) بتسمحلك تتحكم في عدد الأعمدة والصفوف. يعني لو عندك جدول فيه 10 صفوف و 3 أعمدة، بتعمل كده:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال على الاستخدام</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>&lt;TableSkeleton rows={10} columns={3} /&gt;</code></pre>
         </div>
 
         <h2>🔄 الخطوة 7: هيكل تحميل للسلة</h2>
@@ -481,69 +603,78 @@ export default function TableSkeleton({ rows = 5, columns = 5 }) {
 
 export default function CartSkeleton() {
   return (
-    <div className="grid lg:grid-cols-3 gap-8">
+    &lt;div className="grid lg:grid-cols-3 gap-8"&gt;
       {/* Cart Items */}
-      <div className="lg:col-span-2 space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <div
+      &lt;div className="lg:col-span-2 space-y-4"&gt;
+        {[...Array(3)].map((_, i) =&gt; (
+          &lt;div
             key={i}
             className="flex items-center gap-4 p-4 bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10"
-          >
+          &gt;
             {/* Image */}
-            <Skeleton className="w-24 h-24 rounded-xl flex-shrink-0" />
+            &lt;Skeleton className="w-24 h-24 rounded-xl flex-shrink-0" /&gt;
 
             {/* Info */}
-            <div className="flex-1 space-y-3">
-              <Skeleton className="w-1/2 h-5" />
-              <Skeleton className="w-1/3 h-4" />
-              <div className="flex items-center gap-2">
-                <Skeleton className="w-24 h-8 rounded-lg" />
-              </div>
-            </div>
+            &lt;div className="flex-1 space-y-3"&gt;
+              &lt;Skeleton className="w-1/2 h-5" /&gt;
+              &lt;Skeleton className="w-1/3 h-4" /&gt;
+              &lt;div className="flex items-center gap-2"&gt;
+                &lt;Skeleton className="w-24 h-8 rounded-lg" /&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
 
             {/* Price & Remove */}
-            <div className="text-left space-y-2">
-              <Skeleton className="w-16 h-6" />
-              <Skeleton className="w-20 h-4" />
-            </div>
-          </div>
+            &lt;div className="text-left space-y-2"&gt;
+              &lt;Skeleton className="w-16 h-6" /&gt;
+              &lt;Skeleton className="w-20 h-4" /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
         ))}
-      </div>
+      &lt;/div&gt;
 
       {/* Order Summary */}
-      <div className="lg:col-span-1">
-        <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 sticky top-24">
-          <Skeleton className="w-32 h-6 mb-6" />
+      &lt;div className="lg:col-span-1"&gt;
+        &lt;div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6 sticky top-24"&gt;
+          &lt;Skeleton className="w-32 h-6 mb-6" /&gt;
           
-          <div className="space-y-4">
-            <div className="flex justify-between">
-              <Skeleton className="w-24 h-4" />
-              <Skeleton className="w-16 h-4" />
-            </div>
-            <div className="flex justify-between">
-              <Skeleton className="w-16 h-4" />
-              <Skeleton className="w-12 h-4" />
-            </div>
-            <div className="flex justify-between">
-              <Skeleton className="w-20 h-4" />
-              <Skeleton className="w-14 h-4" />
-            </div>
+          &lt;div className="space-y-4"&gt;
+            &lt;div className="flex justify-between"&gt;
+              &lt;Skeleton className="w-24 h-4" /&gt;
+              &lt;Skeleton className="w-16 h-4" /&gt;
+            &lt;/div&gt;
+            &lt;div className="flex justify-between"&gt;
+              &lt;Skeleton className="w-16 h-4" /&gt;
+              &lt;Skeleton className="w-12 h-4" /&gt;
+            &lt;/div&gt;
+            &lt;div className="flex justify-between"&gt;
+              &lt;Skeleton className="w-20 h-4" /&gt;
+              &lt;Skeleton className="w-14 h-4" /&gt;
+            &lt;/div&gt;
             
-            <div className="border-t border-white/10 pt-4">
-              <div className="flex justify-between">
-                <Skeleton className="w-20 h-6" />
-                <Skeleton className="w-24 h-6" />
-              </div>
-            </div>
-          </div>
+            &lt;div className="border-t border-white/10 pt-4"&gt;
+              &lt;div className="flex justify-between"&gt;
+                &lt;Skeleton className="w-20 h-6" /&gt;
+                &lt;Skeleton className="w-24 h-6" /&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
 
-          <Skeleton className="w-full h-12 rounded-xl mt-6" />
-        </div>
-      </div>
-    </div>
+          &lt;Skeleton className="w-full h-12 rounded-xl mt-6" /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>
+
+        <p>ده تحميل لصفحة السلة. شوف ازاي بنقسم الصفحة لجزئين:</p>
+
+        <ul>
+          <li><strong>المنتجات (col-span-2):</strong> فيه 3 عناصر منتج. كل عنصر فيه صورة (مربع 24x24) والمعلومات والسعر. ده بيحاكي شكل المنتج الحقيقي في السلة.</li>
+          <li><strong>ملخص الطلب (col-span-1):</strong> فيه ملخص للطلب مع الأسعار والزرار. لاحظ إنه sticky (بيثبت في مكانه لما المستخدم يسكرول).</li>
+        </ul>
+
+        <p>الـ grid layout هنا مهم. على الشاشات الكبيرة (lg)، الصفحة بتتقسم 2/3 للمنتجات و 1/3 للملخص. على الشاشات الصغيرة، كل جزء بياخد كامل العرض.</p>
 
         <h2>✨ الخطوة 8: استخدام حالات التحميل</h2>
 
@@ -564,11 +695,11 @@ export default function ProductGrid({ initialProducts = [], filters }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  useEffect(() =&gt; {
     fetchProducts();
   }, [filters]);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async () =&gt; {
     setLoading(true);
     setError(null);
 
@@ -596,52 +727,63 @@ export default function ProductGrid({ initialProducts = [], filters }) {
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <p className="text-red-400 mb-4">{error}</p>
-        <button
+      &lt;div className="text-center py-12"&gt;
+        &lt;p className="text-red-400 mb-4"&gt;{error}&lt;/p&gt;
+        &lt;button
           onClick={fetchProducts}
           className="px-4 py-2 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 transition-colors"
-        >
+        &gt;
           إعادة المحاولة
-        </button>
-      </div>
+        &lt;/button&gt;
+      &lt;/div&gt;
     );
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <AnimatePresence mode="wait">
+    &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"&gt;
+      &lt;AnimatePresence mode="wait"&gt;
         {loading ? (
           // Show skeletons while loading
-          [...Array(8)].map((_, i) => (
-            <motion.div
+          [...Array(8)].map((_, i) =&gt; (
+            &lt;motion.div
               key={`skeleton-${i}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ delay: i * 0.05 }}
-            >
-              <ProductCardSkeleton />
-            </motion.div>
+            &gt;
+              &lt;ProductCardSkeleton /&gt;
+            &lt;/motion.div&gt;
           ))
         ) : (
           // Show actual products
-          products.map((product, index) => (
-            <motion.div
+          products.map((product, index) =&gt; (
+            &lt;motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-            >
-              <ProductCard product={product} />
-            </motion.div>
+            &gt;
+              &lt;ProductCard product={product} /&gt;
+            &lt;/motion.div&gt;
           ))
         )}
-      </AnimatePresence>
-    </div>
+      &lt;/AnimatePresence&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>
+
+        <p>ده المكون الأخير اللي بيجمع كل حاجة مع بعض. شوف ازاي بيستخدم الـ state للتحكم في التحميل:</p>
+
+        <ul>
+          <li><strong>loading:</strong> boolean. لو true، بنعرض الـ skeletons. لو false، بنعرض المنتجات الحقيقية.</li>
+          <li><strong>error:</strong> لو حصل خطأ، بنعرض رسالة خطأ مع زرار "إعادة المحاولة".</li>
+          <li><strong>AnimatePresence:</strong> ده من Framer Motion. بيخلي الـ skeletons تظهر وتختفي بسلاسة.</li>
+          <li><strong>delay: i * 0.05:</strong> ده بيخلي كل skeleton يظهر بعد اللي قبله بـ 0.05 ثانية. وده بيخليهم يظهروا بالتسلسل (stagger effect).</li>
+        </ul>
+
+        <p>الـ finally block مهم جداً. حتى لو حصل خطأ، الـ loading هيبقى false. يعني الـ skeletons اختفت والمستخدم شاف رسالة الخطأ.</p>
 
         <div class="callout callout-info">
           <div class="callout-title">💡 نصائح لتحسين تجربة التحميل</div>
@@ -651,7 +793,57 @@ export default function ProductGrid({ initialProducts = [], filters }) {
               <li>أضف تأخير صغير (300ms) قبل إظهار الـ Skeleton لتجنب الوميض</li>
               <li>استخدم <code>staggerChildren</code> في Framer Motion لتحريك العناصر تدريجياً</li>
               <li>حافظ على حجم الـ Skeleton نفس حجم المحتوى الفعلي</li>
+              <li>لا تستخدم Spinner للعمليات طويلة - استخدم Skeleton</li>
+              <li>أضف نص توضيحي مع الـ Spinner عشان المستخدم يعرف بيحصل ايه</li>
+              <li>اختبر على اتصال بطيء (3G) عشان تشوف التحميل من نظرة المستخدم</li>
             </ul>
+          </div>
+        </div>
+
+        <h2>🎨 الأخطاء الشائعة في حالات التحميل</h2>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ غلطات لازم تتجنبها</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الkeleton بحجم مختلف عن المحتوى الحقيقي:</strong> لو الـ skeleton أكبر أو أصغر من المحتوى النهائي، المستخدم هيشوف "قفزة" لما المحتوى يظهر. وده بيكون مش لطيف.</li>
+              <li><strong>استخدام Spinner في كل مكان:</strong> الـ Spinner مفيد للعمليات القصيرة. لو العملية بتاخد وقت، الـ Skeleton أحسن.</li>
+              <li><strong>مفيش تحميل على الأزرار:</strong> لو المستخدم ضغط على زرار ومفيش تغيير، هيضغط كتير. لازم الزرار يبين إنه شغال.</li>
+              <li><strong>الـ Loading state بيختفي فجأة:</strong> استخدم Framer Motion عشان الـ skeletons تختفي بسلاسة مش فجأة.</li>
+              <li><strong>مفيش retry mechanism:</strong> لو التحميل فشل، لازم يكون فيه زرار "إعادة المحاولة".</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📝 تمارين عملية</h2>
+
+        <p>عشان تثبّت اللي اتعلمته، جرّب تعمل التمارين دي:</p>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 1: أنشئ loading.js لصفحة السلة</div>
+          <div class="callout-content">
+            أنشئ ملف <code>app/(shop)/cart/loading.js</code> يستخدم CartSkeleton. جرب تغير عدد العناصر وتغير الألوان.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 2: أنشئ Spinner مخصص</div>
+          <div class="callout-content">
+            أنشئ نسخة جديدة من الـ Spinner بتصميم مختلف. مثلاً: دائرة بدل مربع، أو 3 نقاط بدل دوامة. جرب تغير الألوان والأحجام.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 3: أضف loading state للزرار</div>
+          <div class="callout-content">
+            خد أي زرار في المشروع وأضفله loading state. لما المستخدم يضغط عليه، الزرار يتحول لـ Spinner لمدة ثانية وبعدين يرجع عادي.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 4: أنشئ Skeleton لصفحة الدفع</div>
+          <div class="callout-content">
+            أنشئ مكون PaymentPageSkeleton يحاكي صفحة الدفع مع الحقول والمعلومات. جرب تستخدم الـ Skeleton components المختلفة.
           </div>
         </div>
 
@@ -664,12 +856,14 @@ export default function ProductGrid({ initialProducts = [], filters }) {
           <li>✅ حامل صفحة كامل</li>
           <li>✅ هيكل تحميل للجداول والسلة</li>
           <li>✅ استخدام Framer Motion للحركات</li>
+          <li>✅ الأخطاء الشائعة وكيف تتجنبها</li>
+          <li>✅ تمارين عملية لتثبيت المعلومة</li>
         </ul>
 
-        <div class="callout callout-success">
+        <div class="callout callout-info">
           <div class="callout-title">🎉 النقطة القادمة</div>
           <div class="callout-content">
-            في الدرس الأخير هنتكلم عن معالجة الأخطاء وتحسين تجربة المستخدم.
+            في الدرس الجاي هنتكلم عن معالجة الأخطاء. لأن حتى لو حطيت loading states ممتازة، ممكن يحصل أخطاء. وهنعرف ازاي نتعامل معاها بشكل احترافي.
           </div>
         </div>
 

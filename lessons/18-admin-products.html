@@ -52,6 +52,13 @@
           <li>رفع الصور إلى Supabase Storage</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 مقدمة للدرس</div>
+          <div class="callout-content">
+            <p>أهلاً بيك في الدرس التماني عشر! في الدرس ده هنتعلم إزاي ندير المنتجات في لوحة التحكم. كل متجر محتاج يضيف منتجات جديدة ويعدّل فيها ويحذفها. الدرس ده فيه كل الأدوات اللي محتاجها لإدارة المنتجات!</p>
+          </div>
+        </div>
+
         <h2>📁 هيكل ملفات إدارة المنتجات</h2>
 
         <div class="file-tree">
@@ -107,11 +114,11 @@ export default function AdminProductsPage() {
   const [sortDirection, setSortDirection] = useState('desc');
   const { addToast } = useToast();
 
-  useEffect(() => {
+  useEffect(() =&gt; {
     fetchProducts();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async () =&gt; {
     try {
       const response = await fetch('/api/admin/products');
       const data = await response.json();
@@ -124,7 +131,7 @@ export default function AdminProductsPage() {
     }
   };
 
-  const handleDelete = async (productId) => {
+  const handleDelete = async (productId) =&gt; {
     if (!confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
       return;
     }
@@ -135,7 +142,7 @@ export default function AdminProductsPage() {
       });
 
       if (response.ok) {
-        setProducts(products.filter(p => p.id !== productId));
+        setProducts(products.filter(p =&gt; p.id !== productId));
         addToast('تم حذف المنتج بنجاح', 'success');
       } else {
         throw new Error('Failed to delete product');
@@ -146,121 +153,121 @@ export default function AdminProductsPage() {
     }
   };
 
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = products.filter(product =&gt; {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
-  const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+  const categories = [...new Set(products.map(p =&gt; p.category).filter(Boolean))];
 
   return (
-    <div className="space-y-6">
+    &lt;div className="space-y-6"&gt;
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-white">المنتجات</h1>
-          <p className="text-gray-400 mt-2">
+      &lt;div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"&gt;
+        &lt;div&gt;
+          &lt;h1 className="text-3xl font-bold text-white"&gt;المنتجات&lt;/h1&gt;
+          &lt;p className="text-gray-400 mt-2"&gt;
             إدارة جميع المنتجات في المتجر
-          </p>
-        </div>
-        <Link href="/admin/products/new">
-          <Button>
-            <Plus className="w-5 h-5 ml-2" />
+          &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Link href="/admin/products/new"&gt;
+          &lt;Button&gt;
+            &lt;Plus className="w-5 h-5 ml-2" /&gt;
             إضافة منتج جديد
-          </Button>
-        </Link>
-      </div>
+          &lt;/Button&gt;
+        &lt;/Link&gt;
+      &lt;/div&gt;
 
       {/* Filters */}
-      <Card variant="glass">
-        <div className="flex flex-col sm:flex-row gap-4">
+      &lt;Card variant="glass"&gt;
+        &lt;div className="flex flex-col sm:flex-row gap-4"&gt;
           {/* Search */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <input
+          &lt;div className="relative flex-1"&gt;
+            &lt;Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" /&gt;
+            &lt;input
               type="text"
               placeholder="بحث في المنتجات..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) =&gt; setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
+            /&gt;
+          &lt;/div&gt;
 
           {/* Category Filter */}
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <select
+          &lt;div className="relative"&gt;
+            &lt;Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" /&gt;
+            &lt;select
               value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
+              onChange={(e) =&gt; setCategoryFilter(e.target.value)}
               className="pl-10 pr-8 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
-            >
-              <option value="all">جميع الأقسام</option>
-              {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
+            &gt;
+              &lt;option value="all"&gt;جميع الأقسام&lt;/option&gt;
+              {categories.map(category =&gt; (
+                &lt;option key={category} value={category}&gt;{category}&lt;/option&gt;
               ))}
-            </select>
-          </div>
+            &lt;/select&gt;
+          &lt;/div&gt;
 
           {/* Sort */}
-          <div className="relative">
-            <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <select
+          &lt;div className="relative"&gt;
+            &lt;ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" /&gt;
+            &lt;select
               value={`${sortField}-${sortDirection}`}
-              onChange={(e) => {
+              onChange={(e) =&gt; {
                 const [field, direction] = e.target.value.split('-');
                 setSortField(field);
                 setSortDirection(direction);
               }}
               className="pl-10 pr-8 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
-            >
-              <option value="created_at-desc">الأحدث أولاً</option>
-              <option value="created_at-asc">الأقدم أولاً</option>
-              <option value="name-asc">الاسم (أ-ي)</option>
-              <option value="name-desc">الاسم (ي-أ)</option>
-              <option value="price-asc">السعر (الأقل)</option>
-              <option value="price-desc">السعر (الأعلى)</option>
-            </select>
-          </div>
-        </div>
-      </Card>
+            &gt;
+              &lt;option value="created_at-desc"&gt;الأحدث أولاً&lt;/option&gt;
+              &lt;option value="created_at-asc"&gt;الأقدم أولاً&lt;/option&gt;
+              &lt;option value="name-asc"&gt;الاسم (أ-ي)&lt;/option&gt;
+              &lt;option value="name-desc"&gt;الاسم (ي-أ)&lt;/option&gt;
+              &lt;option value="price-asc"&gt;السعر (الأقل)&lt;/option&gt;
+              &lt;option value="price-desc"&gt;السعر (الأعلى)&lt;/option&gt;
+            &lt;/select&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/Card&gt;
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4">
-          <p className="text-gray-400 text-sm">إجمالي المنتجات</p>
-          <p className="text-2xl font-bold text-white">{products.length}</p>
-        </div>
-        <div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4">
-          <p className="text-gray-400 text-sm">متوفر</p>
-          <p className="text-2xl font-bold text-green-400">
-            {products.filter(p => p.inStock).length}
-          </p>
-        </div>
-        <div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4">
-          <p className="text-gray-400 text-sm">غير متوفر</p>
-          <p className="text-2xl font-bold text-red-400">
-            {products.filter(p => !p.inStock).length}
-          </p>
-        </div>
-        <div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4">
-          <p className="text-gray-400 text-sm">في العروض</p>
-          <p className="text-2xl font-bold text-yellow-400">
-            {products.filter(p => p.onSale).length}
-          </p>
-        </div>
-      </div>
+      &lt;div className="grid grid-cols-2 sm:grid-cols-4 gap-4"&gt;
+        &lt;div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4"&gt;
+          &lt;p className="text-gray-400 text-sm"&gt;إجمالي المنتجات&lt;/p&gt;
+          &lt;p className="text-2xl font-bold text-white"&gt;{products.length}&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4"&gt;
+          &lt;p className="text-gray-400 text-sm"&gt;متوفر&lt;/p&gt;
+          &lt;p className="text-2xl font-bold text-green-400"&gt;
+            {products.filter(p =&gt; p.inStock).length}
+          &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4"&gt;
+          &lt;p className="text-gray-400 text-sm"&gt;غير متوفر&lt;/p&gt;
+          &lt;p className="text-2xl font-bold text-red-400"&gt;
+            {products.filter(p =&gt; !p.inStock).length}
+          &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4"&gt;
+          &lt;p className="text-gray-400 text-sm"&gt;في العروض&lt;/p&gt;
+          &lt;p className="text-2xl font-bold text-yellow-400"&gt;
+            {products.filter(p =&gt; p.onSale).length}
+          &lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
       {/* Products Table */}
-      <ProductTable
+      &lt;ProductTable
         products={filteredProducts}
         loading={loading}
         onDelete={handleDelete}
         sortField={sortField}
         sortDirection={sortDirection}
-      />
-    </div>
+      /&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>
@@ -283,218 +290,218 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function ProductTable({ products, loading, onDelete, sortField, sortDirection }) {
   const [openMenu, setOpenMenu] = useState(null);
 
-  const toggleMenu = (productId) => {
+  const toggleMenu = (productId) =&gt; {
     setOpenMenu(openMenu === productId ? null : productId);
   };
 
   if (loading) {
     return (
-      <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden">
-        <div className="p-6">
-          <div className="space-y-4">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 animate-pulse">
-                <div className="w-16 h-16 bg-gray-800 rounded-lg" />
-                <div className="flex-1">
-                  <div className="w-48 h-4 bg-gray-800 rounded mb-2" />
-                  <div className="w-32 h-3 bg-gray-800 rounded" />
-                </div>
-                <div className="w-20 h-8 bg-gray-800 rounded" />
-              </div>
+      &lt;div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden"&gt;
+        &lt;div className="p-6"&gt;
+          &lt;div className="space-y-4"&gt;
+            {[...Array(5)].map((_, i) =&gt; (
+              &lt;div key={i} className="flex items-center gap-4 animate-pulse"&gt;
+                &lt;div className="w-16 h-16 bg-gray-800 rounded-lg" /&gt;
+                &lt;div className="flex-1"&gt;
+                  &lt;div className="w-48 h-4 bg-gray-800 rounded mb-2" /&gt;
+                  &lt;div className="w-32 h-3 bg-gray-800 rounded" /&gt;
+                &lt;/div&gt;
+                &lt;div className="w-20 h-8 bg-gray-800 rounded" /&gt;
+              &lt;/div&gt;
             ))}
-          </div>
-        </div>
-      </div>
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
     );
   }
 
   if (products.length === 0) {
     return (
-      <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-12 text-center">
-        <Package className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-        <h3 className="text-xl font-bold text-white mb-2">لا توجد منتجات</h3>
-        <p className="text-gray-400 mb-6">لم تتم إضافة أي منتجات بعد</p>
-        <Link
+      &lt;div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-12 text-center"&gt;
+        &lt;Package className="w-16 h-16 text-gray-600 mx-auto mb-4" /&gt;
+        &lt;h3 className="text-xl font-bold text-white mb-2"&gt;لا توجد منتجات&lt;/h3&gt;
+        &lt;p className="text-gray-400 mb-6"&gt;لم تتم إضافة أي منتجات بعد&lt;/p&gt;
+        &lt;Link
           href="/admin/products/new"
           className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 transition-colors"
-        >
+        &gt;
           إضافة منتج جديد
-        </Link>
-      </div>
+        &lt;/Link&gt;
+      &lt;/div&gt;
     );
   }
 
   return (
-    <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-white/10">
-              <th className="text-left py-4 px-6 text-gray-400 font-medium">المنتج</th>
-              <th className="text-left py-4 px-6 text-gray-400 font-medium">القسم</th>
-              <th className="text-left py-4 px-6 text-gray-400 font-medium">السعر</th>
-              <th className="text-left py-4 px-6 text-gray-400 font-medium">المخزون</th>
-              <th className="text-left py-4 px-6 text-gray-400 font-medium">التقييم</th>
-              <th className="text-left py-4 px-6 text-gray-400 font-medium">الإجراءات</th>
-            </tr>
-          </thead>
-          <tbody>
-            <AnimatePresence>
-              {products.map((product) => (
-                <motion.tr
+    &lt;div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden"&gt;
+      &lt;div className="overflow-x-auto"&gt;
+        &lt;table className="w-full"&gt;
+          &lt;thead&gt;
+            &lt;tr className="border-b border-white/10"&gt;
+              &lt;th className="text-left py-4 px-6 text-gray-400 font-medium"&gt;المنتج&lt;/th&gt;
+              &lt;th className="text-left py-4 px-6 text-gray-400 font-medium"&gt;القسم&lt;/th&gt;
+              &lt;th className="text-left py-4 px-6 text-gray-400 font-medium"&gt;السعر&lt;/th&gt;
+              &lt;th className="text-left py-4 px-6 text-gray-400 font-medium"&gt;المخزون&lt;/th&gt;
+              &lt;th className="text-left py-4 px-6 text-gray-400 font-medium"&gt;التقييم&lt;/th&gt;
+              &lt;th className="text-left py-4 px-6 text-gray-400 font-medium"&gt;الإجراءات&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            &lt;AnimatePresence&gt;
+              {products.map((product) =&gt; (
+                &lt;motion.tr
                   key={product.id}
                   layout
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   className="border-b border-white/5 hover:bg-white/5 transition-colors"
-                >
+                &gt;
                   {/* Product Info */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
+                  &lt;td className="py-4 px-6"&gt;
+                    &lt;div className="flex items-center gap-4"&gt;
+                      &lt;div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0"&gt;
                         {product.image ? (
-                          <Image
+                          &lt;Image
                             src={product.image}
                             alt={product.name}
                             width={64}
                             height={64}
                             className="w-full h-full object-cover"
-                          />
+                          /&gt;
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Package className="w-8 h-8 text-gray-600" />
-                          </div>
+                          &lt;div className="w-full h-full flex items-center justify-center"&gt;
+                            &lt;Package className="w-8 h-8 text-gray-600" /&gt;
+                          &lt;/div&gt;
                         )}
-                      </div>
-                      <div>
-                        <p className="text-white font-medium">{product.name}</p>
-                        <p className="text-gray-400 text-sm truncate max-w-xs">
+                      &lt;/div&gt;
+                      &lt;div&gt;
+                        &lt;p className="text-white font-medium"&gt;{product.name}&lt;/p&gt;
+                        &lt;p className="text-gray-400 text-sm truncate max-w-xs"&gt;
                           {product.description?.substring(0, 50)}...
-                        </p>
-                      </div>
-                    </div>
-                  </td>
+                        &lt;/p&gt;
+                      &lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/td&gt;
 
                   {/* Category */}
-                  <td className="py-4 px-6">
-                    <span className="px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-sm">
+                  &lt;td className="py-4 px-6"&gt;
+                    &lt;span className="px-3 py-1 bg-indigo-500/20 text-indigo-400 rounded-full text-sm"&gt;
                       {product.category || 'غير محدد'}
-                    </span>
-                  </td>
+                    &lt;/span&gt;
+                  &lt;/td&gt;
 
                   {/* Price */}
-                  <td className="py-4 px-6">
-                    <div>
-                      <p className="text-white font-medium">${product.price?.toFixed(2)}</p>
-                      {product.originalPrice && product.originalPrice > product.price && (
-                        <p className="text-gray-500 text-sm line-through">
+                  &lt;td className="py-4 px-6"&gt;
+                    &lt;div&gt;
+                      &lt;p className="text-white font-medium"&gt;${product.price?.toFixed(2)}&lt;/p&gt;
+                      {product.originalPrice && product.originalPrice &gt; product.price && (
+                        &lt;p className="text-gray-500 text-sm line-through"&gt;
                           ${product.originalPrice.toFixed(2)}
-                        </p>
+                        &lt;/p&gt;
                       )}
-                    </div>
-                  </td>
+                    &lt;/div&gt;
+                  &lt;/td&gt;
 
                   {/* Stock */}
-                  <td className="py-4 px-6">
-                    <span className={`px-3 py-1 rounded-full text-sm ${
+                  &lt;td className="py-4 px-6"&gt;
+                    &lt;span className={`px-3 py-1 rounded-full text-sm ${
                       product.inStock
                         ? 'bg-green-500/20 text-green-400'
                         : 'bg-red-500/20 text-red-400'
-                    }`}>
+                    }`}&gt;
                       {product.inStock ? 'متوفر' : 'غير متوفر'}
-                    </span>
-                  </td>
+                    &lt;/span&gt;
+                  &lt;/td&gt;
 
                   {/* Rating */}
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-2">
-                      <span className="text-yellow-400">★</span>
-                      <span className="text-white">{product.rating || 0}</span>
-                      <span className="text-gray-500 text-sm">
+                  &lt;td className="py-4 px-6"&gt;
+                    &lt;div className="flex items-center gap-2"&gt;
+                      &lt;span className="text-yellow-400"&gt;★&lt;/span&gt;
+                      &lt;span className="text-white"&gt;{product.rating || 0}&lt;/span&gt;
+                      &lt;span className="text-gray-500 text-sm"&gt;
                         ({product.reviewCount || 0})
-                      </span>
-                    </div>
-                  </td>
+                      &lt;/span&gt;
+                    &lt;/div&gt;
+                  &lt;/td&gt;
 
                   {/* Actions */}
-                  <td className="py-4 px-6">
-                    <div className="relative">
-                      <button
-                        onClick={() => toggleMenu(product.id)}
+                  &lt;td className="py-4 px-6"&gt;
+                    &lt;div className="relative"&gt;
+                      &lt;button
+                        onClick={() =&gt; toggleMenu(product.id)}
                         className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/10"
-                      >
-                        <MoreVertical className="w-5 h-5" />
-                      </button>
+                      &gt;
+                        &lt;MoreVertical className="w-5 h-5" /&gt;
+                      &lt;/button&gt;
 
-                      <AnimatePresence>
+                      &lt;AnimatePresence&gt;
                         {openMenu === product.id && (
-                          <motion.div
+                          &lt;motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             className="absolute left-0 mt-2 w-48 bg-gray-900 border border-white/10 rounded-xl shadow-xl overflow-hidden z-10"
-                          >
-                            <Link
+                          &gt;
+                            &lt;Link
                               href={`/products/${product.slug || product.id}`}
                               target="_blank"
                               className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 transition-colors"
-                              onClick={() => setOpenMenu(null)}
-                            >
-                              <Eye className="w-5 h-5" />
+                              onClick={() =&gt; setOpenMenu(null)}
+                            &gt;
+                              &lt;Eye className="w-5 h-5" /&gt;
                               عرض في المتجر
-                            </Link>
-                            <Link
+                            &lt;/Link&gt;
+                            &lt;Link
                               href={`/admin/products/${product.id}`}
                               className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 transition-colors"
-                              onClick={() => setOpenMenu(null)}
-                            >
-                              <Edit className="w-5 h-5" />
+                              onClick={() =&gt; setOpenMenu(null)}
+                            &gt;
+                              &lt;Edit className="w-5 h-5" /&gt;
                               تعديل
-                            </Link>
-                            <button
-                              onClick={() => {
+                            &lt;/Link&gt;
+                            &lt;button
+                              onClick={() =&gt; {
                                 onDelete(product.id);
                                 setOpenMenu(null);
                               }}
                               className="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition-colors w-full"
-                            >
-                              <Trash2 className="w-5 h-5" />
+                            &gt;
+                              &lt;Trash2 className="w-5 h-5" /&gt;
                               حذف
-                            </button>
-                          </motion.div>
+                            &lt;/button&gt;
+                          &lt;/motion.div&gt;
                         )}
-                      </AnimatePresence>
-                    </div>
-                  </td>
-                </motion.tr>
+                      &lt;/AnimatePresence&gt;
+                    &lt;/div&gt;
+                  &lt;/td&gt;
+                &lt;/motion.tr&gt;
               ))}
-            </AnimatePresence>
-          </tbody>
-        </table>
-      </div>
+            &lt;/AnimatePresence&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/div&gt;
 
       {/* Pagination */}
-      <div className="p-4 border-t border-white/10 flex items-center justify-between">
-        <p className="text-gray-400 text-sm">
+      &lt;div className="p-4 border-t border-white/10 flex items-center justify-between"&gt;
+        &lt;p className="text-gray-400 text-sm"&gt;
           عرض {products.length} منتج
-        </p>
-        <div className="flex items-center gap-2">
-          <button className="px-3 py-1 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors">
+        &lt;/p&gt;
+        &lt;div className="flex items-center gap-2"&gt;
+          &lt;button className="px-3 py-1 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors"&gt;
             السابق
-          </button>
-          <button className="px-3 py-1 bg-indigo-500 text-white rounded-lg">
+          &lt;/button&gt;
+          &lt;button className="px-3 py-1 bg-indigo-500 text-white rounded-lg"&gt;
             1
-          </button>
-          <button className="px-3 py-1 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors">
+          &lt;/button&gt;
+          &lt;button className="px-3 py-1 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors"&gt;
             2
-          </button>
-          <button className="px-3 py-1 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors">
+          &lt;/button&gt;
+          &lt;button className="px-3 py-1 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors"&gt;
             التالي
-          </button>
-        </div>
-      </div>
-    </div>
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>
@@ -561,7 +568,7 @@ export default function ProductForm({ product = null, mode = 'create' }) {
   });
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+  useEffect(() =&gt; {
     if (product && mode === 'edit') {
       setFormData({
         name: product.name || '',
@@ -576,30 +583,29 @@ export default function ProductForm({ product = null, mode = 'create' }) {
         gallery: product.gallery || [],
         sizes: product.sizes || [],
         colors: product.colors || [],
-        features: product.features?.length > 0 ? product.features : [''],
+        features: product.features?.length &gt; 0 ? product.features : [''],
         weight: product.weight?.toString() || '',
         dimensions: product.dimensions || '',
       });
     }
   }, [product, mode]);
 
-  const updateFormData = (newData) => {
-    setFormData(prev => ({ ...prev, ...newData }));
-    // Clear error for updated field
-    Object.keys(newData).forEach(key => {
+  const updateFormData = (newData) =&gt; {
+    setFormData(prev =&gt; ({ ...prev, ...newData }));
+    Object.keys(newData).forEach(key =&gt; {
       if (errors[key]) {
-        setErrors(prev => ({ ...prev, [key]: '' }));
+        setErrors(prev =&gt; ({ ...prev, [key]: '' }));
       }
     });
   };
 
-  const validate = () => {
+  const validate = () =&gt; {
     const newErrors = {};
 
     if (!formData.name.trim()) {
       newErrors.name = 'اسم المنتج مطلوب';
     }
-    if (!formData.price || parseFloat(formData.price) <= 0) {
+    if (!formData.price || parseFloat(formData.price) &lt;= 0) {
       newErrors.price = 'السعر مطلوب ويجب أن يكون أكبر من 0';
     }
     if (!formData.category) {
@@ -613,7 +619,7 @@ export default function ProductForm({ product = null, mode = 'create' }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) =&gt; {
     e.preventDefault();
 
     if (!validate()) {
@@ -629,7 +635,7 @@ export default function ProductForm({ product = null, mode = 'create' }) {
         price: parseFloat(formData.price),
         originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
         stockQuantity: formData.stockQuantity ? parseInt(formData.stockQuantity) : 0,
-        features: formData.features.filter(f => f.trim()),
+        features: formData.features.filter(f =&gt; f.trim()),
       };
 
       const url = mode === 'edit' 
@@ -661,258 +667,258 @@ export default function ProductForm({ product = null, mode = 'create' }) {
     }
   };
 
-  const addFeature = () => {
+  const addFeature = () =&gt; {
     updateFormData({ features: [...formData.features, ''] });
   };
 
-  const updateFeature = (index, value) => {
+  const updateFeature = (index, value) =&gt; {
     const newFeatures = [...formData.features];
     newFeatures[index] = value;
     updateFormData({ features: newFeatures });
   };
 
-  const removeFeature = (index) => {
-    const newFeatures = formData.features.filter((_, i) => i !== index);
+  const removeFeature = (index) =&gt; {
+    const newFeatures = formData.features.filter((_, i) =&gt; i !== index);
     updateFormData({ features: newFeatures });
   };
 
-  const toggleSize = (size) => {
+  const toggleSize = (size) =&gt; {
     const newSizes = formData.sizes.includes(size)
-      ? formData.sizes.filter(s => s !== size)
+      ? formData.sizes.filter(s =&gt; s !== size)
       : [...formData.sizes, size];
     updateFormData({ sizes: newSizes });
   };
 
-  const toggleColor = (colorValue) => {
+  const toggleColor = (colorValue) =&gt; {
     const newColors = formData.colors.includes(colorValue)
-      ? formData.colors.filter(c => c !== colorValue)
+      ? formData.colors.filter(c =&gt; c !== colorValue)
       : [...formData.colors, colorValue];
     updateFormData({ colors: newColors });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    &lt;form onSubmit={handleSubmit} className="space-y-6"&gt;
       {/* Basic Info */}
-      <Card variant="glass">
-        <h2 className="text-xl font-bold text-white mb-6">المعلومات الأساسية</h2>
+      &lt;Card variant="glass"&gt;
+        &lt;h2 className="text-xl font-bold text-white mb-6"&gt;المعلومات الأساسية&lt;/h2&gt;
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Input
+        &lt;div className="grid grid-cols-1 lg:grid-cols-2 gap-6"&gt;
+          &lt;Input
             label="اسم المنتج"
             value={formData.name}
-            onChange={(e) => updateFormData({ name: e.target.value })}
+            onChange={(e) =&gt; updateFormData({ name: e.target.value })}
             error={errors.name}
             placeholder="سماعة AirPods Pro"
-          />
+          /&gt;
 
-          <Input
+          &lt;Input
             label="رمز المنتج (SKU)"
             value={formData.sku}
-            onChange={(e) => updateFormData({ sku: e.target.value })}
+            onChange={(e) =&gt; updateFormData({ sku: e.target.value })}
             placeholder="APL-PRO-001"
-          />
+          /&gt;
 
-          <div className="lg:col-span-2">
-            <label className="block text-sm font-medium text-gray-200 mb-2">
+          &lt;div className="lg:col-span-2"&gt;
+            &lt;label className="block text-sm font-medium text-gray-200 mb-2"&gt;
               وصف المنتج
-            </label>
-            <textarea
+            &lt;/label&gt;
+            &lt;textarea
               value={formData.description}
-              onChange={(e) => updateFormData({ description: e.target.value })}
+              onChange={(e) =&gt; updateFormData({ description: e.target.value })}
               error={errors.description}
               rows={4}
               className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
               placeholder="وصف تفصيلي للمنتج..."
-            />
+            /&gt;
             {errors.description && (
-              <p className="text-red-400 text-sm mt-1">{errors.description}</p>
+              &lt;p className="text-red-400 text-sm mt-1"&gt;{errors.description}&lt;/p&gt;
             )}
-          </div>
-        </div>
-      </Card>
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/Card&gt;
 
       {/* Pricing */}
-      <Card variant="glass">
-        <h2 className="text-xl font-bold text-white mb-6">التسعير</h2>
+      &lt;Card variant="glass"&gt;
+        &lt;h2 className="text-xl font-bold text-white mb-6"&gt;التسعير&lt;/h2&gt;
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Input
+        &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"&gt;
+          &lt;Input
             label="السعر ($)"
             type="number"
             step="0.01"
             value={formData.price}
-            onChange={(e) => updateFormData({ price: e.target.value })}
+            onChange={(e) =&gt; updateFormData({ price: e.target.value })}
             error={errors.price}
             placeholder="99.99"
-          />
+          /&gt;
 
-          <Input
+          &lt;Input
             label="السعر الأصلي ($)"
             type="number"
             step="0.01"
             value={formData.originalPrice}
-            onChange={(e) => updateFormData({ originalPrice: e.target.value })}
+            onChange={(e) =&gt; updateFormData({ originalPrice: e.target.value })}
             placeholder="149.99"
-          />
+          /&gt;
 
-          <Input
+          &lt;Input
             label="الكمية المتوفرة"
             type="number"
             value={formData.stockQuantity}
-            onChange={(e) => updateFormData({ stockQuantity: e.target.value })}
+            onChange={(e) =&gt; updateFormData({ stockQuantity: e.target.value })}
             placeholder="100"
-          />
+          /&gt;
 
-          <div className="flex items-end">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
+          &lt;div className="flex items-end"&gt;
+            &lt;label className="flex items-center gap-3 cursor-pointer"&gt;
+              &lt;input
                 type="checkbox"
                 checked={formData.inStock}
-                onChange={(e) => updateFormData({ inStock: e.target.checked })}
+                onChange={(e) =&gt; updateFormData({ inStock: e.target.checked })}
                 className="w-5 h-5 rounded bg-white/5 border-white/10 text-indigo-500 focus:ring-indigo-500"
-              />
-              <span className="text-gray-200">متوفر في المخزون</span>
-            </label>
-          </div>
-        </div>
-      </Card>
+              /&gt;
+              &lt;span className="text-gray-200"&gt;متوفر في المخزون&lt;/span&gt;
+            &lt;/label&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/Card&gt;
 
       {/* Category */}
-      <Card variant="glass">
-        <h2 className="text-xl font-bold text-white mb-6">القسم</h2>
+      &lt;Card variant="glass"&gt;
+        &lt;h2 className="text-xl font-bold text-white mb-6"&gt;القسم&lt;/h2&gt;
         
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {categories.map(category => (
-            <button
+        &lt;div className="grid grid-cols-2 sm:grid-cols-4 gap-4"&gt;
+          {categories.map(category =&gt; (
+            &lt;button
               key={category}
               type="button"
-              onClick={() => updateFormData({ category })}
+              onClick={() =&gt; updateFormData({ category })}
               className={`p-4 rounded-xl border transition-all ${
                 formData.category === category
                   ? 'bg-indigo-500/20 border-indigo-500 text-indigo-400'
                   : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
               }`}
-            >
+            &gt;
               {category}
-            </button>
+            &lt;/button&gt;
           ))}
-        </div>
+        &lt;/div&gt;
         {errors.category && (
-          <p className="text-red-400 text-sm mt-2">{errors.category}</p>
+          &lt;p className="text-red-400 text-sm mt-2"&gt;{errors.category}&lt;/p&gt;
         )}
-      </Card>
+      &lt;/Card&gt;
 
       {/* Image */}
-      <Card variant="glass">
-        <h2 className="text-xl font-bold text-white mb-6">صورة المنتج</h2>
-        <ImageUpload
+      &lt;Card variant="glass"&gt;
+        &lt;h2 className="text-xl font-bold text-white mb-6"&gt;صورة المنتج&lt;/h2&gt;
+        &lt;ImageUpload
           value={formData.image}
-          onChange={(url) => updateFormData({ image: url })}
-        />
-      </Card>
+          onChange={(url) =&gt; updateFormData({ image: url })}
+        /&gt;
+      &lt;/Card&gt;
 
       {/* Sizes */}
-      <Card variant="glass">
-        <h2 className="text-xl font-bold text-white mb-6">المقاسات</h2>
-        <div className="flex flex-wrap gap-3">
-          {sizes.map(size => (
-            <button
+      &lt;Card variant="glass"&gt;
+        &lt;h2 className="text-xl font-bold text-white mb-6"&gt;المقاسات&lt;/h2&gt;
+        &lt;div className="flex flex-wrap gap-3"&gt;
+          {sizes.map(size =&gt; (
+            &lt;button
               key={size}
               type="button"
-              onClick={() => toggleSize(size)}
+              onClick={() =&gt; toggleSize(size)}
               className={`px-4 py-2 rounded-lg border transition-all ${
                 formData.sizes.includes(size)
                   ? 'bg-indigo-500 border-indigo-500 text-white'
                   : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
               }`}
-            >
+            &gt;
               {size}
-            </button>
+            &lt;/button&gt;
           ))}
-        </div>
-      </Card>
+        &lt;/div&gt;
+      &lt;/Card&gt;
 
       {/* Colors */}
-      <Card variant="glass">
-        <h2 className="text-xl font-bold text-white mb-6">الألوان</h2>
-        <div className="flex flex-wrap gap-3">
-          {colors.map(color => (
-            <button
+      &lt;Card variant="glass"&gt;
+        &lt;h2 className="text-xl font-bold text-white mb-6"&gt;الألوان&lt;/h2&gt;
+        &lt;div className="flex flex-wrap gap-3"&gt;
+          {colors.map(color =&gt; (
+            &lt;button
               key={color.value}
               type="button"
-              onClick={() => toggleColor(color.value)}
+              onClick={() =&gt; toggleColor(color.value)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-all ${
                 formData.colors.includes(color.value)
                   ? 'bg-indigo-500/20 border-indigo-500'
                   : 'bg-white/5 border-white/10 hover:bg-white/10'
               }`}
-            >
-              <div
+            &gt;
+              &lt;div
                 className="w-6 h-6 rounded-full border border-white/20"
                 style={{ backgroundColor: color.value }}
-              />
-              <span className="text-gray-300">{color.name}</span>
-            </button>
+              /&gt;
+              &lt;span className="text-gray-300"&gt;{color.name}&lt;/span&gt;
+            &lt;/button&gt;
           ))}
-        </div>
-      </Card>
+        &lt;/div&gt;
+      &lt;/Card&gt;
 
       {/* Features */}
-      <Card variant="glass">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-white">المميزات</h2>
-          <Button type="button" variant="secondary" size="sm" onClick={addFeature}>
+      &lt;Card variant="glass"&gt;
+        &lt;div className="flex items-center justify-between mb-6"&gt;
+          &lt;h2 className="text-xl font-bold text-white"&gt;المميزات&lt;/h2&gt;
+          &lt;Button type="button" variant="secondary" size="sm" onClick={addFeature}&gt;
             إضافة ميزة
-          </Button>
-        </div>
-        <div className="space-y-3">
-          {formData.features.map((feature, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <Input
+          &lt;/Button&gt;
+        &lt;/div&gt;
+        &lt;div className="space-y-3"&gt;
+          {formData.features.map((feature, index) =&gt; (
+            &lt;div key={index} className="flex items-center gap-3"&gt;
+              &lt;Input
                 value={feature}
-                onChange={(e) => updateFeature(index, e.target.value)}
+                onChange={(e) =&gt; updateFeature(index, e.target.value)}
                 placeholder={`ميزة ${index + 1}`}
                 className="flex-1"
-              />
-              {formData.features.length > 1 && (
-                <button
+              /&gt;
+              {formData.features.length &gt; 1 && (
+                &lt;button
                   type="button"
-                  onClick={() => removeFeature(index)}
+                  onClick={() =&gt; removeFeature(index)}
                   className="p-2 text-red-400 hover:text-red-300 transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                &gt;
+                  &lt;X className="w-5 h-5" /&gt;
+                &lt;/button&gt;
               )}
-            </div>
+            &lt;/div&gt;
           ))}
-        </div>
-      </Card>
+        &lt;/div&gt;
+      &lt;/Card&gt;
 
       {/* Submit */}
-      <div className="flex justify-end gap-4">
-        <Button
+      &lt;div className="flex justify-end gap-4"&gt;
+        &lt;Button
           type="button"
           variant="secondary"
-          onClick={() => router.push('/admin/products')}
-        >
-          <ArrowRight className="w-5 h-5 ml-2" />
+          onClick={() =&gt; router.push('/admin/products')}
+        &gt;
+          &lt;ArrowRight className="w-5 h-5 ml-2" /&gt;
           إلغاء
-        </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        &lt;/Button&gt;
+        &lt;Button type="submit" disabled={isSubmitting}&gt;
           {isSubmitting ? (
-            <>
-              <Loader2 className="w-5 h-5 ml-2 animate-spin" />
+            &lt;&gt;
+              &lt;Loader2 className="w-5 h-5 ml-2 animate-spin" /&gt;
               جاري الحفظ...
-            </>
+            &lt;/&gt;
           ) : (
-            <>
-              <Save className="w-5 h-5 ml-2" />
+            &lt;&gt;
+              &lt;Save className="w-5 h-5 ml-2" /&gt;
               {mode === 'edit' ? 'تحديث المنتج' : 'إضافة المنتج'}
-            </>
+            &lt;/&gt;
           )}
-        </Button>
-      </div>
-    </form>
+        &lt;/Button&gt;
+      &lt;/div&gt;
+    &lt;/form&gt;
   );
 }</code></pre>
         </div>
@@ -935,7 +941,7 @@ export default function ImageUpload({ value, onChange, folder = 'products' }) {
   const [dragActive, setDragActive] = useState(false);
   const inputRef = useRef(null);
 
-  const uploadImage = async (file) => {
+  const uploadImage = async (file) =&gt; {
     if (!file) return;
 
     // Validate file type
@@ -945,7 +951,7 @@ export default function ImageUpload({ value, onChange, folder = 'products' }) {
     }
 
     // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size &gt; 5 * 1024 * 1024) {
       alert('حجم الصورة يجب أن يكون أقل من 5 ميجابايت');
       return;
     }
@@ -978,7 +984,7 @@ export default function ImageUpload({ value, onChange, folder = 'products' }) {
     }
   };
 
-  const handleDrag = (e) => {
+  const handleDrag = (e) =&gt; {
     e.preventDefault();
     e.stopPropagation();
     if (e.type === 'dragenter' || e.type === 'dragover') {
@@ -988,7 +994,7 @@ export default function ImageUpload({ value, onChange, folder = 'products' }) {
     }
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e) =&gt; {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
@@ -998,13 +1004,13 @@ export default function ImageUpload({ value, onChange, folder = 'products' }) {
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e) =&gt; {
     if (e.target.files && e.target.files[0]) {
       uploadImage(e.target.files[0]);
     }
   };
 
-  const handleRemove = () => {
+  const handleRemove = () =&gt; {
     onChange('');
     if (inputRef.current) {
       inputRef.current.value = '';
@@ -1012,77 +1018,77 @@ export default function ImageUpload({ value, onChange, folder = 'products' }) {
   };
 
   return (
-    <div className="space-y-4">
+    &lt;div className="space-y-4"&gt;
       {value ? (
-        <div className="relative inline-block">
-          <img
+        &lt;div className="relative inline-block"&gt;
+          &lt;img
             src={value}
             alt="Product"
             className="w-48 h-48 object-cover rounded-xl border border-white/10"
-          />
-          <button
+          /&gt;
+          &lt;button
             type="button"
             onClick={handleRemove}
             className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+          &gt;
+            &lt;X className="w-4 h-4" /&gt;
+          &lt;/button&gt;
+        &lt;/div&gt;
       ) : (
-        <div
+        &lt;div
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          onClick={() => inputRef.current?.click()}
+          onClick={() =&gt; inputRef.current?.click()}
           className={`w-full h-48 border-2 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all ${
             dragActive
               ? 'border-indigo-500 bg-indigo-500/10'
               : 'border-white/20 hover:border-white/40 bg-white/5'
           }`}
-        >
+        &gt;
           {isUploading ? (
-            <>
-              <Loader2 className="w-12 h-12 text-indigo-400 animate-spin mb-4" />
-              <p className="text-gray-400">جاري الرفع...</p>
-            </>
+            &lt;&gt;
+              &lt;Loader2 className="w-12 h-12 text-indigo-400 animate-spin mb-4" /&gt;
+              &lt;p className="text-gray-400"&gt;جاري الرفع...&lt;/p&gt;
+            &lt;/&gt;
           ) : (
-            <>
-              <Upload className="w-12 h-12 text-gray-500 mb-4" />
-              <p className="text-gray-400 mb-2">
-                اسحب الصورة هنا أو <span className="text-indigo-400">اضغط للتحديد</span>
-              </p>
-              <p className="text-gray-500 text-sm">
+            &lt;&gt;
+              &lt;Upload className="w-12 h-12 text-gray-500 mb-4" /&gt;
+              &lt;p className="text-gray-400 mb-2"&gt;
+                اسحب الصورة هنا أو &lt;span className="text-indigo-400"&gt;اضغط للتحديد&lt;/span&gt;
+              &lt;/p&gt;
+              &lt;p className="text-gray-500 text-sm"&gt;
                 PNG, JPG, WEBP حتى 5MB
-              </p>
-            </>
+              &lt;/p&gt;
+            &lt;/&gt;
           )}
-        </div>
+        &lt;/div&gt;
       )}
 
-      <input
+      &lt;input
         ref={inputRef}
         type="file"
         accept="image/*"
         onChange={handleChange}
         className="hidden"
-      />
+      /&gt;
 
       {/* URL Input */}
-      <div className="flex items-center gap-3">
-        <div className="flex-1 h-px bg-white/10" />
-        <span className="text-gray-500 text-sm">أو</span>
-        <div className="flex-1 h-px bg-white/10" />
-      </div>
+      &lt;div className="flex items-center gap-3"&gt;
+        &lt;div className="flex-1 h-px bg-white/10" /&gt;
+        &lt;span className="text-gray-500 text-sm"&gt;أو&lt;/span&gt;
+        &lt;div className="flex-1 h-px bg-white/10" /&gt;
+      &lt;/div&gt;
 
-      <input
+      &lt;input
         type="url"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) =&gt; onChange(e.target.value)}
         placeholder="أدخل رابط الصورة"
         className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-      />
-    </div>
+      /&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>

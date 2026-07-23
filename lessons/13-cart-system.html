@@ -52,6 +52,14 @@
           <li>إضافة localStorage لحفظ السلة</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 مقدمة للدرس</div>
+          <div class="callout-content">
+            <p>أهلاً بيك في الدرس التالت عشر! في الدرس ده هنتعلم نبني نظام سلة مشتريات كامل. السلة دي من أهم مكونات أي متجر إلكتروني - بدونها المستخدم مش هيبقى يقدر يشتري أي حاجة!</p>
+            <p>خلال الدرس ده هنعمل كل حاجة من الصفر: هنعرف إزاي نخزن المنتجات اللي المستخدم اختارها، وإزاي نحسب الإجماليات، وإزاي نخزن كل ده في المتصفح عشان ما يضيعش لو المستخدم أغلق الصفحة.</p>
+          </div>
+        </div>
+
         <h2>📁 هيكل ملفات نظام السلة</h2>
 
         <div class="file-tree">
@@ -66,8 +74,22 @@
           <div class="file-tree-item file">└── 📄 page.js                 # صفحة السلة</div>
         </div>
 
+        <p>قبل ما نبدأ، خليني أشرحلك هيكل الملفات ده. كل ملف ليه دور معين:</p>
+        <ul>
+          <li><strong>CartContext.jsx</strong> - ده الملف الأهم، فيه كل المنطق بتاع السلة: إضافة منتجات، حذف، تحديث الكمية، وحساب الإجماليات</li>
+          <li><strong>CartProvider.jsx</strong> - مكون بسيط بيلف التطبيق كله بسياق السلة</li>
+          <li><strong>CartItem.jsx</strong> - بطاقة بتمثل كل منتج في السلة مع صورته واسمه وكميته وسعره</li>
+          <li><strong>CartSummary.jsx</strong> - ملخص بيعرض الإجماليات: المجموع الفرعي، الشحن، الضرائب، والإجمالي الكلي</li>
+          <li><strong>EmptyCart.jsx</strong> - صفحة بتظهر لما السلة تكون فاضية</li>
+          <li><strong>page.js</strong> - الصفحة الرئيسية للسلة اللي بتجمع كل المكونات دول</li>
+        </ul>
+
         <h2>🛒 الخطوة 1: CartContext</h2>
-        <p>الآن نبني السياق لإدارة حالة السلة:</p>
+        <p>الآن نبني السياق لإدارة حالة السلة. السياق (Context) ده أداة في React بتسمحلك تبعت بيانات بين المكونات من غير ما تحتاج تمررها كـ props في كل مرة.</p>
+        
+        <p>يعني إيه؟ يعني لو عندك مكون الـ Header عايز يعرف عدد المنتجات في السلة، ومكون السلة عايز يضيف منتجات، ومكون صفحة الدفع عايز يعرف المنتجات اللي في السلة - كلهم محتاجين يوصلوا لنفس البيانات. بدل ما نمرر البيانات في كل مكان، بنستخدم Context وبنخزن البيانات في مكان واحد كلهم بيوصلوا ليه.</p>
+
+        <p>بنستخدم <code>useReducer</code> هنا بدلاً من <code>useState</code> لأن حالة السلة معقدة شوية - فيها إضافة وحذف وتحديث وحسابات. الـ useReducer بيفرّق منطق التحديث عن المكونات وبيخلي الكود أسهل في الصيانة.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -276,7 +298,30 @@ export function useCart() {
           </div>
         </div>
 
+        <h3>شرح تفصيلي للكود:</h3>
+        <p>خليني أشرحلك كل جزء في الكود ده:</p>
+        <ul>
+          <li><strong>CART_ACTIONS</strong> - ده object فيه كل الإجراءات اللي ممكن نعملها على السلة: إضافة منتج، حذف منتج، تحديث الكمية، تفريغ السلة، وتحميل السلة من التخزين المحلي</li>
+          <li><strong>cartReducer</strong> - ده الـ function اللي بتاخد الحالة الحالية + إجراء وترجع حالة جديدة. زي ما المكان بياخد طلب ويرجع نتيجة</li>
+          <li><strong>addItem</strong> - لما المستخدم يضغط "أضف للسلة"، بنستدعي الدالة دي وبتبعت الإجراء للـ reducer</li>
+          <li><strong>removeItem</strong> - لما المستخدم يضغط "حذف"، بنحذف المنتج من المصفوفة</li>
+          <li><strong>updateQuantity</strong> - لما المستخدم يغير الكمية (+1 أو -1)</li>
+          <li><strong>getTotals</strong> - دالة بتحسب كل الإجماليات: المجموع الفرعي، الشحن، الضرائب، والإجمالي الكلي</li>
+        </ul>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ أخطاء شائعة</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>خطأ شائع 1:</strong> نسيان التحقق من نفس المقاس واللون عند إضافة منتج. لو المنتج نفسه بس مقاس مختلف، لازم يبقى منتج منفصل في السلة!</li>
+              <li><strong>خطأ شائع 2:</strong> استخدام <code>state.items.push()</code> بدلاً من <code>spread operator [...state.items, newItem]</code>. الـ state لازم يبقى immutable (ثابت)، يعني ما نعدّلهوش مباشرة</li>
+              <li><strong>خطأ شائع 3:</strong> نسيان معالجة الأخطاء في <code>localStorage</code>. ممكن يحصل خطأ لو المتصفح ما بيدعمش التخزين المحلي</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>📦 الخطوة 2: مزود السلة</h2>
+        <p>الآن محتاجين نعمل مزود (Provider) بسيط يلف التطبيق كله بسياق السلة. المزود ده بيخلي أي مكون في التطبيق يقدر يستخدم الـ <code>useCart</code> hook.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -293,6 +338,8 @@ export default function CartProvider({ children }) {
         </div>
 
         <h3>ربط المزود بالتطبيق:</h3>
+        <p>الآن لازم نربط الـ CartProvider بالتطبيق كله عشان كل المكونات تقدر توصل للسلة. بنعمل ده في ملف <code>layout.js</code>:</p>
+
         <div class="code-block">
           <div class="code-block-header">
             <span class="code-block-title">app/layout.js</span>
@@ -316,7 +363,24 @@ export default function RootLayout({ children }) {
 }</code></pre>
         </div>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة مهمة</div>
+          <div class="callout-content">
+            <p>لاحظ إننا بنلف CartProvider بـ ToastProvider (مش العكس). السبب إننا عايزين الـ Toast يبقى متاح لكل المكونات包含在内的所有组件. لو حطين CartProvider في الأول، مش هنقدر نستخدم الـ Toast في أخطاء السلة!</p>
+          </div>
+        </div>
+
         <h2>🛒 الخطوة 3: صفحة السلة</h2>
+        <p>الآن بنعمل الصفحة الرئيسية للسلة. الصفحة دي بتجمع كل مكونات السلة مع بعض: قائمة المنتجات، ملخص الطلب، وزر إتمام الشراء.</p>
+
+        <p>في الصفحة دي بنعمل أشياء مهمة:</p>
+        <ul>
+          <li>بنتحقق هل السلة فاضية ولا فيها منتجات</li>
+          <li>بنعرض loading spinner أثناء تحميل السلة</li>
+          <li>بنعرض منتجات السلة في مكون CartItem</li>
+          <li>بنعرض ملخص الطلب في مكون CartSummary</li>
+          <li>بنضيف زر "تفريغ السلة" و"متابعة التسوق"</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -396,7 +460,27 @@ export default function CartPage() {
 }</code></pre>
         </div>
 
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ أخطاء شائعة في صفحة السلة</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>خطأ شائع 1:</strong> استخدام <code>key={item.id}</code> بس. لو نفس المنتج بس مقاسات مختلفة، الـ key لازم يكون <code>key={`\${item.id}-\${item.selectedSize}-\${item.selectedColor}`}</code></li>
+              <li><strong>خطأ شائع 2:</strong> نسيان التحقق من <code>isLoading</code>. لو المستخدم فتح الصفحة قبل ما السلة تتحمل، هيكون في مشكلة</li>
+              <li><strong>خطأ شائع 3:</strong> استخدام <code>items.length === 0</code> قبل التحقق من <code>isLoading</code>. لازم الأول نتأكد إن التحميل خلص</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>📝 الخطوة 4: عنصر السلة</h2>
+        <p>الآن بنعمل مكون CartItem اللي بيمثل كل منتج في السلة. كل منتج بيعرض: صورته، اسمه، المقاس واللون (لو موجودين)، الكمية، والسعر.</p>
+
+        <p>في المكون ده بنستخدم أشياء مهمة:</p>
+        <ul>
+          <li><code>useCart()</code> للوصول لدوال الحذف وتحديث الكمية</li>
+          <li>أزرار + و - لتحديث الكمية</li>
+          <li>زر الحذف (سلة المهملات)</li>
+          <li>حساب السعر الإجمالي للمنتج = السعر × الكمية</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -504,7 +588,24 @@ export default function CartItem({ item }) {
 }</code></pre>
         </div>
 
+        <h3>شرح مكون CartItem:</h3>
+        <p>خليني أشرحلك أهم أجزاء المكون ده:</p>
+        <ul>
+          <li><strong>handleQuantityChange:</strong> لما المستخدم يضغط + أو -، الدالة دي بتستدعي <code>updateQuantity</code> بالكمية الجديدة</li>
+          <li><strong>disabled={item.quantity &lt;= 1}:</strong> لو الكمية 1، زر الناقص (-) بيتعطّل عشان ما ننزلش الكمية تحت الصفر</li>
+          <li><strong>`${(item.price * item.quantity).toFixed(2)}`:</strong> بنحسب السعر الإجمالي للمنتج = السعر × الكمية. الـ <code>toFixed(2)</code> بيخلّي الرقم يعرض بعشريتين (مثلاً 99.99)</li>
+          <li><strong>{item.quantity &gt; 1 && ...}:</strong> لو الكمية أكبر من 1، بنعرض السعر للواحدة تحت السعر الإجمالي</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة للتصميم</div>
+          <div class="callout-content">
+            <p>لاحظ إننا بنستخدم <code>truncate</code> على اسم المنتج. لو الاسم طويل أوي، هيتعمله نقاط (...) بدل ما يكسر التصميم. دي من أفضل الممارسات في تصميم البطاقات!</p>
+          </div>
+        </div>
+
         <h2>📊 الخطوة 5: ملخص السلة</h2>
+        <p>الآن بنعمل ملخص الطلب اللي بيعرض كل الإجماليات: المجموع الفرعي، الشحن، الضرائب، والإجمالي الكلي. كمان فيه زر "إتمام الشراء" والرسائل الترويجية.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -589,7 +690,15 @@ export default function CartSummary({ totals }) {
 }</code></pre>
         </div>
 
+        <h3>شرح مكون CartSummary:</h3>
+        <ul>
+          <li><strong>sticky top-24:</strong> الـ summary بيفضل ثابت في الشاشة لو المستخدم scrolledDown. ده تجربة مستخدم ممتازة!</li>
+          <li><strong>الشحن المجاني:</strong> لو المجموع الفرعي أكبر من 50 دولار، الشحن بيبقى مجاني. لو أقل، بنعرض رسالة بتقول المستخدم محتاج يضيف قد إيه عشان يحصل على الشحن المجاني</li>
+          <li><strong>Trust Badges:</strong> أيقونات بتبين للمستخدم إن المتجر آمن وموثوق. دي بتزود ثقة المستخدم وتخليه يكمل عملية الشراء</li>
+        </ul>
+
         <h2>🛒 الخطوة 6: السلة الفارغة</h2>
+        <p>لو المستخدم فتح صفحة السلة وهي فاضية، لازم نعرض له رسالة جميلة تقوله "السلة فارغة" ودالة توعيه يبدأ التسوق.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -675,6 +784,21 @@ export default function RootLayout({ children }) {
 }</code></pre>
         </div>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 كيف يعمل النظام كله مع بعض؟</div>
+          <div class="callout-content">
+            <p>خليني أشرحلك التدفق الكامل:</p>
+            <ol>
+              <li>المستخدم بيفتح صفحة المنتج ويضغط "أضف للسلة"</li>
+              <li>المنتج بيتنفذ في <code>addItem</code> في CartContext</li>
+              <li>الـ reducer بيحفظ المنتج في الـ state</li>
+              <li>الـ useEffect بيحفظ التغييرات في <code>localStorage</code></li>
+              <li>عدد المنتجات في Header بيتحدث تلقائياً</li>
+              <li>لو المستخدم فتح صفحة السلة، هيلاقي المنتج اللي أضافه!</li>
+            </ol>
+          </div>
+        </div>
+
         <h2>📝 ملخص الدرس</h2>
         <p>في الدرس ده بنينا:</p>
         <ul>
@@ -688,9 +812,21 @@ export default function RootLayout({ children }) {
         </ul>
 
         <div class="callout callout-success">
+          <div class="callout-title">🎯 تمارين للتدريب</div>
+          <div class="callout-content">
+            <ul>
+              <li>حاول تضيف خاصية "حفظ للقراءة لاحقاً" في المفضلة</li>
+              <li>حاول تضيف إشعار toast كل ما المستخدم يضيف منتج للسلة</li>
+              <li>حاول تضيف خاصية "تطبيق كوبون خصم" في ملخص الطلب</li>
+              <li>حاول تضيف animation على المنتج الجديد لما يتنضاف للسلة</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout callout-info">
           <div class="callout-title">🎉 الدرس الجاي</div>
           <div class="callout-content">
-            في الدرس الجاي هنبني <strong>صفحة Checkout</strong> لإتمام عملية الشراء.
+            في الدرس الجاي هنبني <strong>صفحة Checkout</strong> لإتمام عملية الشراء. هنتعلم إزاي نبني نموذج الشحن، ونختار طريقة الدفع، ونؤكد الطلب. استعد!</li>
           </div>
         </div>
 

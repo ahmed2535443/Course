@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -44,6 +44,7 @@
       <div class="lesson-body">
 
         <h2>🎯 أهداف الدرس</h2>
+        <p>أهلاً بيك في الدرس السابع والأخير في الوحدة التانية! في الدرس ده هنتعلم إزاي نحمي صفحات Admin ونتحكم في مين يقدر يدخل على صفحات معينة. ده مهم جداً لأمان أي مشروع إلكتروني.</p>
         <ul>
           <li>إعداد Middleware لحماية المسارات</li>
           <li>حماية صفحات Admin</li>
@@ -52,20 +53,30 @@
           <li>إعادة التوجيه (Redirect) بشكل صحيح</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه الحماية مهمة؟</div>
+          <div class="callout-content">
+            بدون حماية صحيحة، أي حد يقدر يفتح صفحات Admin ويعدّل في البيانات أو يمسحها. ده ممكن يسبب مشاكل كبيرة. الحماية بتطمن إن بس الأشخاص المصرح لهم يقدروا يوصلوا للصفحات الحساسة.
+          </div>
+        </div>
+
         <h2>🛡️什么是 Middleware؟</h2>
-        <p><strong>Middleware</strong> في Next.js هو كود بيشتغل قبل ما الطلب يوصل للصفحة. ممكن نستخدمه للتحقق من المصادقة وحماية المسارات.</p>
+        <p><strong>Middleware</strong> في Next.js هو كود بيشتغل قبل ما الطلب يوصل للصفحة. يعني لو حد زار /admin، الـ Middleware بيشتغل الأول وبيقرر يسيبه يدخل ولا يعيد توجيهه.</p>
+        
+        <p>تخيّل إن الـ Middleware زي الحارس على باب المبنى. قبل ما حد يدخل، الحارس بيسأله: "مين أنت؟ عندك تصريح؟" لو الإجابة صح، بيسيبه يدخل. لو لأ، بيرجّعه.</p>
 
         <h3>استخدامات Middleware:</h3>
         <ul>
-          <li>حماية المسارات المحمية</li>
-          <li>إعادة التوجيه بناءً على الحالة</li>
-          <li>إضافة headers إضافية</li>
-          <li>التحقق من الصلاحيات</li>
+          <li>حماية المسارات المحمية (زي صفحات Admin)</li>
+          <li>إعادة التوجيه بناءً على الحالة (لو مش مسجل دخول)</li>
+          <li>إضافة headers إضافية للطلب</li>
+          <li>التحقق من الصلاحيات (Admin ولا مستخدم عادي)</li>
           <li>إعادة كتابة الروابط (Rewriting)</li>
+          <li>فحص اللغة أو المنطقة الجغرافية</li>
         </ul>
 
         <h2>🔧 الخطوة 1: إعداد Middleware</h2>
-        <p>أنشئ ملف <code>middleware.js</code> في جذر المشروع:</p>
+        <p>أنشئ ملف <code>middleware.js</code> في جذر المشروع (مش جوا مجلد app):</p>
 
         <div class="file-tree">
           <div class="file-tree-item folder">📁 market/</div>
@@ -150,10 +161,10 @@ export const config = {
           <div class="callout-title">💡 شرح الكود</div>
           <div class="callout-content">
             <ul>
-              <li><code>createRouteMatcher</code> - دالة بتساعدك تحدد المسارات</li>
+              <li><code>createRouteMatcher</code> - دالة بتساعدك تحدد المسارات بشكل سهل</li>
               <li><code>clerkMiddleware</code> - Middleware خاص بـ Clerk للمصادقة</li>
               <li><code>auth()</code> - بيرجع معلومات المستخدم الحالي</li>
-              <li><code>config.matcher</code> - بيحدد على أي طلبات يشتغل الـ Middleware</li>
+              <li><code>config.matcher</code> - بيحدد على أي طلبات يشتغل الـ Middleware (بيتخطى ملفات الصور والـ CSS)</li>
             </ul>
           </div>
         </div>
@@ -231,19 +242,19 @@ export default function AdminLayout({ children }) {
             href="/admin"
             className="block p-2 rounded hover:bg-gray-800 transition-colors"
           &gt;
-            📊 Dashboard
+            Dashboard
           &lt;/Link&gt;
           &lt;Link 
             href="/admin/products"
             className="block p-2 rounded hover:bg-gray-800 transition-colors"
           &gt;
-            📦 المنتجات
+            المنتجات
           &lt;/Link&gt;
           &lt;Link 
             href="/admin/orders"
             className="block p-2 rounded hover:bg-gray-800 transition-colors"
           &gt;
-            🛒 الطلبات
+            الطلبات
           &lt;/Link&gt;
         &lt;/nav&gt;
       &lt;/aside&gt;
@@ -256,6 +267,8 @@ export default function AdminLayout({ children }) {
   );
 }</code></pre>
         </div>
+
+        <p>الـ Layout ده بيعمل حاجتين مهمتين: أول حاجة بيتحقق إن المستخدم Admin، وثاني حاجة بيعرض شريط جانبي فيه روابط لوحة التحكم.</p>
 
         <h2>📊 الخطوة 4: صفحة Dashboard</h2>
 
@@ -294,7 +307,7 @@ export default async function AdminDashboard() {
         
         &lt;div className="bg-white p-6 rounded-lg shadow"&gt;
           &lt;h3 className="text-gray-500 text-sm"&gt;المبيعات&lt;/h3&gt;
-          &lt;p className="text-3xl font-bold"&gt;$0.00&lt;/p&gt;
+          &lt;p className="text-3xl font-bold"&gt;.00&lt;/p&gt;
         &lt;/div&gt;
       &lt;/div&gt;
       
@@ -309,7 +322,7 @@ export default async function AdminDashboard() {
         </div>
 
         <h2>🔐 الخطوة 5: حماية API Routes</h2>
-        <p>ممكن نحمي API Routes باستخدام Middleware أو Clerk مباشرة:</p>
+        <p>ممكن نحمي API Routes باستخدام Middleware أو Clerk مباشرة. ده مهم عشان حتى لو حد عرف الـ URL بتاع الـ API، ما يقدرش يستخدمه من غير تصريح:</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -379,7 +392,7 @@ export async function POST(request) {
         </div>
 
         <h2>🔄 الخطوة 6: إعادة التوجيه الذكية</h2>
-        <p>ممكن نحسن تجربة المستخدم بإعادة توجيه ذكية:</p>
+        <p>ممكن نحسن تجربة المستخدم بإعادة توجيه ذكية. مثلاً لو المستخدم كان عايز يدخل صفحة معينة ولّحه لتسجيل الدخول، بعد التسجيل يرجع تاني للصفحة الأصلية:</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -473,6 +486,30 @@ export default clerkMiddleware(async (auth, req) => {
           </table>
         </div>
 
+        <h2>🔍 استكشاف الأخطاء</h2>
+
+        <h3>مشكلة: الـ Middleware مش شغال</h3>
+        <p>لو الحماية مش بتشتغل:</p>
+        <ul>
+          <li>تأكد إن ملف middleware.js في جذر المشروع (مش جوا مجلد app)</li>
+          <li>تأكد إنك ما حطيتش middleware.js في مجلد خطأ</li>
+          <li>أعد تشغيل خادم التطوير بعد إنشاء الملف</li>
+        </ul>
+
+        <h3>مشكلة: إعادة توجيه لا نهائية</h3>
+        <p>لو الصفحة بتعمل reload باستمرار:</p>
+        <ul>
+          <li>تأكد إن صفحات Auth (/sign-in, /sign-up) موجودة في publicPaths</li>
+          <li>تأكد إن في حلقة لا نهائية في شروط الإعادة</li>
+        </ul>
+
+        <h3>مشكلة: المستخدم العادي بيدخل صفحات Admin</h3>
+        <ul>
+          <li>تأكد إن الشرط بيتحقق من الصلاحيات صح</li>
+          <li>جرّب تطبع userId في Console وتشوف قيمته</li>
+          <li>تأكد إن التحقق من Admin بيتم صح</li>
+        </ul>
+
         <h2>📝 ملخص الدرس</h2>
         <p>في الدرس ده عملنا:</p>
         <ul>
@@ -487,14 +524,14 @@ export default clerkMiddleware(async (auth, req) => {
         <div class="callout callout-success">
           <div class="callout-title">🎉 مبروك!</div>
           <div class="callout-content">
-            كده خلّصنا الوحدة الثانية! عندك الآن قاعدة بيانات مع Supabase ونظام مصادقة مع Clerk وحماية للمسارات. في الوحدة الجاي هنبني واجهة المستخدم.
+            كده خلّصنا الوحدة الثانية! عندك الآن قاعدة بيانات مع Supabase ونظام مصادقة مع Clerk وحماية للمسارات. في الوحدة الجاي هنبني واجهة المستخدم للمتجر. مبروك عليك التقدم الكبير!
           </div>
         </div>
 
         <div class="callout callout-info">
           <div class="callout-title">💡 نصيحة أخيرة</div>
           <div class="callout-content">
-            دايماً اختبر حماية المسارات بشكل شامل. جرّب تسجل الدخول وبدون تسجيل، وجرّب الوصول لصفحات Admin بحساب عادي وحساب Admin.
+            دايماً اختبر حماية المسارات بشكل شامل. جرّب تسجل الدخول وبدون تسجيل، وجرّب الوصول لصفحات Admin بحساب عادي وحساب Admin. كل حالة لازم تشتغل صح.
           </div>
         </div>
 

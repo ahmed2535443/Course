@@ -52,6 +52,14 @@
           <li>عرض عدد العناصر في المفضلة في Header</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 مقدمة للدرس</div>
+          <div class="callout-content">
+            <p>أهلاً بيك في الدرس الستاشر! في الدرس ده هنبني نظام المفضلة. نظام المفضلة ده من أكتر المميزات المحبوبة في المتاجر الإلكترونية - بيسمح للمستخدم يحفظ المنتجات اللي عجبته عشان يرجع ليها لاحقاً.</p>
+            <p>في الدرس ده هنتعلم إزاي نستخدم localStorage عشان نحفظ المفضلة محلياً في المتصفح. يعني حتى لو المستخدم ما عندهوش حساب في المتجر، يقدر يحفظ منتجاته المفضلة!</p>
+          </div>
+        </div>
+
         <h2>📁 هيكل ملفات نظام المفضلة</h2>
 
         <div class="file-tree">
@@ -88,7 +96,7 @@ export function WishlistProvider({ children }) {
   const [isLoaded, setIsLoaded] = useState(false);
 
   // تحميل المفضلة من localStorage عند بدء التشغيل
-  useEffect(() => {
+  useEffect(() =&gt; {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -102,7 +110,7 @@ export function WishlistProvider({ children }) {
   }, []);
 
   // حفظ المفضلة في localStorage عند التغيير
-  useEffect(() => {
+  useEffect(() =&gt; {
     if (isLoaded) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
@@ -116,11 +124,11 @@ export function WishlistProvider({ children }) {
    * إضافة أو إزالة منتج من المفضلة
    * @param {Object} product - المنتج
    */
-  const toggleItem = (product) => {
-    setItems((prev) => {
-      const exists = prev.some((item) => item.id === product.id);
+  const toggleItem = (product) =&gt; {
+    setItems((prev) =&gt; {
+      const exists = prev.some((item) =&gt; item.id === product.id);
       if (exists) {
-        return prev.filter((item) => item.id !== product.id);
+        return prev.filter((item) =&gt; item.id !== product.id);
       } else {
         return [...prev, {
           id: product.id,
@@ -138,8 +146,8 @@ export function WishlistProvider({ children }) {
    * إزالة منتج من المفضلة
    * @param {string} productId - معرف المنتج
    */
-  const removeItem = (productId) => {
-    setItems((prev) => prev.filter((item) => item.id !== productId));
+  const removeItem = (productId) =&gt; {
+    setItems((prev) =&gt; prev.filter((item) =&gt; item.id !== productId));
   };
 
   /**
@@ -147,14 +155,14 @@ export function WishlistProvider({ children }) {
    * @param {string} productId - معرف المنتج
    * @returns {boolean} - هل المنتج في المفضلة
    */
-  const isInWishlist = (productId) => {
-    return items.some((item) => item.id === productId);
+  const isInWishlist = (productId) =&gt; {
+    return items.some((item) =&gt; item.id === productId);
   };
 
   /**
    * مسح جميع العناصر من المfavorite
    */
-  const clearWishlist = () => {
+  const clearWishlist = () =&gt; {
     setItems([]);
   };
 
@@ -174,9 +182,9 @@ export function WishlistProvider({ children }) {
   };
 
   return (
-    <WishlistContext.Provider value={value}>
+    &lt;WishlistContext.Provider value={value}&gt;
       {children}
-    </WishlistContext.Provider>
+    &lt;/WishlistContext.Provider&gt;
   );
 }
 
@@ -195,7 +203,7 @@ export function useWishlist() {
         <div class="callout callout-info">
           <div class="callout-title">💡 لماذا localStorage؟</div>
           <div class="callout-content">
-            نستخدم localStorage لتخزين المفضلة محلياً حتى لو المستخدم غير مسجل دخول. هذا يعطي تجربة مستخدم أفضل لأن المستخدم يقدر يحفظ منتجاته المفضلة بدون تسجيل دخول. إذا أردت مزامنة المفضلة مع حساب المستخدم، يمكنك استخدام Supabase.
+            <p>نستخدم localStorage لتخزين المفضلة محلياً حتى لو المستخدم غير مسجل دخول. هذا يعطي تجربة مستخدم أفضل لأن المستخدم يقدر يحفظ منتجاته المفضلة بدون تسجيل دخول. إذا أردت مزامنة المفضلة مع حساب المستخدم، يمكنك استخدام Supabase.</p>
           </div>
         </div>
 
@@ -222,113 +230,111 @@ export default function WishlistPage() {
 
   if (!isLoaded) {
     return (
-      <Container className="py-16">
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <p className="mt-4 text-gray-400">جاري التحميل...</p>
-        </div>
-      </Container>
+      &lt;Container className="py-16"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" /&gt;
+          &lt;p className="mt-4 text-gray-400"&gt;جاري التحميل...&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/Container&gt;
     );
   }
 
   return (
-    <Container className="py-16">
-      <div className="max-w-6xl mx-auto">
+    &lt;Container className="py-16"&gt;
+      &lt;div className="max-w-6xl mx-auto"&gt;
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-2">
-              <Heart className="inline-block w-8 h-8 ml-3 text-pink-500" />
+        &lt;div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8"&gt;
+          &lt;div&gt;
+            &lt;h1 className="text-3xl font-bold text-white mb-2"&gt;
+              &lt;Heart className="inline-block w-8 h-8 ml-3 text-pink-500" /&gt;
               المفضلة
-            </h1>
-            <p className="text-gray-400">
-              {itemCount > 0 
+            &lt;/h1&gt;
+            &lt;p className="text-gray-400"&gt;
+              {itemCount &gt; 0 
                 ? `لديك ${itemCount} منتج في المفضلة`
                 : 'لم تобав أي منتج بعد'
               }
-            </p>
-          </div>
+            &lt;/p&gt;
+          &lt;/div&gt;
 
-          {itemCount > 0 && (
-            <Button
+          {itemCount &gt; 0 && (
+            &lt;Button
               variant="secondary"
               onClick={clearWishlist}
               className="text-red-400 hover:text-red-300"
-            >
-              <Trash2 className="w-5 h-5 ml-2" />
+            &gt;
+              &lt;Trash2 className="w-5 h-5 ml-2" /&gt;
               مسح الكل
-            </Button>
+            &lt;/Button&gt;
           )}
-        </div>
+        &lt;/div&gt;
 
         {/* Empty State */}
         {itemCount === 0 ? (
-          <Card variant="glass" className="text-center py-16">
-            <motion.div
+          &lt;Card variant="glass" className="text-center py-16"&gt;
+            &lt;motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            >
-              <Heart className="w-24 h-24 text-gray-600 mx-auto mb-6" />
-            </motion.div>
-            <h2 className="text-2xl font-bold text-white mb-4">
+            &gt;
+              &lt;Heart className="w-24 h-24 text-gray-600 mx-auto mb-6" /&gt;
+            &lt;/motion.div&gt;
+            &lt;h2 className="text-2xl font-bold text-white mb-4"&gt;
               المفضلة فارغة
-            </h2>
-            <p className="text-gray-400 mb-8 max-w-md mx-auto">
+            &lt;/h2&gt;
+            &lt;p className="text-gray-400 mb-8 max-w-md mx-auto"&gt;
               أضف المنتجات التي تحبها عن طريق الضغط على أيقونة القلب
-            </p>
-            <Link href="/products">
-              <Button>
-                <ShoppingBag className="w-5 h-5 ml-2" />
+            &lt;/p&gt;
+            &lt;Link href="/products"&gt;
+              &lt;Button&gt;
+                &lt;ShoppingBag className="w-5 h-5 ml-2" /&gt;
                 تصفح المنتجات
-                <ArrowRight className="w-5 h-5 mr-2" />
-              </Button>
-            </Link>
-          </Card>
+                &lt;ArrowRight className="w-5 h-5 mr-2" /&gt;
+              &lt;/Button&gt;
+            &lt;/Link&gt;
+          &lt;/Card&gt;
         ) : (
           <>
             {/* Wishlist Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              <AnimatePresence>
-                {items.map((item) => (
-                  <motion.div
+            &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"&gt;
+              &lt;AnimatePresence&gt;
+                {items.map((item) =&gt; (
+                  &lt;motion.div
                     key={item.id}
                     layout
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.3 }}
-                  >
-                    <ProductCard
+                  &gt;
+                    &lt;ProductCard
                       product={item}
                       isInWishlist={true}
-                      onToggleWishlist={() => removeItem(item.id)}
-                    />
-                  </motion.div>
+                      onToggleWishlist={() =&gt; removeItem(item.id)}
+                    /&gt;
+                  &lt;/motion.div&gt;
                 ))}
-              </AnimatePresence>
-            </div>
+              &lt;/AnimatePresence&gt;
+            &lt;/div&gt;
 
             {/* Continue Shopping */}
-            <div className="mt-12 text-center">
-              <Link href="/products">
-                <Button variant="secondary">
-                  <ArrowRight className="w-5 h-5 ml-2" />
+            &lt;div className="mt-12 text-center"&gt;
+              &lt;Link href="/products"&gt;
+                &lt;Button variant="secondary"&gt;
+                  &lt;ArrowRight className="w-5 h-5 ml-2" /&gt;
                   متابعة التسوق
-                </Button>
-              </Link>
-            </div>
+                &lt;/Button&gt;
+              &lt;/Link&gt;
+            &lt;/div&gt;
           </>
         )}
-      </div>
-    </Container>
+      &lt;/div&gt;
+    &lt;/Container&gt;
   );
 }</code></pre>
         </div>
 
         <h2>🛒 الخطوة 3: زر القلب في ProductCard</h2>
-
-        <p>بنينا زر القلب في بطاقة المنتج لتمكين المستخدم من إضافة أو إزالة المنتج من المفضلة:</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -354,10 +360,10 @@ export default function ProductCard({ product, isInWishlist: externalIsInWishlis
 
   // استخدام الحالة الخارجية إذا كانت محددة، وإلا نستخدم Context
   const isInWishlist = externalIsInWishlist !== undefined 
-    ? externalIsInInWishlist 
+    ? externalIsInWishlist 
     : checkIsInWishlist(product.id);
 
-  const handleToggleWishlist = (e) => {
+  const handleToggleWishlist = (e) =&gt; {
     e.preventDefault();
     e.stopPropagation();
     
@@ -368,59 +374,59 @@ export default function ProductCard({ product, isInWishlist: externalIsInWishlis
     }
   };
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = (e) =&gt; {
     e.preventDefault();
     e.stopPropagation();
     addItem(product);
   };
 
   return (
-    <motion.div
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+    &lt;motion.div
+      onHoverStart={() =&gt; setIsHovered(true)}
+      onHoverEnd={() =&gt; setIsHovered(false)}
       className="group"
-    >
-      <Link href={`/products/${product.slug || product.id}`}>
-        <div className="relative bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10">
+    &gt;
+      &lt;Link href={`/products/${product.slug || product.id}`}&gt;
+        &lt;div className="relative bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/10"&gt;
           
           {/* Image Container */}
-          <div className="relative aspect-square overflow-hidden bg-gray-900">
+          &lt;div className="relative aspect-square overflow-hidden bg-gray-900"&gt;
             {product.image ? (
-              <Image
+              &lt;Image
                 src={product.image}
                 alt={product.name}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-110"
-              />
+              /&gt;
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-600">
-                <ShoppingCart className="w-16 h-16" />
-              </div>
+              &lt;div className="w-full h-full flex items-center justify-center text-gray-600"&gt;
+                &lt;ShoppingCart className="w-16 h-16" /&gt;
+              &lt;/div&gt;
             )}
 
             {/* Overlay */}
-            <div className={cn(
+            &lt;div className={cn(
               "absolute inset-0 bg-black/40 flex items-center justify-center gap-4 transition-opacity duration-300",
               isHovered ? "opacity-100" : "opacity-0"
-            )}>
-              <Button
+            )}&gt;
+              &lt;Button
                 size="sm"
                 onClick={handleAddToCart}
                 className="rounded-full"
-              >
-                <ShoppingCart className="w-5 h-5" />
-              </Button>
-              <Button
+              &gt;
+                &lt;ShoppingCart className="w-5 h-5" /&gt;
+              &lt;/Button&gt;
+              &lt;Button
                 size="sm"
                 variant="secondary"
                 className="rounded-full"
-              >
-                <Eye className="w-5 h-5" />
-              </Button>
-            </div>
+              &gt;
+                &lt;Eye className="w-5 h-5" /&gt;
+              &lt;/Button&gt;
+            &lt;/div&gt;
 
             {/* Wishlist Button */}
-            <motion.button
+            &lt;motion.button
               onClick={handleToggleWishlist}
               className={cn(
                 "absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300",
@@ -429,72 +435,72 @@ export default function ProductCard({ product, isInWishlist: externalIsInWishlis
                   : "bg-black/50 text-white hover:bg-pink-500"
               )}
               whileTap={{ scale: 0.8 }}
-            >
-              <Heart
+            &gt;
+              &lt;Heart
                 className={cn(
                   "w-5 h-5 transition-all duration-300",
                   isInWishlist && "fill-current"
                 )}
-              />
-            </motion.button>
+              /&gt;
+            &lt;/motion.button&gt;
 
             {/* Sale Badge */}
-            {product.originalPrice && product.originalPrice > product.price && (
-              <div className="absolute top-3 left-3 px-3 py-1 bg-red-500 text-white text-sm font-bold rounded-full">
+            {product.originalPrice && product.originalPrice &gt; product.price && (
+              &lt;div className="absolute top-3 left-3 px-3 py-1 bg-red-500 text-white text-sm font-bold rounded-full"&gt;
                 -{Math.round((1 - product.price / product.originalPrice) * 100)}%
-              </div>
+              &lt;/div&gt;
             )}
-          </div>
+          &lt;/div&gt;
 
           {/* Content */}
-          <div className="p-4">
+          &lt;div className="p-4"&gt;
             {/* Category */}
             {product.category && (
-              <p className="text-indigo-400 text-sm mb-1">{product.category}</p>
+              &lt;p className="text-indigo-400 text-sm mb-1"&gt;{product.category}&lt;/p&gt;
             )}
 
             {/* Name */}
-            <h3 className="text-white font-medium mb-2 line-clamp-2 group-hover:text-indigo-400 transition-colors">
+            &lt;h3 className="text-white font-medium mb-2 line-clamp-2 group-hover:text-indigo-400 transition-colors"&gt;
               {product.name}
-            </h3>
+            &lt;/h3&gt;
 
             {/* Rating */}
             {product.rating && (
-              <div className="flex items-center gap-1 mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star
+              &lt;div className="flex items-center gap-1 mb-2"&gt;
+                {[...Array(5)].map((_, i) =&gt; (
+                  &lt;Star
                     key={i}
                     className={cn(
                       "w-4 h-4",
-                      i < product.rating
+                      i &lt; product.rating
                         ? "text-yellow-400 fill-current"
                         : "text-gray-600"
                     )}
-                  />
+                  /&gt;
                 ))}
                 {product.reviewCount && (
-                  <span className="text-gray-400 text-sm mr-2">
+                  &lt;span className="text-gray-400 text-sm mr-2"&gt;
                     ({product.reviewCount})
-                  </span>
+                  &lt;/span&gt;
                 )}
-              </div>
+              &lt;/div&gt;
             )}
 
             {/* Price */}
-            <div className="flex items-center gap-2">
-              <span className="text-white font-bold text-lg">
+            &lt;div className="flex items-center gap-2"&gt;
+              &lt;span className="text-white font-bold text-lg"&gt;
                 ${product.price.toFixed(2)}
-              </span>
-              {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-gray-500 line-through text-sm">
+              &lt;/span&gt;
+              {product.originalPrice && product.originalPrice &gt; product.price && (
+                &lt;span className="text-gray-500 line-through text-sm"&gt;
                   ${product.originalPrice.toFixed(2)}
-                </span>
+                &lt;/span&gt;
               )}
-            </div>
-          </div>
-        </div>
-      </Link>
-    </motion.div>
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/Link&gt;
+    &lt;/motion.div&gt;
   );
 }</code></pre>
         </div>
@@ -549,172 +555,170 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-black/20 backdrop-blur-xl border-b border-white/10">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    &lt;header className="sticky top-0 z-50 bg-black/20 backdrop-blur-xl border-b border-white/10"&gt;
+      &lt;div className="container mx-auto px-4"&gt;
+        &lt;div className="flex items-center justify-between h-16"&gt;
           
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-              <span className="text-white font-bold text-xl">M</span>
-            </div>
-            <span className="text-white font-bold text-xl hidden sm:block">
+          &lt;Link href="/" className="flex items-center gap-2"&gt;
+            &lt;div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center"&gt;
+              &lt;span className="text-white font-bold text-xl"&gt;M&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;span className="text-white font-bold text-xl hidden sm:block"&gt;
               Market
-            </span>
-          </Link>
+            &lt;/span&gt;
+          &lt;/Link&gt;
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
+          &lt;nav className="hidden md:flex items-center gap-8"&gt;
+            {navLinks.map((link) =&gt; (
+              &lt;Link
                 key={link.href}
                 href={link.href}
                 className="text-gray-300 hover:text-white transition-colors"
-              >
+              &gt;
                 {link.label}
-              </Link>
+              &lt;/Link&gt;
             ))}
-          </nav>
+          &lt;/nav&gt;
 
           {/* Actions */}
-          <div className="flex items-center gap-4">
+          &lt;div className="flex items-center gap-4"&gt;
             {/* Search */}
-            <button className="p-2 text-gray-300 hover:text-white transition-colors">
-              <Search className="w-5 h-5" />
-            </button>
+            &lt;button className="p-2 text-gray-300 hover:text-white transition-colors"&gt;
+              &lt;Search className="w-5 h-5" /&gt;
+            &lt;/button&gt;
 
             {/* Wishlist */}
-            <Link href="/wishlist" className="relative p-2 text-gray-300 hover:text-white transition-colors">
-              <Heart className="w-5 h-5" />
-              {wishlistCount > 0 && (
-                <motion.span
+            &lt;Link href="/wishlist" className="relative p-2 text-gray-300 hover:text-white transition-colors"&gt;
+              &lt;Heart className="w-5 h-5" /&gt;
+              {wishlistCount &gt; 0 && (
+                &lt;motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center"
-                >
-                  {wishlistCount > 99 ? '99+' : wishlistCount}
-                </motion.span>
+                &gt;
+                  {wishlistCount &gt; 99 ? '99+' : wishlistCount}
+                &lt;/motion.span&gt;
               )}
-            </Link>
+            &lt;/Link&gt;
 
             {/* Cart */}
-            <Link href="/cart" className="relative p-2 text-gray-300 hover:text-white transition-colors">
-              <ShoppingCart className="w-5 h-5" />
-              {cartCount > 0 && (
-                <motion.span
+            &lt;Link href="/cart" className="relative p-2 text-gray-300 hover:text-white transition-colors"&gt;
+              &lt;ShoppingCart className="w-5 h-5" /&gt;
+              {cartCount &gt; 0 && (
+                &lt;motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   className="absolute -top-1 -right-1 w-5 h-5 bg-indigo-500 text-white text-xs rounded-full flex items-center justify-center"
-                >
-                  {cartCount > 99 ? '99+' : cartCount}
-                </motion.span>
+                &gt;
+                  {cartCount &gt; 99 ? '99+' : cartCount}
+                &lt;/motion.span&gt;
               )}
-            </Link>
+            &lt;/Link&gt;
 
             {/* User Menu */}
             {isSignedIn ? (
-              <div className="relative">
-                <button
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+              &lt;div className="relative"&gt;
+                &lt;button
+                  onClick={() =&gt; setUserMenuOpen(!userMenuOpen)}
                   className="p-2 text-gray-300 hover:text-white transition-colors"
-                >
-                  <User className="w-5 h-5" />
-                </button>
+                &gt;
+                  &lt;User className="w-5 h-5" /&gt;
+                &lt;/button&gt;
 
-                <AnimatePresence>
+                &lt;AnimatePresence&gt;
                   {userMenuOpen && (
-                    <motion.div
+                    &lt;motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       className="absolute left-0 mt-2 w-48 bg-gray-900 border border-white/10 rounded-xl shadow-xl overflow-hidden"
-                    >
-                      <Link
+                    &gt;
+                      &lt;Link
                         href="/orders"
                         className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 transition-colors"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <Package className="w-5 h-5" />
+                        onClick={() =&gt; setUserMenuOpen(false)}
+                      &gt;
+                        &lt;Package className="w-5 h-5" /&gt;
                         طلباتي
-                      </Link>
-                      <Link
+                      &lt;/Link&gt;
+                      &lt;Link
                         href="/settings"
                         className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-white/10 transition-colors"
-                        onClick={() => setUserMenuOpen(false)}
-                      >
-                        <Settings className="w-5 h-5" />
+                        onClick={() =&gt; setUserMenuOpen(false)}
+                      &gt;
+                        &lt;Settings className="w-5 h-5" /&gt;
                         الإعدادات
-                      </Link>
-                      <hr className="border-white/10" />
-                      <button
-                        onClick={() => {
+                      &lt;/Link&gt;
+                      &lt;hr className="border-white/10" /&gt;
+                      &lt;button
+                        onClick={() =&gt; {
                           setUserMenuOpen(false);
                           // Clerk signOut
                         }}
                         className="flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-white/10 transition-colors w-full"
-                      >
-                        <LogOut className="w-5 h-5" />
+                      &gt;
+                        &lt;LogOut className="w-5 h-5" /&gt;
                         تسجيل الخروج
-                      </button>
-                    </motion.div>
+                      &lt;/button&gt;
+                    &lt;/motion.div&gt;
                   )}
-                </AnimatePresence>
-              </div>
+                &lt;/AnimatePresence&gt;
+              &lt;/div&gt;
             ) : (
-              <Link href="/sign-in">
-                <Button variant="secondary" size="sm">
+              &lt;Link href="/sign-in"&gt;
+                &lt;Button variant="secondary" size="sm"&gt;
                   تسجيل الدخول
-                </Button>
-              </Link>
+                &lt;/Button&gt;
+              &lt;/Link&gt;
             )}
 
             {/* Mobile Menu Toggle */}
-            <button
+            &lt;button
               className="md:hidden p-2 text-gray-300 hover:text-white transition-colors"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
+              onClick={() =&gt; setMobileMenuOpen(!mobileMenuOpen)}
+            &gt;
               {mobileMenuOpen ? (
-                <X className="w-5 h-5" />
+                &lt;X className="w-5 h-5" /&gt;
               ) : (
-                <Menu className="w-5 h-5" />
+                &lt;Menu className="w-5 h-5" /&gt;
               )}
-            </button>
-          </div>
-        </div>
-      </div>
+            &lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
 
       {/* Mobile Menu */}
-      <AnimatePresence>
+      &lt;AnimatePresence&gt;
         {mobileMenuOpen && (
-          <motion.div
+          &lt;motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             className="md:hidden overflow-hidden bg-gray-900 border-t border-white/10"
-          >
-            <nav className="container mx-auto px-4 py-4 space-y-2">
-              {navLinks.map((link) => (
-                <Link
+          &gt;
+            &lt;nav className="container mx-auto px-4 py-4 space-y-2"&gt;
+              {navLinks.map((link) =&gt; (
+                &lt;Link
                   key={link.href}
                   href={link.href}
                   className="block px-4 py-3 text-gray-300 hover:bg-white/10 rounded-xl transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
+                  onClick={() =&gt; setMobileMenuOpen(false)}
+                &gt;
                   {link.label}
-                </Link>
+                &lt;/Link&gt;
               ))}
-            </nav>
-          </motion.div>
+            &lt;/nav&gt;
+          &lt;/motion.div&gt;
         )}
-      </AnimatePresence>
-    </header>
+      &lt;/AnimatePresence&gt;
+    &lt;/header&gt;
   );
 }</code></pre>
         </div>
 
         <h2>🔄 الخطوة 5: تثبيت Provider في Layout</h2>
-
-        <p>محتاجين نلف التطبيق بـ WishlistProvider حتى يمكن استخدام useWishlist في أي مكان:</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -761,8 +765,6 @@ export default function RootLayout({ children }) {
 
         <h2>✨ الخطوة 6: تأثيرات حركية للمفضلة</h2>
 
-        <p>نستخدم Framer Motion لإنشاء تأثيرات حركية جميلة عند إضافة أو إزالة المنتجات من المفضلة:</p>
-
         <div class="code-block">
           <div class="code-block-header">
             <span class="code-block-title">components/ui/WishlistAnimation.jsx</span>
@@ -775,27 +777,27 @@ import { Heart } from 'lucide-react';
 
 export function WishlistHeartAnimation({ isActive }) {
   return (
-    <AnimatePresence>
+    &lt;AnimatePresence&gt;
       {isActive && (
-        <motion.div
+        &lt;motion.div
           initial={{ scale: 0 }}
           animate={{ scale: [0, 1.4, 1] }}
           exit={{ scale: 0 }}
           transition={{ duration: 0.4 }}
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        >
-          <Heart className="w-20 h-20 text-pink-500 fill-current" />
-        </motion.div>
+        &gt;
+          &lt;Heart className="w-20 h-20 text-pink-500 fill-current" /&gt;
+        &lt;/motion.div&gt;
       )}
-    </AnimatePresence>
+    &lt;/AnimatePresence&gt;
   );
 }
 
 export function FloatingHearts() {
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {[...Array(6)].map((_, i) => (
-        <motion.div
+    &lt;div className="absolute inset-0 pointer-events-none overflow-hidden"&gt;
+      {[...Array(6)].map((_, i) =&gt; (
+        &lt;motion.div
           key={i}
           initial={{
             opacity: 1,
@@ -815,11 +817,11 @@ export function FloatingHearts() {
             ease: 'easeOut',
           }}
           className="absolute"
-        >
-          <Heart className="w-6 h-6 text-pink-500 fill-current" />
-        </motion.div>
+        &gt;
+          &lt;Heart className="w-6 h-6 text-pink-500 fill-current" /&gt;
+        &lt;/motion.div&gt;
       ))}
-    </div>
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>

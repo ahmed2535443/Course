@@ -52,7 +52,17 @@
           <li>تصميم قائمة متجاوبة للموبايل</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 إيه هو نظام التخطيط (Layout System)؟</div>
+          <div class="callout-content">
+            <p>مرحب بيك في الدرس التاسع! النهارده هنتكلم عن موضوع أساسي جداً في أي موقع ويب: التخطيط (Layout). فكر كده كده: لو هتبني بيت، محتاج هيكلاً أساسياً يحدد هيكل الغرف والطوابق. التخطيط في الويب زيه بالظبط — بيحدد هيكل الصفحة كلها.</p>
+            <p>في أي متجر إلكتروني، كل الصفحات عندها عناصر مشتركة: الشريط العلوي (Header) فيه الشعار والتنقل وسلة المشتريات، والشريط السفلي (Footer) فيه الروابط ومعلومات التواصل. بدل ما نكرر الكود ده في كل صفحة، بنعمل Layout واحد نستخدمه في كل الصفحات.</p>
+            <p>في Next.js App Router، الموضوع سهل جداً. بنعمل ملف layout في كل مجلد، والـ Next.js بيطبقه تلقائياً على كل الصفحات جوا المجلد ده. حلو أوي!</p>
+          </div>
+        </div>
+
         <h2>📁 هيكل ملفات التخطيط</h2>
+        <p>خلينا نشوف هيكل الملفات اللي هنبناه النهارده:</p>
 
         <div class="file-tree">
           <div class="file-tree-item folder">📁 components/layout/</div>
@@ -63,8 +73,28 @@
           <div class="file-tree-item file">└── 📄 MobileMenu.jsx          # قائمة الموبايل</div>
         </div>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه المكونات في مجلد layout منفصل؟</div>
+          <div class="callout-content">
+            <p>في تطوير الواجهات، في فرق بين مكونات الـ UI الأساسية (زراير، بطاقات) ومكونات التخطيط (Header, Footer). مكونات التخطيط بت控制 الصفحة كلها، فمحتاجة مجلد منفصل عشان نحافظ على التنظيم. كمان، في أوقات كتير بتفرق تخطيط المتجر عن تخطيط لوحة التحكم.</p>
+          </div>
+        </div>
+
         <h2>🏗️ الخطوة 1: مكون Header</h2>
-        <p>الHeader هو أهم عنصر في التخطيط. هنبنيه بتأثير Glass مع تنقل وسلة مشتريات:</p>
+        <p>الHeader هو أهم عنصر في أي موقع ويب. هو أول حاجة المستخدم بيشوفها لما يفتح الصفحة. لازم يكون واضح وجميل وسهل الاستخدام.</p>
+
+        <p>في المتجر بتاعنا، الHeader هيعمل الأدوار دي:</p>
+        <ul>
+          <li><strong>الشعار (Logo)</strong>: رابط للصفحة الرئيسية</li>
+          <li><strong>التنقل (Navigation)</strong>: روابط للصفحات المختلفة</li>
+          <li><strong>البحث (Search)</strong>: زرار للبحث عن المنتجات</li>
+          <li><strong>قائمة الأمنيات (Wishlist)</strong>: المنتجات اللي المستخدم حبها</li>
+          <li><strong>سلة المشتريات (Cart)</strong>: المنتجات اللي المستخدم عايش يشتريها</li>
+          <li><strong>حساب المستخدم (User Menu)</strong>: تسجيل الدخول أو الحساب</li>
+          <li><strong>قائمة الموبايل (Mobile Menu)</strong>: قائمة للشاشات الصغيرة</li>
+        </ul>
+
+        <p>الHeader بتاعنا فيه تأثير مهم اسمه Glass Effect. ده تأثير بيخلي الـ Header شفاف شوية لما المستخدم يكون في أعلى الصفحة، وبيتمسخ لما ينزل. التأثير ده بيعطي إحساس بالعمق والحداثة.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -168,7 +198,7 @@ export default function Header() {
               className="relative p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors"
             &gt;
               &lt;ShoppingCart className="w-5 h-5" /&gt;
-              {cartItemsCount &gt; 0 && (
+              {cartItemsCount &gt; 0 &amp;&amp; (
                 &lt;span className="absolute -top-1 -right-1 w-5 h-5 bg-indigo-500 rounded-full text-white text-xs flex items-center justify-center font-bold"&gt;
                   {cartItemsCount}
                 &lt;/span&gt;
@@ -235,8 +265,40 @@ export default function Header() {
           </div>
         </div>
 
+        <h3>شرح تفصيلي لأجزاء الـ Header</h3>
+        <p>خلينا نفصص في كل جزء:</p>
+
+        <p><strong>تأثير التمرير (Scroll Effect)</strong>:</p>
+        <p>في السطور اللي بتستخدم <code>useEffect</code>، بنسمع لحدث التمرير (scroll event). لما المستخدم ينزل أكتر من 20 بكسل، بنغير قيمة <code>isScrolled</code> لـ true. وبما إن الـ className بتاع الـ Header بيعتمد على القيمة دي، بتتغير الشكل تلقائياً.</p>
+
+        <p><strong>الروابط النشطة (Active Links)</strong>:</p>
+        <p>بنستخدم <code>usePathname()</code> عشان نعرف الصفحة الحالية. وبعدين بنقارنها بكل رابط. لو متطابقة، بنضيف فئة "<code>bg-white/10</code>" عشان نبين إن الرابط ده هو النشط.</p>
+
+        <p><strong>عداد السلة (Cart Badge)</strong>:</p>
+        <p>بنحسب عدد العناصر في السلة باستخدام <code>reduce</code>. لو العدد أكبر من صفر، بنظهر Badge صغير فوق أيقونة السلة فيه العدد. لو صفر، مش بنظهر حاجة.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ أخطاء شائعة مع Header</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الخطأ</strong>: استخدام <code>position: fixed</code> بدون <code>padding-top</code> للمحتوى — النتيجة: أول محتوى بيختفي تحت الـ Header</li>
+              <li><strong>الخطأ</strong>: نسيان <code>z-50</strong> — النتيجة: عناصر تانية بتظهر فوق الـ Header</li>
+              <li><strong>الخطأ</strong>: عدم التعامل مع <code>window</code> في Server Component — النتيجة: خطأ في Server Side Rendering</li>
+              <li><strong>الحل</strong>: دايماً استخدم <code>"use client"</code> في المكونات اللي بتتفاعل مع المستخدم</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>📱 الخطوة 2: قائمة الموبايل</h2>
-        <p>مكون MobileMenu للقائمة على الأجهزة المحمولة:</p>
+        <p>مكون MobileMenu للقائمة على الأجهزة المحمولة. في الأجهزة الصغيرة، الـ Navigation العادي مش بيكون مناسب، فبنعمل قائمة جانبية بتظهر لما المستخدم يضغط على أيقونة القائمة (Hamburger Menu).</p>
+
+        <p>المكون ده بيتكون من أجزاء:</p>
+        <ul>
+          <li><strong>Overlay</strong>: خلفية شافة سوداء بتظهر ورا القائمة</li>
+          <li><strong>Panel</strong>: القائمة نفسها على الجانب الأيمن (لأننا شغالين RTL)</li>
+          <li><strong>Navigation Links</strong>: الروابط الرئيسية</li>
+          <li><strong>Auth Links</strong>: روابط تسجيل الدخول أو الحساب</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -334,7 +396,17 @@ export default function MobileMenu({ isOpen, onClose, navLinks, pathname }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظة مهمة: لاحظ إننا بنستخدم <code>md:hidden</code> و <code>md:block</code>. ده معناه إن القائمة دي بتظهر بس على الشاشات الصغيرة (أقل من breakpoint <code>md</code> اللي هو 768px). على الشاشات الكبيرة، الـ Navigation العادي هو اللي بيظهر.</p>
+
         <h2>🦶 الخطوة 3: مكون Footer</h2>
+        <p>الFooter هو الشريط السفلي في الصفحة. مهما طالت الصفحة، الـ Footer دايماً بيكون في الآخر. فيه روابط مهمة ومعلومات التواصل ووسائل الاجتماعية.</p>
+
+        <p>في المتجر بتاعنا، الـ Footer فيه 3 أقسام رئيسية:</p>
+        <ul>
+          <li><strong>المتجر</strong>: روابط للمنتجات والعروض والجديد</li>
+          <li><strong>الدعم</strong>: الأسئلة الشائعة والشحن والتتبع</li>
+          <li><strong>الشركة</strong>: من نحن والشروط وسياسة الخصوصية</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -408,9 +480,9 @@ export default function Footer() {
           {Object.entries(footerLinks).map(([title, links]) =&gt; (
             &lt;div key={title}&gt;
               &lt;h3 className="text-white font-semibold mb-4"&gt;
-                {title === 'shop' && 'المتجر'}
-                {title === 'support' && 'الدعم'}
-                {title === 'company' && 'الشركة'}
+                {title === 'shop' &amp;&amp; 'المتجر'}
+                {title === 'support' &amp;&amp; 'الدعم'}
+                {title === 'company' &amp;&amp; 'الشركة'}
               &lt;/h3&gt;
               &lt;ul className="space-y-2"&gt;
                 {links.map((link) =&gt; (
@@ -448,8 +520,23 @@ export default function Footer() {
 }</code></pre>
         </div>
 
+        <p>ملاحظة على الكود: لاحظ إننا بنستخدم <code>Object.entries(footerLinks).map</code>. ده معناه إننا بنمشي على كل عنصر في الـ Object وبنطبع الروابط. الطريقة دي أحسن من إننا نكرر الكود 3 مرات (مرة لكل قسم).</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصائح لتصميم Footer جيد</div>
+          <div class="callout-content">
+            <ul>
+              <li>استخدم Grid System عشان ترتب الأقسام بشكل منظم</li>
+              <li>أضف <code>aria-label</code> للروابط الاجتماعية عشان تساعد المستخدمين ذوي الاحتياجات الخاصة</li>
+              <li>استخدم <code>new Date().getFullYear()</code> عشان السنة تتحدث تلقائياً</li>
+              <li>أضف روابط للشروط وسياسة الخصوصية — دي مهمة قانونياً</li>
+              <li>خلي الألوان متناسقة مع باقي الموقع</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>🏪 الخطوة 4: ShopLayout</h2>
-        <p>التخطيط الرئيسي للمتجر:</p>
+        <p>التخطيط الرئيسي للمتجر. ده المكون اللي بيلف كل صفحات المتجر. ببساطة: Header في الأول، المحتوى في النص، والFooter في الآخر.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -477,8 +564,20 @@ export default function ShopLayout({ children }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظة مهمة: لاحظ <code>pt-16</code> على الـ <code>main</code>. ده عشان الـ Header ثابت (fixed) في أعلى الشاشة، فمحتاجين مسافة فوق عشان المحتوى ما يختفيش تحته. بدون الـ padding ده، أول محتوى في الصفحة هيبان تحت الـ Header.</p>
+
+        <p>كمان لاحظ <code>flex-1</code>. ده بيخلي الـ main ياخد كل المساحة المتاحة. لو الصفحة طويلة، الـ Footer هينزل لتحت. لو الصفحة قصيرة، الـ Footer هيفضل في الآخر. الطريقة دي بتخلي الـ Footer دايماً في المكان الصح.</p>
+
         <h2>🔧 الخطوة 5: AdminLayout</h2>
-        <p>التخطيط الخاص بلوحة التحكم:</p>
+        <p>التخطيط الخاص بلوحة التحكم. ده مختلف تماماً عن تخطيط المتجر. فيه شريط جانبي (Sidebar) فيه الروابط الإدارية، وشريط علوي (TopBar) فيه معلومات المستخدم.</p>
+
+        <p>الـ AdminLayout أهم من ShopLayout في بعض النواحي:</p>
+        <ul>
+          <li>فيه شريط جانبي قابل للطي (Collapsible Sidebar)</li>
+          <li>محتاج Clerk Auth للتحقق من صلاحيات المستخدم</li>
+          <li>متجاوب مع الشاشات الصغيرة (Mobile Friendly)</li>
+          <li>فيه روابط خاصة بالإدارة زي إدارة المنتجات والطلبات والمستخدمين</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -533,7 +632,7 @@ export default function AdminLayout({ children }) {
             &lt;div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center"&gt;
               &lt;Store className="w-5 h-5 text-white" /&gt;
             &lt;/div&gt;
-            {isSidebarOpen && (
+            {isSidebarOpen &amp;&amp; (
               &lt;span className="text-white font-bold"&gt;Admin&lt;/span&gt;
             )}
           &lt;/Link&gt;
@@ -543,7 +642,7 @@ export default function AdminLayout({ children }) {
           &gt;
             &lt;ChevronLeft className={cn(
               "w-5 h-5 transition-transform",
-              !isSidebarOpen && "rotate-180"
+              !isSidebarOpen &amp;&amp; "rotate-180"
             )} /&gt;
           &lt;/button&gt;
         &lt;/div&gt;
@@ -564,7 +663,7 @@ export default function AdminLayout({ children }) {
                 )}
               &gt;
                 &lt;link.icon className="w-5 h-5 flex-shrink-0" /&gt;
-                {isSidebarOpen && (
+                {isSidebarOpen &amp;&amp; (
                   &lt;span className="font-medium"&gt;{link.label}&lt;/span&gt;
                 )}
               &lt;/Link&gt;
@@ -576,14 +675,14 @@ export default function AdminLayout({ children }) {
         &lt;div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10"&gt;
           &lt;div className={cn(
             "flex items-center gap-3",
-            !isSidebarOpen && "justify-center"
+            !isSidebarOpen &amp;&amp; "justify-center"
           )}&gt;
             &lt;div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0"&gt;
               &lt;span className="text-white text-sm font-medium"&gt;
                 {user?.firstName?.[0] || "A"}
               &lt;/span&gt;
             &lt;/div&gt;
-            {isSidebarOpen && (
+            {isSidebarOpen &amp;&amp; (
               &lt;div className="flex-1 min-w-0"&gt;
                 &lt;p className="text-white text-sm font-medium truncate"&gt;
                   {user?.firstName} {user?.lastName}
@@ -595,7 +694,7 @@ export default function AdminLayout({ children }) {
             )}
           &lt;/div&gt;
           
-          {isSidebarOpen && (
+          {isSidebarOpen &amp;&amp; (
             &lt;div className="mt-4 flex gap-2"&gt;
               &lt;Link
                 href="/"
@@ -645,6 +744,15 @@ export default function AdminLayout({ children }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظات مهمة على الكود:</p>
+        <ul>
+          <li><strong>isSidebarOpen</strong>: ده State بيحكم هل الشريط الجانبي مفتوح ولا مطوي. لما يكون مفتوح، العرض 64 (w-64). لما يكون مطوي، العرض 20 (w-20)</li>
+          <li><strong>rotate-180</strong>: الأيقونة بتدور 180 درجة لما الشريط يتقلص. ده بيدي إحساس بالتفاعلية</li>
+          <li><strong>ml-64 / ml-20</strong>: المحتوى الرئيسي بيتحرك يمين أو شمال حسب حالة الشريط الجانبي</li>
+          <li><strong>flex-shrink-0</strong>: الأيقونات ما بتتقلصش لو الشريط اتضغط</li>
+          <li><strong>SignOutButton</strong>: ده من Clerk، بيعمل تسجيل خروج من المستخدم</li>
+        </ul>
+
         <div class="callout callout-warning">
           <div class="callout-title">⚠️ ملاحظات هامة</div>
           <div class="callout-content">
@@ -652,12 +760,14 @@ export default function AdminLayout({ children }) {
               <li>تأكد من استخدام <code>"use client"</code> في المكونات التي تستخدم React Hooks</li>
               <li>AdminLayout يحتاج Clerk Auth للتحقق من المستخدم</li>
               <li>الشريط الجانبي متجاوب مع الشاشات الصغيرة</li>
+              <li>استخدم <code>z-40</code> عشان الشريط الجانبي يظهر فوق المحتوى</li>
+              <li>استخدم <code>transition-all duration-300</code> عشان الحركة تكون سلسة</li>
             </ul>
           </div>
         </div>
 
         <h2>📐 الخطوة 6: تخطيط الصفحة الرئيسية</h2>
-        <p>الآن نحتاج نربط التخطيط بالصفحات في Next.js App Router:</p>
+        <p>الآن نحتاج نربط التخطيط بالصفحات في Next.js App Router. الطريقة سهلة: بنعمل ملف <code>layout.js</code> في كل مجلد، والـ Next.js بيطبقه تلقائياً على كل الصفحات جوا المجلد ده.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -698,6 +808,35 @@ export default function Layout({ children }) {
     &lt;/AdminLayout&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>ملاحظة مهمة: لاحظ إننا بنستخدم <code>(shop)</code> و <code>(admin)</code> في المسارات. ده اسمه Route Groups في Next.js. الأقواس معناها إن المجلد ده مش جزء من المسار الفعلي. يعني المستخدم بيدخل <code>/products</code> مش <code>/shop/products</code>.</p>
+
+        <h2>🚨 أخطاء شائعة يجب تجنبها</h2>
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ الأخطاء اللي لازم تتجنبها</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الخطأ 1</strong>: استخدام <code>position: fixed</code> للـ Header بدون padding للمحتوى — النتيجة: أول محتوى بيختفي</li>
+              <li><strong>الخطأ 2</strong>: نسيان <code>"use client"</code> في المكونات اللي فيها useState — النتيجة: خطأ في الـ Server</li>
+              <li><strong>الخطأ 3</strong>: عدم استخدام <code>usePathname()</code> لتحديد الرابط النشط — النتيجة: المستخدم مش ه يعرف هو فين</li>
+              <li><strong>الخطأ 4</strong>: عدم التعامل مع الشاشات الصغيرة — النتيجة: الموقع مش هيشتغل على الموبايل</li>
+              <li><strong>الخطأ 5</strong>: نسيان <code>z-index</code> — النتيجة: عناصر بتظهر فوق بعضها بالغلط</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>✅ تمارين عملية للتدرب</h2>
+        <div class="callout callout-success">
+          <div class="callout-title">📝 جرّب اللي اتعلمتة!</div>
+          <div class="callout-content">
+            <p><strong>التمرين 1</strong>: أضف شريط بحث في الـ Header يظهر لما المستخدم يضغط على أيقونة البحث. الشريط يظهر بتأثير slide down.</p>
+            <p><strong>التمرين 2</strong>: عدّل الـ Footer يعرض شعار وسائل التواصل بناءً على بيانات من API.</p>
+            <p><strong>التمرين 3</strong>: أضف زرار "رجوع للأعلى" يظهر لما المستخدم ينزل الصفحة أكتر من 500px.</p>
+            <p><strong>التمرين 4</strong>: عدّل AdminLayout يضيف Dark Mode Toggle.</p>
+            <p><strong>التمرين 5</strong>: أضف Breadcrumb في كل صفحة يبين المسار الحالي.</p>
+            <p><strong>التمرين 6</strong>: أنشئ <code>DashboardLayout</code> جديد للصفحات الإدارية يختلف عن AdminLayout.</p>
+          </div>
         </div>
 
         <h2>📋 ملخص التخطيطات</h2>
@@ -751,10 +890,12 @@ export default function Layout({ children }) {
           <li>✅ ربط التخطيطات بـ Next.js App Router</li>
         </ul>
 
+        <p>الدرس ده كان أساسي جداً. التخطيط هو الهيكل اللي كل الصفحات بتتبني عليه. لو فاهمه كويس، باقي الصفحات هتكون سهلة.</p>
+
         <div class="callout callout-success">
           <div class="callout-title">🎉 الدرس الجاي</div>
           <div class="callout-content">
-            في الدرس الجاي هنبني <strong>الصفحة الرئيسية</strong> مع Hero Section و Featured Products.
+            في الدرس الجاي هنبني <strong>الصفحة الرئيسية</strong> مع Hero Section و Featured Products. هنستخدم التخطيطات اللي ابنيناها النهارده عشان نبني أحسن صفحة رئيسية في التاريخ!
           </div>
         </div>
 

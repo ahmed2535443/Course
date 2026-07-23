@@ -53,6 +53,15 @@
           <li>بناء التنقل بالفتات (Breadcrumb)</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه صفحة تفاصيل المنتج مهمة؟</div>
+          <div class="callout-content">
+            <p>مرحب بيك في الدرس الثاني عشر! صفحة تفاصيل المنتج هي الصفحة اللي بتحدد هل المستخدم هيشتري المنتج ولا لا. فمحتاجة تكون واضحة ومفصلة وتشجع المستخدم على الشراء.</p>
+            <p>في الصفحة دي، المستخدم هيلاقي كل المعلومات اللي يحتاجها: صور المنتج من كل الزوايا، السعر والخصم، الوصف التفصيلي، التقييمات والمراجعات من عملاء تانيين، حالة المخزون، وزرار أضف للسلة.</p>
+            <p>كمان هنبني معرض صور احترافي مع تأثيرات حركية، ومحدد كمية ذكي، وزرار أضف للسلة بحالات مختلفة (جاري التحميل، تمت الإضافة).</p>
+          </div>
+        </div>
+
         <h2>📁 هيكل ملفات تفاصيل المنتج</h2>
 
         <div class="file-tree">
@@ -67,6 +76,9 @@
         </div>
 
         <h2>📄 الخطوة 1: صفحة تفاصيل المنتج</h2>
+        <p>الصفحة الرئيسية لتفاصيل المنتج. ده الملف الرئيسي اللي بيتجمع فيه كل المكونات: Breadcrumb، معرض الصور، معلومات المنتج، والمراجعات.</p>
+
+        <p>ملاحظة مهمة: الصفحة دي Server Component (مش Client Component). يعني بنجيب البيانات من الـ API في السيرفر قبل ما نعرض الصفحة. ده بيحسن الأداء والـ SEO.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -150,7 +162,23 @@ export default async function ProductPage({ params }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظات مهمة:</p>
+        <ul>
+          <li><strong>generateMetadata</strong>: ده Function من Next.js بيسمحلك تحدد عنوان الصفحة والوصف. ده مهم للـ SEO عشان المتصفحات تقدر تفهم محتوى الصفحة.</li>
+          <li><strong>notFound()</strong>: لو المنتج مش موجود في الـ API، بنعرض صفحة 404.</li>
+          <li><strong>cache: 'no-store'</strong>: ده معناه إننا عايزين البيانات تتحمّل من جديد كل مرة. لو عايزين ن缓存 البيانات، نستخدم <code>cache: 'force-cache'</code>.</li>
+          <li><strong>Breadcrumb</strong>: بيبين للمستخدم هو فين في الموقع. مثلاً: الرئيسية &gt; المنتجات &gt; إلكترونيات &gt; هاتف ذكي.</li>
+        </ul>
+
         <h2>🖼️ الخطوة 2: معرض الصور</h2>
+        <p>معرض الصور من أهم العناصر في صفحة المنتج. المستخدم عايز يشوف المنتج من كل الزوايا قبل ما يشتريه. في المعرض ده هنوفر:</p>
+        <ul>
+          <li>صورة رئيسية كبيرة</li>
+          <li>مصغرات (thumbnails) للصور التانية</li>
+          <li>أزرارتنقل بين الصور</li>
+          <li>تأثيرات حركية سلسة</li>
+          <li>زرار تكبير (Zoom)</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -176,7 +204,7 @@ export default function ProductGallery({ images, name }) {
 
   const handleNext = () =&gt; {
     setSelectedIndex((prev) =&gt;
-      prev === images.length - 1 ? 0 : prev + 1
+      prev === images.length - 1 ? 0 : prev - 1
     );
   };
 
@@ -198,7 +226,7 @@ export default function ProductGallery({ images, name }) {
         &lt;/AnimatePresence&gt;
 
         {/* Navigation Arrows */}
-        {images.length &gt; 1 && (
+        {images.length &gt; 1 &amp;&amp; (
           &lt;&gt;
             &lt;button
               onClick={handlePrevious}
@@ -230,7 +258,7 @@ export default function ProductGallery({ images, name }) {
       &lt;/div&gt;
 
       {/* Thumbnails */}
-      {images.length &gt; 1 && (
+      {images.length &gt; 1 &amp;&amp; (
         &lt;div className="flex gap-3 overflow-x-auto pb-2"&gt;
           {images.map((image, index) =&gt; (
             &lt;button
@@ -255,7 +283,7 @@ export default function ProductGallery({ images, name }) {
 
       {/* Zoom Modal */}
       &lt;AnimatePresence&gt;
-        {isZoomed && (
+        {isZoomed &amp;&amp; (
           &lt;motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -285,7 +313,31 @@ export default function ProductGallery({ images, name }) {
 }</code></pre>
         </div>
 
+        <p>شرح مفصل للمعرض:</p>
+        <ul>
+          <li><strong>AnimatePresence</strong>: من Framer Motion. بيسمح بتأثيرات عند تغيير الصورة (دخول وخروج).</li>
+          <li><strong>selectedIndex</strong>: الصورة الحالية. لما يتغير، الصورة القديمة بتختفي والجديدة بتظهر بتأثير حركي.</li>
+          <li><strong>handlePrevious / handleNext</strong>: دوال بتنقل بين الصور. لما توصل لأول صورة وتنضغط "السابق"، تروح لآخر صورة (و العكس).</li>
+          <li><strong>Thumbnails</strong>: صور مصغرة تحت الصورة الرئيسية. الصورة النشطة ليها إطار بنفسجي.</li>
+          <li><strong>Zoom Modal</strong>: لما المستخدم يضغط على زرار التكبير، الصورة بتملا الشاشة كلها.</li>
+          <li><strong>Image Counter</strong>: بيبين رقم الصورة الحالية من إجمالي الصور.</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصائح لمعرض صور جيد</div>
+          <div class="callout-content">
+            <ul>
+              <li>استخدم <code>object-cover</code> عشان الصور تملا المساحة من غير ما تتقطع</li>
+              <li>أضف تأثيرات حركية بسيطة (opacity, scale) عشان التغيير يكون سلس</li>
+              <li>تأكد إن الصور بتحمّل بسرعة. استخدم next/image لو ممكن</li>
+              <li>أضف عداد الصور عشان المستخدم يعرف هو فين</li>
+              <li>على الموبايل، ممكن تعمل الصور swipable باستخدام touch events</li>
+            </ul>
+          </div>
+        </div>
+
         <h2>📋 الخطوة 3: معلومات المنتج</h2>
+        <p>قسم معلومات المنتج فيه كل التفاصيل اللي يحتاجها المستخدم عشان يقرر يشتري ولا لا: الاسم، السعر، الوصف، حالة المخزون، التقييم، وزرار أضف للسلة.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -349,7 +401,7 @@ export default function ProductInfo({ product }) {
         &lt;span className="text-4xl font-bold text-white"&gt;
           ${product.price}
         &lt;/span&gt;
-        {product.originalPrice && (
+        {product.originalPrice &amp;&amp; (
           &lt;&gt;
             &lt;span className="text-xl text-gray-400 line-through"&gt;
               ${product.originalPrice}
@@ -459,7 +511,16 @@ function getStockStatus(stock) {
 }</code></pre>
         </div>
 
+        <p>ملاحظات مهمة:</p>
+        <ul>
+          <li><strong>getStockStatus</strong>: ده Function بتحدد حالة المخزون. لو المنتج نفذ، بيبقى أحمر. لو قليل (5 أو أقل)، بيبقى أصفر. لو متوفر، بيبقى أخضر.</li>
+          <li><strong>الخصم</strong>: لو فيه <code>originalPrice</code>، بنعرض السعر القديم مشطوب والفرق كخصم.</li>
+          <li><strong>Trust Badges</strong>: شعارات الثقة بتظهر تحت كل المعلومات عشان تبني ثقة المستخدم.</li>
+          <li><strong>useCart</strong>: Hook من CartContext بيسمح لنضيف المنتج للسلة.</li>
+        </ul>
+
         <h2>🔢 الخطوة 4: محدد الكمية</h2>
+        <p>محدد الكمية بيسمح للمستخدم يختار الكمية اللي عايزها قبل ما يضيف المنتج للسلة. فيه زرار ناقص وزرار زيادة وحقل رقمي.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -508,7 +569,7 @@ export default function QuantitySelector({ value, onChange, max = 10 }) {
           value={value}
           onChange={(e) =&gt; {
             const newValue = parseInt(e.target.value) || 1;
-            if (newValue &gt;= 1 && newValue &lt;= max) {
+            if (newValue &gt;= 1 &amp;&amp; newValue &lt;= max) {
               onChange(newValue);
             }
           }}
@@ -536,7 +597,15 @@ export default function QuantitySelector({ value, onChange, max = 10 }) {
 }</code></pre>
         </div>
 
+        <p>ملاحظات:</p>
+        <ul>
+          <li><strong>الحد الأدنى 1</strong>: المستخدم مش هيقدر ينقص الكمية تحت 1. لو الكمية 1، زرار الناقص بيتحول لرمادي.</li>
+          <li><strong>الحد الأقصى (max)</strong>: المستخدم مش هيقدر يزود الكمية عن المخزون المتاح.</li>
+          <li><strong>type="number"</strong>: الحقل بيقبل أرقام بس. كمان فيه <code>min</code> و <code>max</code> عشان المتصفح يتحقق من القيمة.</li>
+        </ul>
+
         <h2>🛒 الخطوة 5: زر أضف للسلة</h2>
+        <p>زرار أضف للسلة من أهم العناصر في الصفحة. محتاج يكون واضح ومشجع على النقر. كمان محتاج يبين للمستخدم إن في حاجة بتحصل لما يضغط (loading state) وإن المنتج اتضاف بنجاح (success state).</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -580,7 +649,7 @@ export default function AddToCartButton({ onClick, disabled }) {
       size="lg"
       className={cn(
         "flex-1 transition-all duration-300",
-        state === 'success' && "bg-green-500 hover:bg-green-500"
+        state === 'success' &amp;&amp; "bg-green-500 hover:bg-green-500"
       )}
     &gt;
       {state === 'loading' ? (
@@ -604,7 +673,22 @@ export default function AddToCartButton({ onClick, disabled }) {
 }</code></pre>
         </div>
 
+        <p>شرح الحالات الثلاث:</p>
+        <ul>
+          <li><strong>idle</strong>: الحالة الافتراضية. الزرار أزرق وعليه "أضف للسلة" مع أيقونة سلة.</li>
+          <li><strong>loading</strong>: المستخدم ضغط والبيانات بتبعت للـ API. الززار بيتحول لأزرق فاتح وعليه spinner دوار و"جاري الإضافة...".</li>
+          <li><strong>success</strong>: المنتج اتضاف بنجاح. الزرار بيبقى أخضر وعليه علامة صح و"تمت الإضافة!". بعد ثانيتين بيرجع idle.</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه بنستخدم Toast؟</div>
+          <div class="callout-content">
+            <p>Toast مفيد هنا لأنه بيبني المستخدم بنتيجة الإجراء بشكل غير مزعج. بدل ما نعمل redirect لصفحة تانية أو نعرض modal، Toast بسيط وبيختفي لوحده.</p>
+          </div>
+        </div>
+
         <h2>💬 الخطوة 6: المراجعات</h2>
+        <p>قسم المراجعات مهم جداً لبناء ثقة المستخدم. لما يشوف رأي ناس تانية في المنتج، هيبقى أكتر ثقة في الشراء.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -773,6 +857,34 @@ function calculateDistribution(reviews) {
           </div>
         </div>
 
+        <h2>🚨 أخطاء شائعة يجب تجنبها</h2>
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ الأخطاء اللي لازم تتجنبها</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>الخطأ 1</strong>: عدم التعامل مع المنتج غير الموجود — النتيجة: الخطأ 500 بدل 404</li>
+              <li><strong>الخطأ 2</strong>: عدم استخدام generateMetadata — النتيجة: عنوان الصفحة غلط في Google</li>
+              <li><strong>الخطأ 3</strong>: عدم التحقق من المخزون قبل الإضافة — النتيجة: المستخدم يضيف منتج ناشف</li>
+              <li><strong>الخطأ 4</strong>: الصور بطيئة — النتيجة: المستخدم بيمشي</li>
+              <li><strong>الخطأ 5</strong>: عدم عرض حالة التحميل — النتيجة: المستخدم مش فاهم فين المشكلة</li>
+              <li><strong>الخطأ 6</strong>: عدم عرض المراجعات — النتيجة: ثقة المستخدم بتقل</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>✅ تمارين عملية للتدرب</h2>
+        <div class="callout callout-success">
+          <div class="callout-title">📝 جرّب اللي اتعلمتة!</div>
+          <div class="callout-content">
+            <p><strong>التمرين 1</strong>: أضف زرار "مشاركة" ينيّ المنتج على وسائل التواصل.</p>
+            <p><strong>التمرين 2</strong>: أضف قسم "منتجات مشابهة" في آخر الصفحة.</p>
+            <p><strong>التمرين 3</strong>: عدّل معرض الصور يدعم السحب على الموبايل (swipe).</p>
+            <p><strong>التمرين 4</strong>: أضف زرار "أضف للمفضلة" جنب زرار أضف للسلة.</p>
+            <p><strong>التمرين 5</strong>: عدّل صفحة التفاصيل تقبل slug بدل id في الرابط.</p>
+            <p><strong>التمرين 6</strong>: أضف Share functionality تستخدم Web Share API على الموبايل.</p>
+          </div>
+        </div>
+
         <h2>📝 ملخص الدرس</h2>
         <p>في الدرس ده بنينا:</p>
         <ul>
@@ -785,10 +897,12 @@ function calculateDistribution(reviews) {
           <li>✅ التنقل بالفتات (Breadcrumb)</li>
         </ul>
 
+        <p>صفحة تفاصيل المنتج هي اللي بتخلي المستخدم يقرر يشتري ولا لا. فمحتاجة تكون واضحة ومفصلة وتشجع على الشراء. كل عنصر في الصفحة دي له دور في بناء ثقة المستخدم.</p>
+
         <div class="callout callout-success">
-          <div class="callout-title">🎉 الدرس الجاي</div>
+          <div class="callout-title">🎉 مبروك! وصلت لنهاية الوحدة الثالثة</div>
           <div class="callout-content">
-            في الدرس الجاي هنبني <strong>نظام سلة المشتريات</strong> الكامل.
+            في الدرس الجاي هنبني <strong>نظام سلة المشتريات</strong> الكامل. هن learns إزاي نضيف منتجات للسلة، نغير الكميات، نحذف منتجات، ونحسب المجموع. الوحدة الجاية هتكون عن وظائف المتجر الأساسية.
           </div>
         </div>
 

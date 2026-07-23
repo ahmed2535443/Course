@@ -52,6 +52,26 @@
           <li>معالجة أخطاء API</li>
         </ul>
 
+        <h2>💡 مقدمة عن معالجة الأخطاء</h2>
+        <p>أهلاً بيكم في الدرس الحادي والعشرين يا صديقي! الدرس ده من أهم الدروس في الكورس كله. ليه؟ لأن الأخطاء بتحصل دايماً. مش سؤال "لو حصل خطأ"، السؤال هو "امتى هتحصل الأخطاء".</p>
+
+        <p>تخيل معايا الموقف ده: عميل فتح صفحة منتج والصفحة اتعملها crash. أو العميل ضغط على زرار "شراء" والسيرفر رجع خطأ 500. أو العميل كتب بريد إلكتروني غلط والنماذج بعتتله رسالة خطأ مش مفهومة. كل المواقف دي لو مش معالجها كويس، هتخسر عملاء.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه معالجة الأخطاء مهمة جداً؟</div>
+          <div class="callout-content">
+            <ul>
+              <li>بتحافظ على سمعة موقعك و佻عيه الاحترافي</li>
+              <li>بتمنع خسارة العملاء بسبب مشاكل تقنية</li>
+              <li>بتساعدك تكتشف المشاكل قبل ما العملاء يشوفوها</li>
+              <li>بتدي المستخدم ثقة في موقعك</li>
+              <li>بتقلل ضغط فريق الدعم الفني</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>في الدرس ده هنتعلم ازاي نتعامل مع كل أنواع الأخطاء: أخطاء 404 (صفحة غير موجودة)، أخطاء 500 (خطأ في السيرفر)، أخطاء الشبكة، أخطاء التحقق من البيانات، وأكتر من كده. وهنتعلم ازاي نعرض رسائل خطأ واضحة ومضحكة للمستخدم بدل رسائل تقنية مش مفهومة.</p>
+
         <h2>📁 هيكل ملفات معالجة الأخطاء</h2>
 
         <div class="file-tree">
@@ -67,6 +87,16 @@
           <div class="file-tree-item folder">📁 hooks/</div>
           <div class="file-tree-item file">└── 📄 useErrorHandler.js      # Hook لمعالجة الأخطاء</div>
         </div>
+
+        <p>شوف يا صديقي، الهيكل ده بيبينلك كل الملفات اللي محتاجها لمعالجة الأخطاء. كل ملف ليه دور مختلف:</p>
+        <ul>
+          <li><strong>not-found.js:</strong> الصفحة اللي بتظهر لما المستخدم يفتح رابط غلط (404).</li>
+          <li><strong>error.js:</strong> الصفحة اللي بتظهر لما يحصل خطأ غير متوقع (500).</li>
+          <li><strong>Toast.jsx:</strong> نظام الإشعارات الصغيرة اللي بتظهر في الزاوية.</li>
+          <li><strong>ErrorBoundary.jsx:</strong> مكون بيحمي أجزاء معينة من الصفحة من الأخطاء.</li>
+          <li><strong>ErrorMessage.jsx:</strong> مكون موحد لعرض رسائل الخطأ.</li>
+          <li><strong>useErrorHandler.js:</strong> Hook بيجمع كل منطق معالجة الأخطاء في مكان واحد.</li>
+        </ul>
 
         <h2>🚫 الخطوة 1: صفحة 404 مخصصة</h2>
 
@@ -84,76 +114,94 @@ import Button from '@/components/ui/Button';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
-      <div className="max-w-md text-center">
+    &lt;div className="min-h-screen bg-gray-950 flex items-center justify-center px-4"&gt;
+      &lt;div className="max-w-md text-center"&gt;
         {/* Animation */}
-        <motion.div
+        &lt;motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
           className="mb-8"
-        >
-          <div className="relative w-32 h-32 mx-auto">
-            <Ghost className="w-32 h-32 text-indigo-500/50" />
-            <motion.div
+        &gt;
+          &lt;div className="relative w-32 h-32 mx-auto"&gt;
+            &lt;Ghost className="w-32 h-32 text-indigo-500/50" /&gt;
+            &lt;motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
               className="absolute inset-0 flex items-center justify-center"
-            >
-              <span className="text-6xl">?</span>
-            </motion.div>
-          </div>
-        </motion.div>
+            &gt;
+              &lt;span className="text-6xl"&gt;?&lt;/span&gt;
+            &lt;/motion.div&gt;
+          &lt;/div&gt;
+        &lt;/motion.div&gt;
 
         {/* Title */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-        >
-          <h1 className="text-8xl font-bold text-white mb-4">404</h1>
-          <h2 className="text-2xl font-bold text-white mb-4">
+        &gt;
+          &lt;h1 className="text-8xl font-bold text-white mb-4"&gt;404&lt;/h1&gt;
+          &lt;h2 className="text-2xl font-bold text-white mb-4"&gt;
             الصفحة غير موجودة
-          </h2>
-          <p className="text-gray-400 mb-8">
+          &lt;/h2&gt;
+          &lt;p className="text-gray-400 mb-8"&gt;
             عذراً، الصفحة التي تبحث عنها غير موجودة أو تم نقلها.
-          </p>
-        </motion.div>
+          &lt;/p&gt;
+        &lt;/motion.div&gt;
 
         {/* Actions */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <Link href="/">
-            <Button>
-              <Home className="w-5 h-5 ml-2" />
+        &gt;
+          &lt;Link href="/"&gt;
+            &lt;Button&gt;
+              &lt;Home className="w-5 h-5 ml-2" /&gt;
               العودة للرئيسية
-            </Button>
-          </Link>
-          <Link href="/products">
-            <Button variant="secondary">
-              <Search className="w-5 h-5 ml-2" />
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+          &lt;Link href="/products"&gt;
+            &lt;Button variant="secondary"&gt;
+              &lt;Search className="w-5 h-5 ml-2" /&gt;
               تصفح المنتجات
-            </Button>
-          </Link>
-        </motion.div>
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+        &lt;/motion.div&gt;
 
         {/* Fun Message */}
-        <motion.p
+        &lt;motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
           className="mt-12 text-gray-500 text-sm"
-        >
+        &gt;
           يبدو أن الصفحة ذهبت في إجازة ❌
-        </motion.p>
-      </div>
-    </div>
+        &lt;/motion.p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>شوف يا صديقي، الصفحة دي من أحلى صفحات الخطأ اللي ممكن تعملها. بدل ما تظهر صفحة بيضاء أو رسالة تقنية مش مفهومة، عملنا صفحة جميلة وممتعة:</p>
+
+        <ul>
+          <li><strong>شبح (Ghost):</strong> أيقونة شبح بتتحرك من Framer Motion. بتبدأ دوران 180 درجة وبعدين بتثبت.</li>
+          <li><strong>علامة استفهام (?):</strong> بتتحرك لفوق وللتحت (y: [0, -10, 0]). وده بيخليها تحسك إنها حية.</li>
+          <li><strong>رقم 404 كبير:</strong> حجم 8xl. ده أول حاجة المستخدم بيشوفها.</li>
+          <li><strong>رسالة واضحة:</strong> "الصفحة غير موجودة". مش رسالة تقنية مش مفهومة.</li>
+          <li><strong>زرين:</strong> "العودة للرئيسية" و "تصفح المنتجات". المستخدم يعرف يروح فين.</li>
+          <li><strong>رسالة مضحكة:</strong> "يبدو أن الصفحة ذهبت في إجازة". ده بيخلي الخطأ يكون أقل إزعاجاً.</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه بنتكلم عن 404؟</div>
+          <div class="callout-content">
+            الخطأ 404 بيحصل لما المستخدم يفتح رابط غلط أو يضغط على رابط قديم مش موجود. في المتاجر الإلكترونية، ده ممكن يحصل لو العميل عنده bookmark لمنتج اتشال أو صفحة اتغيّر رابطها. الصفحة الجميلة دي بتخلي المستخدم يفضل في الموقع بدل ما يمشي.
+          </div>
         </div>
 
         <h2>⚠️ الخطوة 2: صفحة الخطأ العامة</h2>
@@ -171,7 +219,7 @@ import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 export default function Error({ error, reset }) {
-  useEffect(() => {
+  useEffect(() =&gt; {
     // تسجيل الخطأ في نظام المراقبة
     console.error('Application error:', error);
     
@@ -180,69 +228,85 @@ export default function Error({ error, reset }) {
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
-      <div className="max-w-md text-center">
+    &lt;div className="min-h-screen bg-gray-950 flex items-center justify-center px-4"&gt;
+      &lt;div className="max-w-md text-center"&gt;
         {/* Icon */}
-        <motion.div
+        &lt;motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
           className="mb-8"
-        >
-          <div className="w-24 h-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center">
-            <AlertTriangle className="w-12 h-12 text-red-400" />
-          </div>
-        </motion.div>
+        &gt;
+          &lt;div className="w-24 h-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center"&gt;
+            &lt;AlertTriangle className="w-12 h-12 text-red-400" /&gt;
+          &lt;/div&gt;
+        &lt;/motion.div&gt;
 
         {/* Title */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-        >
-          <h1 className="text-3xl font-bold text-white mb-4">
+        &gt;
+          &lt;h1 className="text-3xl font-bold text-white mb-4"&gt;
             حدث خطأ ما
-          </h1>
-          <p className="text-gray-400 mb-4">
+          &lt;/h1&gt;
+          &lt;p className="text-gray-400 mb-4"&gt;
             عذراً، حدث خطأ غير متوقع. فريقنا يعمل على إصلاح المشكلة.
-          </p>
+          &lt;/p&gt;
           
           {/* Error Details (for development) */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6 text-left">
-              <div className="flex items-center gap-2 mb-2">
-                <Bug className="w-4 h-4 text-red-400" />
-                <span className="text-red-400 text-sm font-medium">تفاصيل الخطأ (للمطورين)</span>
-              </div>
-              <p className="text-red-300 text-sm font-mono break-all">
+          {process.env.NODE_ENV === 'development' &amp;&amp; (
+            &lt;div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6 text-left"&gt;
+              &lt;div className="flex items-center gap-2 mb-2"&gt;
+                &lt;Bug className="w-4 h-4 text-red-400" /&gt;
+                &lt;span className="text-red-400 text-sm font-medium"&gt;تفاصيل الخطأ (للمطورين)&lt;/span&gt;
+              &lt;/div&gt;
+              &lt;p className="text-red-300 text-sm font-mono break-all"&gt;
                 {error?.message || 'خطأ غير معروف'}
-              </p>
-            </div>
+              &lt;/p&gt;
+            &lt;/div&gt;
           )}
-        </motion.div>
+        &lt;/motion.div&gt;
 
         {/* Actions */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <Button onClick={reset}>
-            <RefreshCw className="w-5 h-5 ml-2" />
+        &gt;
+          &lt;Button onClick={reset}&gt;
+            &lt;RefreshCw className="w-5 h-5 ml-2" /&gt;
             إعادة المحاولة
-          </Button>
-          <Link href="/">
-            <Button variant="secondary">
-              <Home className="w-5 h-5 ml-2" />
+          &lt;/Button&gt;
+          &lt;Link href="/"&gt;
+            &lt;Button variant="secondary"&gt;
+              &lt;Home className="w-5 h-5 ml-2" /&gt;
               العودة للرئيسية
-            </Button>
-          </Link>
-        </motion.div>
-      </div>
-    </div>
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+        &lt;/motion.div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>دي صفحة الخطأ العامة. شوف ازاي عملناها ذكية:</p>
+
+        <ul>
+          <li><strong>error و reset:</strong> المكون بياخد props من Next.js. error فيه تفاصيل الخطأ، وreset دالة بتعمّل reset للصفحة.</li>
+          <li><strong>useEffect:</strong> بيستخدم لتسجيل الخطأ. في بيئة التطوير (development)، الخطأ بيظهر للمطور. في الإنتاج (production)، الخطأ بيتبعت لنظام مراقبة زي Sentry.</li>
+          <li><strong>تفاصيل الخطأ للمطورين فقط:</strong> لاحظ الشرط <code>process.env.NODE_ENV === 'development'</code>. ده بيخلي تفاصيل الخطأ تظهر بس للمطورين، مش للمستخدمين العاديين. لأن المستخدم العادي مش محتاج يعرف إن الخطأ "Cannot read property 'name' of undefined".</li>
+          <li><strong>زرار إعادة المحاولة:</strong> المستخدم ممكن يضغط على الزرار ده عشان يجرب تاني. وده أهم ميزة في الصفحة دي.</li>
+        </ul>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ غلطة شائعة</div>
+          <div class="callout-content">
+            بعض المطورين بيحطوا تفاصيل الخطأ الكاملة في صفحة الخطأ. ده غلط! المستخدم العادي مش محتاج يعرف إن الخطأ "TypeError: Cannot read property 'map' of undefined". كفاية إنك تقوله "حدث خطأ غير متوقع" وتعطيه زرار "إعادة المحاولة".
+          </div>
         </div>
 
         <h2>🔔 الخطوة 3: نظام Toast Messages</h2>
@@ -290,12 +354,12 @@ const toastTypes = {
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
-  const addToast = useCallback((message, type = 'info', duration = 5000) => {
+  const addToast = useCallback((message, type = 'info', duration = 5000) =&gt; {
     const id = Date.now() + Math.random();
-    setToasts((prev) => [...prev, { id, message, type }]);
+    setToasts((prev) =&gt; [...prev, { id, message, type }]);
 
-    if (duration > 0) {
-      setTimeout(() => {
+    if (duration &gt; 0) {
+      setTimeout(() =&gt; {
         removeToast(id);
       }, duration);
     }
@@ -303,59 +367,59 @@ export function ToastProvider({ children }) {
     return id;
   }, []);
 
-  const removeToast = useCallback((id) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  const removeToast = useCallback((id) =&gt; {
+    setToasts((prev) =&gt; prev.filter((toast) =&gt; toast.id !== id));
   }, []);
 
-  const success = useCallback((message, duration) => {
+  const success = useCallback((message, duration) =&gt; {
     return addToast(message, 'success', duration);
   }, [addToast]);
 
-  const error = useCallback((message, duration) => {
+  const error = useCallback((message, duration) =&gt; {
     return addToast(message, 'error', duration);
   }, [addToast]);
 
-  const warning = useCallback((message, duration) => {
+  const warning = useCallback((message, duration) =&gt; {
     return addToast(message, 'warning', duration);
   }, [addToast]);
 
-  const info = useCallback((message, duration) => {
+  const info = useCallback((message, duration) =&gt; {
     return addToast(message, 'info', duration);
   }, [addToast]);
 
   return (
-    <ToastContext.Provider value={{ addToast, removeToast, success, error, warning, info }}>
+    &lt;ToastContext.Provider value={{ addToast, removeToast, success, error, warning, info }}&gt;
       {children}
       
       {/* Toast Container */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm">
-        <AnimatePresence>
-          {toasts.map((toast) => {
+      &lt;div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm"&gt;
+        &lt;AnimatePresence&gt;
+          {toasts.map((toast) =&gt; {
             const config = toastTypes[toast.type] || toastTypes.info;
             const Icon = config.icon;
 
             return (
-              <motion.div
+              &lt;motion.div
                 key={toast.id}
                 initial={{ opacity: 0, x: 100, scale: 0.8 }}
                 animate={{ opacity: 1, x: 0, scale: 1 }}
                 exit={{ opacity: 0, x: 100, scale: 0.8 }}
                 className={`flex items-center gap-3 p-4 rounded-xl border backdrop-blur-lg ${config.bgColor} ${config.borderColor}`}
-              >
-                <Icon className={`w-5 h-5 flex-shrink-0 ${config.textColor}`} />
-                <p className="text-white text-sm flex-1">{toast.message}</p>
-                <button
-                  onClick={() => removeToast(toast.id)}
+              &gt;
+                &lt;Icon className={`w-5 h-5 flex-shrink-0 ${config.textColor}`} /&gt;
+                &lt;p className="text-white text-sm flex-1"&gt;{toast.message}&lt;/p&gt;
+                &lt;button
+                  onClick={() =&gt; removeToast(toast.id)}
                   className="p-1 text-gray-400 hover:text-white transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </motion.div>
+                &gt;
+                  &lt;X className="w-4 h-4" /&gt;
+                &lt;/button&gt;
+              &lt;/motion.div&gt;
             );
           })}
-        </AnimatePresence>
-      </div>
-    </ToastContext.Provider>
+        &lt;/AnimatePresence&gt;
+      &lt;/div&gt;
+    &lt;/ToastContext.Provider&gt;
   );
 }
 
@@ -366,6 +430,30 @@ export function useToast() {
   }
   return context;
 }</code></pre>
+        </div>
+
+        <p>ده نظام Toast Messages أو الإشعارات الصغيرة. شوف ازاي عملناه:</p>
+
+        <ul>
+          <li><strong>ToastContext:</strong> ده Context من React. بيسمح لأي مكون في التطبيق يستخدم الـ toast من غير ما يمرره كـ prop.</li>
+          <li><strong>toastTypes:</strong> عندك 4 أنواع: success (أخضر)، error (أحمر)، warning (أصفر)، info (أزرق). كل نوع ليه لون مختلف ونوع أيقونة.</li>
+          <li><strong>addToast:</strong> الدالة دي بتضيف toast جديد. بتاخد الرسالة، النوع، والمدة. المدة الافتراضية 5 ثواني.</li>
+          <li><strong>removeToast:</strong> الدالة دي بتحذف toast معين. بتستخدم لما المستخدم يضغط على زرار X.</li>
+          <li><strong>useCallback:</strong> بيستخدم لتحسين الأداء. بيمنع إعادة إنشاء الدوال في كل render.</li>
+        </ul>
+
+        <p>الـ toast بيظهر في الزاوية السفلية اليسرى (bottom-4 right-4). بيبدأ بـ opacity 0 و x: 100 (بره الشاشة من اليمين) وبعدين بيظهر بسلاسة. ولما بيختفي، بيختفي بنفس الطريقة.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 امتى تستخدم Toast؟</div>
+          <div class="callout-content">
+            <ul>
+              <li><strong>نجاح:</strong> "تمت إضافة المنتج للسلة بنجاح!"</li>
+              <li><strong>خطأ:</strong> "حدث خطأ أثناء إضافة المنتج. يرجى المحاولة مرة أخرى."</li>
+              <li><strong>تحذير:</strong> "الكمية المطلوبة غير متوفرة. الكمية المتاحة: 3."</li>
+              <li><strong>معلومات:</strong> "تم نسخ رابط المنتج."</li>
+            </ul>
+          </div>
         </div>
 
         <h2>🛡️ الخطوة 4: Error Boundary</h2>
@@ -398,7 +486,7 @@ class ErrorBoundary extends Component {
     // Sentry.captureException(error, { extra: errorInfo });
   }
 
-  handleRetry = () => {
+  handleRetry = () =&gt; {
     this.setState({ hasError: false, error: null });
   };
 
@@ -409,23 +497,23 @@ class ErrorBoundary extends Component {
       }
 
       return (
-        <div className="min-h-[200px] flex items-center justify-center p-8">
-          <div className="text-center">
-            <div className="w-16 h-16 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-4">
-              <AlertTriangle className="w-8 h-8 text-red-400" />
-            </div>
-            <h3 className="text-lg font-bold text-white mb-2">
+        &lt;div className="min-h-[200px] flex items-center justify-center p-8"&gt;
+          &lt;div className="text-center"&gt;
+            &lt;div className="w-16 h-16 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-4"&gt;
+              &lt;AlertTriangle className="w-8 h-8 text-red-400" /&gt;
+            &lt;/div&gt;
+            &lt;h3 className="text-lg font-bold text-white mb-2"&gt;
               حدث خطأ
-            </h3>
-            <p className="text-gray-400 text-sm mb-4">
+            &lt;/h3&gt;
+            &lt;p className="text-gray-400 text-sm mb-4"&gt;
               {this.props.fallbackMessage || 'حدث خطأ غير متوقع في هذا المكون'}
-            </p>
-            <Button size="sm" onClick={this.handleRetry}>
-              <RefreshCw className="w-4 h-4 ml-2" />
+            &lt;/p&gt;
+            &lt;Button size="sm" onClick={this.handleRetry}&gt;
+              &lt;RefreshCw className="w-4 h-4 ml-2" /&gt;
               إعادة المحاولة
-            </Button>
-          </div>
-        </div>
+            &lt;/Button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
       );
     }
 
@@ -434,6 +522,25 @@ class ErrorBoundary extends Component {
 }
 
 export default ErrorBoundary;</code></pre>
+        </div>
+
+        <p>ده Error Boundary. شوف ازاي بيشتغل:</p>
+
+        <ul>
+          <li><strong>Class Component:</strong> لازم يكون Class Component مش Functional Component. ده لأن React بيقدم getDerivedStateFromError و componentDidCatch في Class Components بس.</li>
+          <li><strong>getDerivedStateFromError:</strong> دي static method بتتحدد لما يحصل خطأ في أي child component. بتغير state لـ hasError: true.</li>
+          <li><strong>componentDidCatch:</strong> دي بتشتغل بعد الخطأ وبتسجل التفاصيل. مفيدة لتسجيل الأخطاء في نظام مراقبة.</li>
+          <li><strong>fallback:</strong> لو انت عايز تتحكم في شكل الخطأ، بتبعت fallback component كـ prop.</li>
+          <li><strong>handleRetry:</strong> لما المستخدم يضغط "إعادة المحاولة"، الـ state بيرجع لـ hasError: false والـ children بتظهر تاني.</li>
+        </ul>
+
+        <p>الـ Error Boundary مهم جداً لأنه بيحمي أجزاء معينة من الصفحة من الأخطاء. يعني لو مكون الصور اتعمله crash، الصفحة كلها مش هتتأثر. الـ Error Boundary هيظهر رسالة خطأ في مكان الصور بس.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ ملاحظة مهمة</div>
+          <div class="callout-content">
+            Error Boundary مش بيمسك أخطاء في الأحداث (Events) أو asynchronous code (async/await). بيمسك بس أخطاء في أثناء عرض المكونات (render). يعني لو حصل خطأ في useEffect، الـ Error Boundary مش هيمسكه.
+          </div>
         </div>
 
         <h2>📝 الخطوة 5: معالجة أخطاء النماذج</h2>
@@ -463,15 +570,15 @@ export function FormField({
   className,
 }) {
   return (
-    <div className={cn("space-y-2", className)}>
-      {label && (
-        <label htmlFor={name} className="block text-sm font-medium text-gray-200">
+    &lt;div className={cn("space-y-2", className)}&gt;
+      {label &amp;&amp; (
+        &lt;label htmlFor={name} className="block text-sm font-medium text-gray-200"&gt;
           {label}
-          {required && <span className="text-red-400 mr-1">*</span>}
-        </label>
+          {required &amp;&amp; &lt;span className="text-red-400 mr-1"&gt;*&lt;/span&gt;}
+        &lt;/label&gt;
       )}
-      <div className="relative">
-        <input
+      &lt;div className="relative"&gt;
+        &lt;input
           id={name}
           name={name}
           type={type}
@@ -487,32 +594,32 @@ export function FormField({
               : success
               ? "border-green-500 focus:ring-green-500"
               : "border-white/10 focus:ring-indigo-500",
-            disabled && "opacity-50 cursor-not-allowed"
+            disabled &amp;&amp; "opacity-50 cursor-not-allowed"
           )}
-        />
-        {(error || success) && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2">
+        /&gt;
+        {(error || success) &amp;&amp; (
+          &lt;div className="absolute left-3 top-1/2 -translate-y-1/2"&gt;
             {error ? (
-              <AlertCircle className="w-5 h-5 text-red-400" />
+              &lt;AlertCircle className="w-5 h-5 text-red-400" /&gt;
             ) : (
-              <CheckCircle className="w-5 h-5 text-green-400" />
+              &lt;CheckCircle className="w-5 h-5 text-green-400" /&gt;
             )}
-          </div>
+          &lt;/div&gt;
         )}
-      </div>
-      {error && (
-        <p className="text-red-400 text-sm flex items-center gap-1">
-          <AlertCircle className="w-4 h-4" />
+      &lt;/div&gt;
+      {error &amp;&amp; (
+        &lt;p className="text-red-400 text-sm flex items-center gap-1"&gt;
+          &lt;AlertCircle className="w-4 h-4" /&gt;
           {error}
-        </p>
+        &lt;/p&gt;
       )}
-      {success && (
-        <p className="text-green-400 text-sm flex items-center gap-1">
-          <CheckCircle className="w-4 h-4" />
+      {success &amp;&amp; (
+        &lt;p className="text-green-400 text-sm flex items-center gap-1"&gt;
+          &lt;CheckCircle className="w-4 h-4" /&gt;
           {success}
-        </p>
+        &lt;/p&gt;
       )}
-    </div>
+    &lt;/div&gt;
   );
 }
 
@@ -520,13 +627,13 @@ export function FormError({ message, className }) {
   if (!message) return null;
 
   return (
-    <div className={cn(
+    &lt;div className={cn(
       "flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl",
       className
-    )}>
-      <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-      <p className="text-red-400 text-sm">{message}</p>
-    </div>
+    )}&gt;
+      &lt;AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" /&gt;
+      &lt;p className="text-red-400 text-sm"&gt;{message}&lt;/p&gt;
+    &lt;/div&gt;
   );
 }
 
@@ -534,16 +641,26 @@ export function FormSuccess({ message, className }) {
   if (!message) return null;
 
   return (
-    <div className={cn(
+    &lt;div className={cn(
       "flex items-center gap-2 p-3 bg-green-500/10 border border-green-500/20 rounded-xl",
       className
-    )}>
-      <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />
-      <p className="text-green-400 text-sm">{message}</p>
-    </div>
+    )}&gt;
+      &lt;CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" /&gt;
+      &lt;p className="text-green-400 text-sm"&gt;{message}&lt;/p&gt;
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>
+
+        <p>ده نظام التحقق من صحة النماذج. شوف ازاي عملنا 3 مكونات:</p>
+
+        <ul>
+          <li><strong>FormField:</strong> ده مكون حقل إدخال ذكي. بيغيّر لونه حسب الحالة: أحمر لو فيه خطأ، أخضر لو البيانات صحيحة، وعادي لو مفيش حاجة. كمان بيعرض أيقونة بجانب الحقل.</li>
+          <li><strong>FormError:</strong> ده رسالة خطأ عامة للنموذج. بيظهر في أعلى النموذج لما يكون فيه أخطاء.</li>
+          <li><strong>FormSuccess:</strong> ده رسالة نجاح. بيظهر لما البيانات تتبعت بنجاح.</li>
+        </ul>
+
+        <p>الـ FormField مهم جداً لأنه بيوفر تجربة مستخدم ممتازة. المستخدم بيشوف الخطأ فوراً في الحقل نفسه، مش في مكان تاني. وده بيقلل الارتباك.</p>
 
         <h2>🌐 الخطوة 6: معالجة أخطاء API</h2>
 
@@ -576,7 +693,7 @@ export async function apiCall(url, options = {}) {
 
   // إعداد الـ AbortController للـ timeout
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  const timeoutId = setTimeout(() =&gt; controller.abort(), timeout);
 
   try {
     const fetchOptions = {
@@ -585,7 +702,7 @@ export async function apiCall(url, options = {}) {
       signal: controller.signal,
     };
 
-    if (body && method !== 'GET') {
+    if (body &amp;&amp; method !== 'GET') {
       fetchOptions.body = JSON.stringify(body);
     }
 
@@ -654,7 +771,7 @@ export function useApi() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const execute = async (url, options) => {
+  const execute = async (url, options) =&gt; {
     setLoading(true);
     setError(null);
 
@@ -668,10 +785,28 @@ export function useApi() {
     return result;
   };
 
-  const clearError = () => setError(null);
+  const clearError = () =&gt; setError(null);
 
   return { loading, error, execute, clearError };
 }</code></pre>
+        </div>
+
+        <p>ده المكون الأهم في معالجة أخطاء API. شوف ازاي عملنا دالة موحدة بتعالج كل أنواع الأخطاء:</p>
+
+        <ul>
+          <li><strong>Timeout:</strong> لو السيرفر مردش خلال 10 ثواني، الـ request بتتلغى وبنرجع خطأ timeout.</li>
+          <li><strong>Network Error:</strong> لو المستخدم مش متصال بالإنترنت، بنرجع خطأ network.</li>
+          <li><strong>API Error:</strong> لو السيرفر رجع status code غلط (زي 404 أو 500)، بنرجع الخطأ مع الرسالة.</li>
+          <li><strong>Unknown Error:</strong> لو حصل أي حاجة مش معروفة، بنرجع خطأ عام.</li>
+        </ul>
+
+        <p>الـ AbortController مهم جداً. بيعمل timeout للطلب. لو السيرفر مردش خلال 10 ثواني، الطلب بتلغى تلقائياً. وده بيمنع المستخدم من الانتظار للأبد.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه بنعمل دالة موحدة؟</div>
+          <div class="callout-content">
+            بدل ما نكتب كود معالجة أخطاء في كل مكان، بنكتبها مرة واحدة في apiCall وبنستخدمها في كل مكان. وده بيقلل تكرار الكود وبيخلي الصيانة أسهل.
+          </div>
         </div>
 
         <h2>🔄 الخطوة 7: Hook لمعالجة الأخطاء</h2>
@@ -692,7 +827,7 @@ import { useToast } from '@/components/ui/Toast';
 export function useErrorHandler() {
   const { error: showError, warning, info } = useToast();
 
-  const handleError = useCallback((error, context = {}) => {
+  const handleError = useCallback((error, context = {}) =&gt; {
     console.error('Error:', error, context);
 
     // تحديد نوع الخطأ وعرض رسالة مناسبة
@@ -708,7 +843,7 @@ export function useErrorHandler() {
       // أخطاء التحقق من صحة البيانات
       const validationErrors = error.data?.errors;
       if (validationErrors) {
-        Object.values(validationErrors).flat().forEach((msg) => {
+        Object.values(validationErrors).flat().forEach((msg) =&gt; {
           showError(msg, 5000);
         });
       } else {
@@ -716,7 +851,7 @@ export function useErrorHandler() {
       }
     } else if (error?.status === 429) {
       warning('طلبات كثيرة جداً، يرجى الانتظار قليلاً', 5000);
-    } else if (error?.status >= 500) {
+    } else if (error?.status &gt;= 500) {
       showError('خطأ في الخادم، يرجى المحاولة لاحقاً', 5000);
     } else if (error?.type === 'network') {
       showError('لا يوجد اتصال بالإنترنت', 5000);
@@ -730,7 +865,7 @@ export function useErrorHandler() {
     // Sentry.captureException(error, { extra: context });
   }, [showError, warning]);
 
-  const handleAsyncError = useCallback(async (asyncFn, context = {}) => {
+  const handleAsyncError = useCallback(async (asyncFn, context = {}) =&gt; {
     try {
       return await asyncFn();
     } catch (error) {
@@ -751,11 +886,11 @@ export function useErrorHandler() {
 export function useFormErrors() {
   const { handleError } = useErrorHandler();
 
-  const handleFormError = useCallback((error, setErrors) => {
-    if (error?.status === 422 && error.data?.errors) {
+  const handleFormError = useCallback((error, setErrors) =&gt; {
+    if (error?.status === 422 &amp;&amp; error.data?.errors) {
       // تحويل أخطاء الـ Validation إلى شكل يفهمه النموذج
       const formErrors = {};
-      Object.entries(error.data.errors).forEach(([field, messages]) => {
+      Object.entries(error.data.errors).forEach(([field, messages]) =&gt; {
         formErrors[field] = Array.isArray(messages) ? messages[0] : messages;
       });
       setErrors(formErrors);
@@ -766,6 +901,26 @@ export function useFormErrors() {
 
   return { handleFormError };
 }</code></pre>
+        </div>
+
+        <p>ده الـ Hook اللي بيجمع كل منطق معالجة الأخطاء في مكان واحد. شوف ازاي بيعالج كل نوع خطأ برسالة مناسبة:</p>
+
+        <ul>
+          <li><strong>401 (غير مصرح):</strong> "يرجى تسجيل الدخول أولاً". ممكن كمان نتوجيه المستخدم لصفحة تسجيل الدخول.</li>
+          <li><strong>403 (ممنوع):</strong> "ليس لديك صلاحية للقيام بهذه العملية". يعني المستخدم مش admin مثلاً.</li>
+          <li><strong>404 (غير موجود):</strong> "العنصر المطلوب غير موجود". رسالة واضحة ومضحكة.</li>
+          <li><strong>422 (بيانات غير صالحة):</strong> بيعرض كل الأخطاء في الحقول. يعني لو البريد الإلكتروني غلط واسم المستخدم غلط، بيتعرض الخطئين.</li>
+          <li><strong>429 (طلبات كثيرة):</strong> "طلبات كثيرة جداً، يرجى الانتظار قليلاً". ده لما المستخدم يضغط كتير بسرعة.</li>
+          <li><strong>500+ (خطأ في السيرفر):</strong> "خطأ في الخادم، يرجى المحاولة لاحقاً". رسالة عامة ومفهومة.</li>
+          <li><strong>Network Error:</strong> "لا يوجد اتصال بالإنترنت". مفيد لل usoires اللي بيستخدموا الموبايل.</li>
+          <li><strong>Timeout:</strong> "انتهت مهلة الاتصال، يرجى المحاولة مجدداً".</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة مهمة</div>
+          <div class="callout-content">
+            لاحظ إن كل رسالة خطأ بتختفي بعد 5 ثواني (duration = 5000). ده عشان الرسالة متأخرش كتير وتزحم الشاشة. لكن لو الرسالة مهمة زي "يرجى تسجيل الدخول"، ممكن نسيبها تظهر لحد ما المستخدم يتفاعل.
+          </div>
         </div>
 
         <h2>📊 الخطوة 8: صفحة الخطأ في المتجر</h2>
@@ -785,67 +940,76 @@ import Container from '@/components/ui/Container';
 import Button from '@/components/ui/Button';
 
 export default function ShopError({ error, reset }) {
-  useEffect(() => {
+  useEffect(() =&gt; {
     console.error('Shop error:', error);
   }, [error]);
 
   return (
-    <Container className="py-16">
-      <div className="max-w-md mx-auto text-center">
+    &lt;Container className="py-16"&gt;
+      &lt;div className="max-w-md mx-auto text-center"&gt;
         {/* Icon */}
-        <motion.div
+        &lt;motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
           className="mb-8"
-        >
-          <div className="w-20 h-20 mx-auto rounded-full bg-yellow-500/20 flex items-center justify-center">
-            <AlertTriangle className="w-10 h-10 text-yellow-400" />
-          </div>
-        </motion.div>
+        &gt;
+          &lt;div className="w-20 h-20 mx-auto rounded-full bg-yellow-500/20 flex items-center justify-center"&gt;
+            &lt;AlertTriangle className="w-10 h-10 text-yellow-400" /&gt;
+          &lt;/div&gt;
+        &lt;/motion.div&gt;
 
         {/* Content */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-        >
-          <h1 className="text-2xl font-bold text-white mb-4">
+        &gt;
+          &lt;h1 className="text-2xl font-bold text-white mb-4"&gt;
             حدث خطأ في تحميل المنتجات
-          </h1>
-          <p className="text-gray-400 mb-8">
+          &lt;/h1&gt;
+          &lt;p className="text-gray-400 mb-8"&gt;
             عذراً، لم نتمكن من تحميل المنتجات. يرجى المحاولة مرة أخرى.
-          </p>
-        </motion.div>
+          &lt;/p&gt;
+        &lt;/motion.div&gt;
 
         {/* Actions */}
-        <motion.div
+        &lt;motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
-        >
-          <Button onClick={reset}>
-            <RefreshCw className="w-5 h-5 ml-2" />
+        &gt;
+          &lt;Button onClick={reset}&gt;
+            &lt;RefreshCw className="w-5 h-5 ml-2" /&gt;
             إعادة المحاولة
-          </Button>
-          <Link href="/">
-            <Button variant="secondary">
-              <Home className="w-5 h-5 ml-2" />
+          &lt;/Button&gt;
+          &lt;Link href="/"&gt;
+            &lt;Button variant="secondary"&gt;
+              &lt;Home className="w-5 h-5 ml-2" /&gt;
               الرئيسية
-            </Button>
-          </Link>
-          <Link href="/products">
-            <Button variant="secondary">
-              <ShoppingBag className="w-5 h-5 ml-2" />
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+          &lt;Link href="/products"&gt;
+            &lt;Button variant="secondary"&gt;
+              &lt;ShoppingBag className="w-5 h-5 ml-2" /&gt;
               جميع المنتجات
-            </Button>
-          </Link>
-        </motion.div>
-      </div>
-    </Container>
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+        &lt;/motion.div&gt;
+      &lt;/div&gt;
+    &lt;/Container&gt;
   );
 }</code></pre>
+        </div>
+
+        <p>دي صفحة خطأ مخصصة لصفحات المتجر. شوف الفرق عن صفحة الخطأ العامة: هنا الخطأ بلون أصفر مش أحمر، والرسالة أدق ("حدث خطأ في تحميل المنتجات")، والزرين إضافيين ("الرئيسية" و "جميع المنتجات").</p>
+
+        <div class="callout callout-success">
+          <div class="callout-title">✅ ليه عملنا صفحة خطأ خاصة بالمتجر؟</div>
+          <div class="callout-content">
+            لأن الخطأ في المتجر مختلف عن الخطأ العام. لما حد يفتح صفحة منتجات والصفحة مبقتش، ده تأثير مباشر على البيع. فبنقدم زرار إضافي "جميع المنتجات" عشان المستخدم يرجع للمنتجات من غير ما يروح الصفحة الرئيسية.
+          </div>
         </div>
 
         <h2>🔍 الخطوة 9: رسالة خطأ موحدة</h2>
@@ -897,48 +1061,96 @@ export default function ErrorMessage({
   const Icon = config.icon;
 
   return (
-    <div
+    &lt;div
       className={cn(
         "flex flex-col items-center justify-center p-8 rounded-2xl border",
         config.bgColor,
         config.borderColor,
         className
       )}
-    >
-      <Icon className={cn("w-12 h-12 mb-4", config.iconColor)} />
+    &gt;
+      &lt;Icon className={cn("w-12 h-12 mb-4", config.iconColor)} /&gt;
       
-      <h3 className={cn("text-lg font-bold mb-2", config.titleColor)}>
+      &lt;h3 className={cn("text-lg font-bold mb-2", config.titleColor)}&gt;
         {title}
-      </h3>
+      &lt;/h3&gt;
       
-      {message && (
-        <p className="text-gray-400 text-sm text-center mb-6 max-w-sm">
+      {message &amp;&amp; (
+        &lt;p className="text-gray-400 text-sm text-center mb-6 max-w-sm"&gt;
           {message}
-        </p>
+        &lt;/p&gt;
       )}
 
-      {onRetry && (
-        <Button onClick={onRetry} variant="secondary" size="sm">
-          <RefreshCw className="w-4 h-4 ml-2" />
+      {onRetry &amp;&amp; (
+        &lt;Button onClick={onRetry} variant="secondary" size="sm"&gt;
+          &lt;RefreshCw className="w-4 h-4 ml-2" /&gt;
           {retryText}
-        </Button>
+        &lt;/Button&gt;
       )}
-    </div>
+    &lt;/div&gt;
   );
 }</code></pre>
         </div>
 
-        <div class="callout callout-success">
-          <div class="callout-title">🎉 نصائح لمعالجة الأخطاء</div>
+        <p>ده مكون موحد لعرض رسائل الخطأ. شوف ازاي بينوع حسب نوع الخطأ:</p>
+
+        <ul>
+          <li><strong>error:</strong> أحمر مع أيقونة AlertCircle. للخطأ العام.</li>
+          <li><strong>network:</strong> أصفر مع أيقونة WifiOff. لمشاكل الشبكة.</li>
+          <li><strong>notFound:</strong> أزرق مع أيقونة AlertCircle. لما العنصر مش موجود.</li>
+        </ul>
+
+        <p>الـ props بتخلي المكون مرناً جداً. انت تتحكم في العنوان والرسالة والنوع وزرار الإعادة.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 امتى تستخدم ErrorMessage؟</div>
+          <div class="callout-content">
+            استخدمه في الأماكن اللي ممكن يحصل فيها خطأ ومش عايز تكمل الصفحة. مثلاً: لو قسم المنتجات مش عارف يتحمل، حط ErrorMessage في مكان القسم ده. وده أحسن ما تسيب الصفحة كلها تتعمل crash.
+          </div>
+        </div>
+
+        <h2>🎯 الأخطاء الشائعة في معالجة الأخطاء</h2>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ غلطات لازم تتجنبها</div>
           <div class="callout-content">
             <ul>
-              <li> Always provide clear and helpful error messages to users</li>
-              <li>Log errors to a monitoring service like Sentry</li>
-              <li>Use Error Boundaries to prevent full page crashes</li>
-              <li>Implement retry mechanisms for network requests</li>
-              <li>Handle different types of errors differently (network, auth, validation)</li>
-              <li>Test error scenarios thoroughly</li>
+              <li><strong>إظهار أخطاء تقنية للمستخدم:</strong> لا تعرض رسائل زي "TypeError: Cannot read property 'map' of undefined". المستخدم مش فاهم حاجة من دول.</li>
+              <li><strong>مفيش retry mechanism:</strong> لو التحميل فشل ومفيش زرار "إعادة المحاولة"، المستخدم هيسيب الصفحة.</li>
+              <li><strong>كل الأخطاء بلون أحمر:</strong> استخدم ألوان مختلفة حسب نوع الخطأ. أحمر للخطأ الخطير، أصفر للتحذير، أزرق للمعلومات.</li>
+              <li><strong>رسائل خطأ طويلة:</strong> رسائل الخطأ لازم تكون قصيرة ومباشرة. "حدث خطأ" أحسن من "حدث خطأ غير متوقع أثناء محاولة جلب البيانات من الخادم".</li>
+              <li><strong>مفيش logging:</strong> لازم تسجل الأخطاء في console أو في نظام مراقبة عشان تعرف بيحصل ايه.</li>
             </ul>
+          </div>
+        </div>
+
+        <h2>📝 تمارين عملية</h2>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 1: أنشئ صفحة 404 مخصصة</div>
+          <div class="callout-content">
+            جرّب تعدل على صفحة 404 الموجودة. غيّر الرسالة والشكل. مثلاً: استبدل الشبح بشاحنة بتوصيل مكسورة، أو استبدل الرسالة برسالة مضحكة مختلفة.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 2: أضف Error Boundary لقسم معين</div>
+          <div class="callout-content">
+            خد قسم معين في الموقع (زي قسم التقييمات مثلاً) واحطه جوا ErrorBoundary. جرّب تعمل crash في القسم ده وشوف ازاي الـ ErrorBoundary بيمسك الخطأ.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 3: جرّب Toast Messages</div>
+          <div class="callout-content">
+            استخدم useToast في أي صفحة. اطبع success و error و warning و info. شوف ازاي الإشعارات بتظهر وتختفي.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 تمرين 4: أنشئ صفحة خطأ مخصصة لقسم الدفع</div>
+          <div class="callout-content">
+            أنشئ ملف <code>app/(shop)/checkout/error.js</code> بتصميم مختلف عن صفحة الخطأ العامة. مثلاً: استخدم أيقونة بطاقة ائتمان مكسورة بدل AlertTriangle.
           </div>
         </div>
 
@@ -952,6 +1164,8 @@ export default function ErrorMessage({
           <li>✅ معالجة أخطاء النماذج</li>
           <li>✅ معالجة أخطاء API</li>
           <li>✅ Hook موحد لمعالجة الأخطاء</li>
+          <li>✅ الأخطاء الشائعة وكيف تتجنبها</li>
+          <li>✅ تمارين عملية لتثبيت المعلومة</li>
         </ul>
 
         <div class="callout callout-info">
@@ -976,7 +1190,7 @@ export default function ErrorMessage({
           <span class="nav-btn-title">حالات التحميل</span>
         </a>
         <a href="../index.html" class="nav-btn nav-btn-next">
-          <span class="nav-btn-label">الدورة complète ✓</span>
+          <span class="nav-btn-label">الدورة مكتملة ✓</span>
           <span class="nav-btn-title">العودة للرئيسية</span>
         </a>
       </div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -44,28 +44,75 @@
       <div class="lesson-body">
 
         <h2>🎯 أهداف الدرس</h2>
+        <p>أهلاً بيك في الدرس التالت! في الدرس ده هنتعلم على أساسيات Next.js ونفهم إزاي App Router بيشتغل. الدرس ده مهم جداً عشان هو الأساس اللي هنبني عليه كل حاجة تانية في المشروع.</p>
         <ul>
           <li>فهم什么是 App Router في Next.js</li>
           <li>إنشاء صفحات ومخططات (Layouts)</li>
           <li>التعامل مع المسارات الديناميكية (Dynamic Routes)</li>
           <li>فهم الفرق بين Client و Server Components</li>
           <li>فهم نظام التوجيه المبني على الملفات (File-based Routing)</li>
+          <li>استخدام Route Groups لتنظيم المشروع</li>
         </ul>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ليه الدرس ده مهم؟</div>
+          <div class="callout-content">
+            Next.js هو القلب النابض للمشروع. لو فهمت إزاي App Router بيشتغل، هتقدر تبني أي صفحة بأي تصميم. الدرس ده هيديك الأساس القوي اللي محتاجه.
+          </div>
+        </div>
+
         <h2>📂什么是 App Router؟</h2>
-        <p>App Router هو نظام التوجيه الجديد في Next.js 13+ اللي بيعتمد على مجلد <code>app</code>. بدل ما نستخدم مجلد <code>pages</code> القديم، بنستخدم <code>app</code> اللي بيقدم مميزات أقوى.</p>
+        <p>App Router هو نظام التوجيه الجديد في Next.js 13+ اللي بيعتمد على مجلد <code>app</code>. بدل ما نستخدم مجلد <code>pages</code> القديم، بنستخدم <code>app</code> اللي بيقدم مميزات أقوى وأحدث.</p>
+        
+        <p>يعني إيه نظام توجيه؟ يعني إزاي المشروع بيعرف إنك عايز تفتح صفحة معينة لما تكتب رابط معين في المتصفح. مثلاً لما تكتب /products، Next.js بيدور على ملف page.js جوا مجلد products عشان يعرضلك الصفحة.</p>
 
         <h3>المميزات الرئيسية لـ App Router:</h3>
         <ul>
-          <li><strong>Layouts</strong> - تخطيطات مشتركة بين الصفحات</li>
-          <li><strong>Server Components</strong> - مكونات بتشتغل على السيرفر</li>
-          <li><strong>Streaming</strong> - تحميل تدريجي للمحتوى</li>
-          <li><strong>Async Components</strong> - مكونات asynchronous</li>
+          <li><strong>Layouts</strong> - تخطيطات مشتركة بين الصفحات (زي الـ Header والـ Footer)</li>
+          <li><strong>Server Components</strong> - مكونات بتشتغل على السيرفر (أسرع وأأمن)</li>
+          <li><strong>Streaming</strong> - تحميل تدريجي للمحتوى (بيحسّن السرعة)</li>
+          <li><strong>Async Components</strong> - مكونات asynchronous (بتقدر تجلب بيانات مباشرة)</li>
           <li><strong>Error Handling</strong> - معالجة أخطاء متقدمة</li>
+          <li><strong>Loading States</strong> - حالات تحميل تلقائية</li>
         </ul>
 
+        <h3>ليه App Router أحسن من Pages Router؟</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الميزة</th>
+                <th>App Router</th>
+                <th>Pages Router (القديم)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Layouts</td>
+                <td>مدعوم أصلاً</td>
+                <td>محتاج أكواد إضافية</td>
+              </tr>
+              <tr>
+                <td>Server Components</td>
+                <td>الافتراضي</td>
+                <td>مش مدعوم</td>
+              </tr>
+              <tr>
+                <td>التحميل</td>
+                <td>تدريجي (Streaming)</td>
+                <td>دفعة واحدة</td>
+              </tr>
+              <tr>
+                <td>Error Handling</td>
+                <td>متقدم مع error.js</td>
+                <td>محدود</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <h2>📄 إنشاء صفحة جديدة</h2>
-        <p>في App Router، كل ملف <code>page.js</code> في مجلد يمثل صفحة.</p>
+        <p>في App Router، كل ملف <code>page.js</code> في مجلد يمثل صفحة. يعني لو عايز تضيف صفحة جديدة، بتعمل مجلد وبتحط جواه ملف page.js. سهل بسيط!</p>
 
         <h3>مثال: إنشاء صفحة "المنتجات"</h3>
         
@@ -76,6 +123,13 @@
           <div class="file-tree-item file">├── 📄 layout.js</div>
           <div class="file-tree-item file">└── 📄 page.js</div>
         </div>
+
+        <p>الخطوات:</p>
+        <ol>
+          <li>أنشئ مجلد جديد اسمه <code>products</code> داخل مجلد <code>app</code></li>
+          <li>أنشئ ملف <code>page.js</code> جوا مجلد <code>products</code></li>
+          <li>اكتب الكود التالي في الملف</li>
+        </ol>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -94,8 +148,17 @@
 
         <p>الآن ممكن نزور الصفحة على: <code>http://localhost:3000/products</code></p>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 قاعدة مهمة</div>
+          <div class="callout-content">
+            في App Router، لازم اسم المجلد يبقى نفس الـ URL اللي عايزه. يعني لو عايز صفحة /about، لازم تعمل مجلد اسمه about وبتحط جواه page.js. لو المجلد مختلف، الرابط مش هيشتغل!
+          </div>
+        </div>
+
         <h2>📐 المخططات (Layouts)</h2>
-        <p>الـ Layout بيمثل التخطيط المشترك بين صفحات كتير. مثلاً، الـ Header والـ Footer بيكونوا في الـ Layout عشان يظهروا في كل الصفحات.</p>
+        <p>الـ Layout بيمثل التخطيط المشترك بين صفحات كتير. مثلاً، الـ Header والـ Footer بيكونوا في الـ Layout عشان يظهروا في كل الصفحات بدون ما نكتبهم كل مرة.</p>
+        
+        <p>تخيّل إنك كل ما تفتح صفحة جديدة في أي موقع، لازم تكتب الـ Header والـ Footer من الأول. ده هيكون متعب جداً! الـ Layout بحل المشكلة دي.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -132,15 +195,30 @@ export default function RootLayout({ children }) {
 }</code></pre>
         </div>
 
+        <p>لاحظ إن <code>{children}</code> هنا بيمثل أي صفحة فتحتها. يعني لما تفتح /products، محتوى صفحة المنتجات بيتحط مكان الـ children في الـ Layout.</p>
+
         <div class="callout callout-info">
           <div class="callout-title">💡 نصيحة</div>
           <div class="callout-content">
-            الـ Layout بيتكرر تلقائياً لكل الصفحات اللي تحتيه. لو عندك Layout خاص بمجلد معين، حط ملف <code>layout.js</code> في المجلد ده.
+            الـ Layout بيتكرر تلقائياً لكل الصفحات اللي تحتيه. لو عندك Layout خاص بمجلد معين، حط ملف <code>layout.js</code> في المجلد ده. الـ Layout الأعلى هيحتوي على الـ Layout الأدنى.
           </div>
         </div>
 
+        <h3>Layout مخصص لمجلد معين</h3>
+        <p>ممكن تعمل Layout خاص بمجلد معين. مثلاً لو عندك قسم Admin كل صفحاته ليها تصميم مختلف:</p>
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/</div>
+          <div class="file-tree-item file">├── 📁 admin/</div>
+          <div class="file-tree-item file">│   ├── 📄 layout.js           # Layout خاص بـ Admin</div>
+          <div class="file-tree-item file">│   ├── 📄 page.js</div>
+          <div class="file-tree-item file">│   └── 📁 products/</div>
+          <div class="file-tree-item file">│       └── 📄 page.js</div>
+          <div class="file-tree-item file">├── 📄 layout.js               # Layout رئيسي</div>
+          <div class="file-tree-item file">└── 📄 page.js</div>
+        </div>
+
         <h2>🔗 المسارات الديناميكية (Dynamic Routes)</h2>
-        <p>المسارات الديناميكية بتسمحلك تقبل параметriers في الـ URL. في Next.js بنستخدم الأقواس المربعة <code>[param]</code>.</p>
+        <p>المسارات الديناميكية بتسمحلك تقبل параметرات في الـ URL. في Next.js بنستخدم الأقواس المربعة <code>[param]</code>. يعني لو عايز صفحة تفاصيل لكل منتج، بدل ما تعمل صفحة لكل منتج، بتعمل صفحة واحدة بتاخد الرقم كبرامتر.</p>
 
         <h3>مثال: صفحة تفاصيل المنتج</h3>
         
@@ -153,6 +231,8 @@ export default function RootLayout({ children }) {
           <div class="file-tree-item file">├── 📄 layout.js</div>
           <div class="file-tree-item file">└── 📄 page.js</div>
         </div>
+
+        <p>يعني لما تزور /products/123، الـ id هتبقى 123. ولما تزور /products/456، الـ id هتبقى 456. نفس الصفحة بس البيانات بتتغير!</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -171,8 +251,8 @@ export default function RootLayout({ children }) {
 }</code></pre>
         </div>
 
-        <h3>الوصول للبرامترز</h3>
-        <p>في Next.js 15 و 16، الـ params بقت <strong>Promise</strong>:</p>
+        <h3>الوصول للبرامترز في Next.js 15 و 16</h3>
+        <p>في Next.js 15 و 16، الـ params بقت <strong>Promise</strong>. يعني لازم نستخدم await عشان نحصل عليها. ده تغيير مهم!</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -191,14 +271,14 @@ export default function RootLayout({ children }) {
         </div>
 
         <div class="callout callout-warning">
-          <div class="callout-title">⚠️ تنبيه</div>
+          <div class="callout-title">⚠️ تنبيه مهم</div>
           <div class="callout-content">
-            في Next.js 15+، لازم نستخدم <code>await</code> مع الـ params عشان بقت Promise. لو مش عملت كده، هتلاقي أخطاء.
+            في Next.js 15+، لازم نستخدم <code>await</code> مع الـ params عشان بقت Promise. لو مش عملت كده، هتلاقي أخطاء غريبة. كمان لازم الدالة تبقى async.
           </div>
         </div>
 
         <h2>🖥️ Client vs Server Components</h2>
-        <p>في Next.js، فيه نوعين من المكونات:</p>
+        <p>في Next.js، فيه نوعين من المكونات. فهم الفرق بينهم مهم جداً عشان تعرف تستخدم كل نوع في المكان الصح.</p>
 
         <div class="table-wrapper">
           <table>
@@ -228,6 +308,10 @@ export default function RootLayout({ children }) {
               <tr>
                 <td>الـ Default في Next.js</td>
                 <td>لازم نحددّها صراحة</td>
+              </tr>
+              <tr>
+                <td>ممكن تجلب بيانات من قاعدة البيانات مباشرة</td>
+                <td>ممكن تستخدم Browser APIs</td>
               </tr>
             </tbody>
           </table>
@@ -295,16 +379,24 @@ export default function Counter() {
           <div class="callout-content">
             استخدم Client Component لو محتاج:
             <ul>
-              <li>useState أو useReducer</li>
-              <li>useEffect</li>
-              <li>أحداث المستخدم (onClick, onChange)</li>
-              <li>Browser APIs (localStorage, window)</li>
+              <li>useState أو useReducer (حالة البيانات)</li>
+              <li>useEffect (التأثيرات الجانبية)</li>
+              <li>أحداث المستخدم (onClick, onChange, onSubmit)</li>
+              <li>Browser APIs (localStorage, window, navigator)</li>
+              <li>Hook مخصص بيعتمد على أي حاجة من دول</li>
             </ul>
           </div>
         </div>
 
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ خطأ شائع</div>
+          <div class="callout-content">
+            متكتبش "use client" في كل المكونات! Server Components هي الافتراضي وأسرع. اكتبها بس لما تكون فعلاً محتاجها. كتير من المبتدئين بيحطوها في كل مكان وده بيبطئ المشروع.
+          </div>
+        </div>
+
         <h2>📁 هيكل المجلدات في المشروع</h2>
-        <p>في المشروع ده، هنستخدم <strong>Route Groups</strong> عشان ننظم الصفحات:</p>
+        <p>في المشروع ده، هنستخدم <strong>Route Groups</strong> عشان ننظم الصفحات. الـ Route Groups بتسمحلك تجمّع صفحات معينة من غير ما تأثر على الـ URL.</p>
 
         <div class="file-tree">
           <div class="file-tree-item folder">📁 app/</div>
@@ -330,11 +422,11 @@ export default function Counter() {
         <div class="callout callout-info">
           <div class="callout-title">💡 Route Groups</div>
           <div class="callout-content">
-            الأقواس المدورة <code>(shop)</code> بتوصل إن المجلد ده <strong>Route Group</strong> ومش بتتأثر على الـ URL. يعني <code>(shop)/products</code> هتكون نفس <code>/products</code>.
+            الأقواس المدورة <code>(shop)</code> بتوصل إن المجلد ده <strong>Route Group</strong> ومش بتتأثر على الـ URL. يعني <code>(shop)/products</code> هتكون نفس <code>/products</code>. الميزة إنك تقدر تعمل Layout خاص لكل مجموعة صفحات.
           </div>
         </div>
 
-        <h2>🔍 إنشاء مسار ديناميكي مع query</h2>
+        <h2>🔍 إنشاء مسار ديناميكي مع query parameters</h2>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -356,21 +448,61 @@ export default async function ProductDetails({ params, searchParams }) {
 }</code></pre>
         </div>
 
+        <p>يعني لما تزور <code>/products/123?color=red&size=large</code>، هتلاقي اللون أحمر والمقاس large. الـ searchParams دي بتساعدك تفلتر أو تغيّر المحتوى بناءً على الرابط.</p>
+
+        <h2>⚡ مثال عملي: صفحة \"من نحن\"</h2>
+        <p>خلّيني نعمل تمرين بسيط. عايزين نعمل صفحة "من نحن" للمتجر.</p>
+        <ol>
+          <li>أنشئ مجلد <code>about</code> داخل <code>app</code></li>
+          <li>أنشئ ملف <code>page.js</code> جوا المجلد</li>
+          <li>اكتب الكود التالي</li>
+        </ol>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/about/page.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>export default function AboutPage() {
+  return (
+    &lt;div className="max-w-4xl mx-auto p-8"&gt;
+      &lt;h1 className="text-4xl font-bold mb-6"&gt;من نحن&lt;/h1&gt;
+      &lt;p className="text-lg text-gray-600 mb-4"&gt;
+        نحن متجر إلكتروني متخصص في بيع أفضل المنتجات بأفضل الأسعار.
+      &lt;/p&gt;
+      &lt;p className="text-lg text-gray-600"&gt;
+        فريقنا يعمل باستمرار لتقديم أفضل تجربة تسوق لعملائنا.
+      &lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <p>الآن افتح المتصفح على <code>http://localhost:3000/about</code> وهتلاقي الصفحة شغالة!</p>
+
         <h2>📝 ملخص الدرس</h2>
         <p>في الدرس ده اتعلمنا:</p>
         <ul>
-          <li>✅ App Router و إزاي يشتغل</li>
+          <li>✅ App Router وإزاي بيشتغل</li>
           <li>✅ إنشاء صفحات بملفات page.js</li>
           <li>✅ استخدام Layouts للتخطيط المشترك</li>
           <li>✅ المسارات الديناميكية [id]</li>
           <li>✅ الفرق بين Server و Client Components</li>
           <li>✅ Route Groups لتنظيم المشروع</li>
+          <li>✅ query parameters مع searchParams</li>
         </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة للممارسة</div>
+          <div class="callout-content">
+            جرّب تعمل صفحات جديدة زي /contact و /faq. كمان جرّب تعمل صفحة تفاصيل منتج ديناميكية. الممارسة هي أحسن طريقة عشان تثبت اللي اتعلمتها!
+          </div>
+        </div>
 
         <div class="callout callout-success">
           <div class="callout-title">🎉 الدرس الجاي</div>
           <div class="callout-content">
-            في الدرس الجاي هنتعلم <strong>إعداد Tailwind CSS 4</strong> - هنشتغل على التصميم ونعرف إزاي نستخدم الـ Utility Classes.
+            في الدرس الجاي هنتعلم إعداد Tailwind CSS 4 - هنشتغل على التصميم ونعرف إزاي نستخدم الـ Utility Classes عشان نعمل تصميمات جميلة بسرعة.
           </div>
         </div>
 
