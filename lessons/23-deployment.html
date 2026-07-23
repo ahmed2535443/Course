@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الدرس 23 - نشر المشروع على Vercel</title>
+  <title>الدرس 23 - النشر على الإنترنت | دورة بناء متجر إلكتروني</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-
-  <!-- Header -->
   <header class="header">
     <div class="header-inner">
       <a href="../index.html" class="logo">
@@ -20,175 +19,278 @@
       </ul>
     </div>
   </header>
-
-  <!-- Content -->
   <div class="container">
     <div class="lesson-content">
-      
-      <!-- Header -->
       <div class="lesson-header">
         <div class="breadcrumb">
           <a href="../index.html">الرئيسية</a>
           <span>/</span>
           <span>الدرس 23</span>
         </div>
-        <h1>نشر المشروع على Vercel</h1>
+        <h1>النشر على الإنترنت (Deployment)</h1>
         <div class="meta">
           <span>⏱️ 30 دقيقة</span>
           <span>📖 عملي</span>
-          <span>الوحدة 7: النشر والبيع</span>
+          <span>الوحدة 6: النشر والإطلاق</span>
         </div>
       </div>
 
-      <!-- Body -->
       <div class="lesson-body">
 
         <h2>🎯 أهداف الدرس</h2>
         <ul>
-          <li>الاستعداد للنشر على بيئة الإنتاج</li>
-          <li>إعداد متغيرات البيئة (Environment Variables)</li>
+          <li>فهم مفهوم النشر وخطواته</li>
+          <li>الفرق بين بيئة التطوير وبيئة الإنتاج</li>
+          <li>إعداد حساب GitHub ورفع المشروع</li>
           <li>نشر المشروع على Vercel</li>
-          <li>إعداد نطاق مخصص (Custom Domain)</li>
-          <li>التحقق بعد النشر</li>
+          <li>إعداد Environment Variables</li>
+          <li>إعداد Supabase و Clerk للإنتاج</li>
+          <li>شراء Domain مخصص وربطه</li>
+          <li>فهم شهادة SSL و HTTPS</li>
+          <li>تجنب الأخطاء الشائعة في النشر</li>
         </ul>
 
-        <h2>💡 مقدمة عن النشر</h2>
+        <h2>🚀 مقدمة عن النشر</h2>
         <p>أهلاً بيكم يا صديقي في الدرس التالت والعشرين! لحد كده انت بنيت متجرك الإلكتروني وكملته. لكن المشكلة إن الموقع لسه شغال بس على جهازك (localhost:3000). عشان أي حد يقدر يستخدمه، لازم تنشره على الإنترنت.</p>
 
-        <p>النشر (Deployment) هو عملية نقل المشروع من جهازك الشخصي لسيرفر على الإنترنت. وVercel هو أفضل منصة لنشر مشاريع Next.js. ليه؟ لأنه:</p>
-
-        <ul>
-          <li><strong>مجاني للمشاريع الشخصية:</strong> مش محتاج تدفع حاجة.</li>
-          <li><strong>تلقائي:</strong> كل ما تعمل push للكود، الموقع بيتنشر تلقائياً.</li>
-          <li><strong>سريع جداً:</strong> بيوفر CDN عالمي. يعني الموقع بيشتغل بسرعة في أي دولة.</li>
-          <li><strong>سهل:</strong> النشر بخطوات بسيطة.</li>
-          <li><strong>متوافق مع Next.js:</strong> Vercel صاحب Next.js. فبيفهمه أحسن من أي حد تاني.</li>
-        </ul>
+        <p>النشر (Deployment) هو عملية نقل المشروع من جهازك الشخصي لسيرفر على الإنترنت. السيرفر ده شغال 24 ساعة و7 أيام في الأسبوع ومتصل بالإنترنت. الناس بتقدر تفتح موقعك من أي مكان في العالم.</p>
 
         <div class="callout callout-info">
-          <div class="callout-title">💡 Vercel vs منصات تانية</div>
+          <div class="callout-title">💡 تخيّل معايا</div>
           <div class="callout-content">
-            ممكن تنشر على Netlify أو Railway أو حتى سيرفرك الشخصي. لكن Vercel هو الأفضل لـ Next.js لأنه بيقدم ميزات زي Edge Functions و Image Optimization و Analytics بشكل تلقائي.
+            تخيّل إنك بنيت محل تجاري جميل في بيتك. المحل شكله حلو ومليان منتجات. بس المشكلة إنه في بيتك ومفيش حد يعرفه. النشر هو إنك تنقل المحل لشارع رئيسي الناس كلها بتعدّ عليه. كده الناس هتقدر تدخل وتشتري من عندك.
           </div>
         </div>
 
-        <h2>📋 قائمة ما قبل النشر</h2>
-        <p>قبل نشر المشروع، تأكد من إتمام هذه الخطوات:</p>
+        <h2>🔄 الفرق بين التطوير والإنتاج</h2>
+        <p>قبل ما ننشر، لازم نفهم الفرق بين بيئة التطوير وبيئة الإنتاج. الفرق ده مهم جداً عشان كتير من الأخطاء بعد النشر سببها إن الناس مش فاهمة الفرق.</p>
 
-        <div class="callout callout-info">
-          <div class="callout-title">💡 قائمة مراجعة ما قبل النشر</div>
-          <div class="callout-content">
-            <ul>
-              <li>✅ اختبار جميع الميزات بشكل كامل</li>
-              <li>✅ مراجعة جميع الأخطاء والتنبيهات</li>
-              <li>✅ تحسين أداء الصور</li>
-              <li>✅ مراجعة Meta tags و SEO</li>
-              <li>✅ اختبار النماذج ومداخل المستخدم</li>
-              <li>✅ التأكد من عمل نظام تسجيل الدخول</li>
-              <li>✅ اختبار نظام الدفع (إن وجد)</li>
-              <li>✅ مراجعة الأمان</li>
-            </ul>
-          </div>
-        </div>
-
-        <p>القائمة دي مهمة جداً. قبل ما تنشر، لازم تتأكد إن كل حاجة شغالة. لأن بعد النشر، أي خطأ هيظهر لكل المستخدمين. فخلّيني أشرحلك كل نقطة:</p>
-
+        <h3>بيئة التطوير (Development)</h3>
         <ul>
-          <li><strong>اختبار جميع الميزات:</strong> افتح كل صفحة واضغط كل زرار. جرّب تسجل دخول وخروج. جرّب تشتري منتج. جرّب تضيف منتج للسلة والمفضلة.</li>
-          <li><strong>مراجعة الأخطاء:</strong> افتح Console في المتصفح وشوف لو في أخطاء حمراء. لو في، لازم تصلحها قبل النشر.</li>
-          <li><strong>تحسين الصور:</strong> تأكد إن الصور مش كبيرة جداً. الصور الكبيرة بتبثّي الصفحة.</li>
-          <li><strong>Meta tags:</strong> تأكد إن كل صفحة عندها title و description.</li>
-          <li><strong>النماذج:</strong> جرّب تبعت كل نموذج. جرّب تبعت نموذج فاضي. جرّب تبعت بيانات غلط.</li>
-          <li><strong>تسجيل الدخول:</strong> جرّب تسجل دخول وخروج. جرّب تسجل دخول بكلمة مرور غلط.</li>
-          <li><strong>الأمان:</strong> تأكد إنه مفيش مفاتيح API ظاهرة في الكود. تأكد إن صفحة Admin محمية.</li>
+          <li><strong>Hot Reload:</strong> تحديث فوري للمتغيرات من غير refresh</li>
+          <li><strong>أخطاء تفصيلية:</strong> browser بيوريك كل التفاصيل</li>
+          <li><strong>بدون بناء:</strong> المشروع بيشتغل من غير build</li>
+          <li><strong>Debugging سهل:</strong> console و debugger متاحة</li>
         </ul>
 
-        <h3>1. تنظيف المشروع</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">تنظيف الملفات غير المستخدمة</span>
-            <span class="code-block-lang">bash</span>
-          </div>
-          <pre><code># حذف الملفات المؤقتة
-rm -rf .next
-rm -rf node_modules/.cache
-
-# تثبيت الاعتماديات
-npm install
-
-# بناء المشروع للتأكد من عدم وجود أخطاء
-npm run build
-
-# تنظيف ملفات التطوير
-npm cache clean --force</code></pre>
-        </div>
-
-        <p>خطوات التنظيف دي مهمة:</p>
+        <h3>بيئة الإنتاج (Production)</h3>
         <ul>
-          <li><strong>rm -rf .next:</strong> بيحذف ملفات البناء القديمة. ممكن تكون فيها ملفات مش محدثة.</li>
-          <li><strong>rm -rf node_modules/.cache:</strong> بيحذف الكاش بتاع الاعتماديات.</li>
-          <li><strong>npm install:</strong> بيثبّت الاعتماديات من جديد. ممكن يكون فيه تحديثات مهمة.</li>
-          <li><strong>npm run build:</strong> بيبني المشروع. لو في أي خطأ، هيتكتب هنا قبل النشر.</li>
-          <li><strong>npm cache clean --force:</strong> بيحذف الكاش العام.</li>
+          <li><strong>سرعة عالية:</strong> المشروع بيتعمله build مسبقاً</li>
+          <li><strong>أخطاء مختفية:</strong> المستخدم مش هيشوف أخطاء تفصيلية</li>
+          <li><strong>ملفات مضغوطة:</strong> CSS و JavaScript بيتم ضغطهم</li>
+          <li><strong>أمان أعلى:</strong> بعض الأشياء بتتعمل بشكل مختلف</li>
         </ul>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الميزة</th>
+                <th>التطوير</th>
+                <th>الإنتاج</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>الرابط</strong></td>
+                <td>localhost:3000</td>
+                <td>your-domain.com</td>
+              </tr>
+              <tr>
+                <td><strong>الأمر</strong></td>
+                <td>npm run dev</td>
+                <td>npm run build</td>
+              </tr>
+              <tr>
+                <td><strong>السرعة</strong></td>
+                <td>عادية</td>
+                <td>سريعة جداً</td>
+              </tr>
+              <tr>
+                <td><strong>الأخطاء</strong></td>
+                <td>تفصيلية</td>
+                <td>مخفية</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <div class="callout callout-warning">
           <div class="callout-title">⚠️ غلطة شائعة</div>
           <div class="callout-content">
-            بعض المطورين بيعملوا npm run build قبل كل نشر. ده مهم جداً لأنه بيكشف الأخطاء اللي مش بتظهر في npm run dev. لأن في اختلافات بين بيئة التطوير وبيئة الإنتاج.
+            كتير من المبتدئين بيجربوا يفتحوا localhost من موبايلهم ويقولوا "نشرت!". ده مش نشر حقيقي. النشر لازم يتعمل build و deploy على سيرفر.
           </div>
         </div>
 
-        <h3>2. مراجعة package.json</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">package.json</span>
-            <span class="code-block-lang">json</span>
-          </div>
-          <pre><code>{
-  "name": "market-store",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "next": "16.2.11",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "@clerk/nextjs": "7.5.22",
-    "@supabase/supabase-js": "2.110.8",
-    "framer-motion": "12.42.2",
-    "lucide-react": "1.25.0"
-  },
-  "devDependencies": {
-    "tailwindcss": "4.0.0",
-    "autoprefixer": "10.0.1",
-    "postcss": "8.4.0"
-  }
-}</code></pre>
-        </div>
-
-        <p>تأكد إن الـ scripts المهمة موجودة:</p>
+        <h2>⭐ لماذا Vercel؟</h2>
+        <p>Vercel هو أفضل منصة لنشر مشاريع Next.js. ليه؟</p>
         <ul>
-          <li><strong>dev:</strong> لتشغيل المشروع في بيئة التطوير.</li>
-          <li><strong>build:</strong> لبناء المشروع للإنتاج.</li>
-          <li><strong>start:</strong> لتشغيل المشروع بعد البناء.</li>
-          <li><strong>lint:</strong> لفحص الكود وتنقيفه.</li>
+          <li><strong>مجاني:</strong> الخطة المجانية بتكفي للمشاريع الشخصية</li>
+          <li><strong>تلقائي:</strong> كل ما تعمل push، الموقع بيتحدث تلقائياً</li>
+          <li><strong>سريع:</strong> CDN عالمي بيشتغل في أي دولة</li>
+          <li><strong>سهل:</strong> النشر بخطوات بسيطة</li>
+          <li><strong>متوافق مع Next.js:</strong> Vercel صاحب Next.js نفسه</li>
+          <li><strong>SSL مجاني:</strong> شهادة SSL تلقائية لكل موقع</li>
+          <li><strong>Analytics مجانية:</strong> أدوات مراقبة الأداء</li>
         </ul>
 
-        <h2>🔐 إعداد متغيرات البيئة</h2>
-        <p>المتغيرات البيئية (Environment Variables) ضرورية لتخزين المفاتيح السرية. في Next.js، نستخدم ملف <code>.env.local</code> للتطوير المحلي.</p>
-
-        <div class="callout callout-warning">
-          <div class="callout-title">⚠️ تحذير أمني</div>
+        <div class="callout callout-info">
+          <div class="callout-title">💡 مقارنة سريعة</div>
           <div class="callout-content">
-            لا ترفع ملف <code>.env.local</code> إلى GitHub أو أي مستودع عام. تأكد من وجوده في ملف <code>.gitignore</code>. لو المفاتيح السرية ظهرت públicas، ممكن حد يستخدمها ويخترق موقعك.
+            ممكن تنشر على Netlify أو Railway أو DigitalOcean. لكن Vercel هو الأفضل لـ Next.js لأنه بيقدم ميزات زي Edge Functions و Image Optimization بشكل تلقائي.
           </div>
         </div>
+
+        <h2>📦 إنشاء حساب GitHub</h2>
+        <p>GitHub هو أكبر مستودع لتخزين الكود المصدري. قبل النشر لازم يكون عندك حساب عليه.</p>
+
+        <h3>خطوات إنشاء الحساب</h3>
+        <ol class="step-list">
+          <li><strong>افتح github.com</strong> واضغط Sign up</li>
+          <li><strong>ادخل بريدك الإلكتروني</strong> واعمل كلمة مرور قوية</li>
+          <li><strong>اختار اسم مستخدم:</strong> مثلاً ahmed-market-dev</li>
+          <li><strong>أكد حسابك:</strong> هيوصلك إيميل من GitHub اضغط رابط التأكيد</li>
+        </ol>
+
+        <h3>تثبيت Git</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">تحميل وتثبيت Git</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code># حمّل Git من: https://git-scm.com/download/win
+# بعد التثبيت، تأكد:
+git --version
+# المفروض يطلع: git version 2.45.0</code></pre>
+        </div>
+
+        <h3>إعداد بيانات Git</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">إعداد Git</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code>git config --global user.name "Ahmed Hassan"
+git config --global user.email "ahmed@example.com"
+# لازم الإيميل يكون نفس إيميل GitHub</code></pre>
+        </div>
+
+        <h2>⬆️ رفع المشروع على GitHub</h2>
+
+        <h3>إنشاء مستودع على GitHub</h3>
+        <ol class="step-list">
+          <li>ادخل على GitHub واضغط + ثم New repository</li>
+          <li>اكتب اسم المشروع (مثلاً market-store)</li>
+          <li>اختار Private للمشروع الشخصي</li>
+          <li>متختارش README أو .gitignore (احنا هنعملها)</li>
+          <li>اضغط Create repository</li>
+        </ol>
+
+        <h3>رفع الكود</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">رفع المشروع على GitHub</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code># 1. افتح التيرمينال في مجلد المشروع
+cd "E:\تطبيقات veb coding\market"
+
+# 2. ابدأ مستودع Git
+git init
+
+# 3. أضف كل الملفات
+git add .
+
+# 4. اعمل commit
+git commit -m "المشروع جاهز للنشر"
+
+# 5. اربط المشروع بـ GitHub
+git remote add origin https://github.com/ahmed-market-dev/market-store.git
+
+# 6. ارفع الكود
+git push -u origin main</code></pre>
+        </div>
+
+        <p>شرح الأوامر:</p>
+        <ul>
+          <li><strong>git init:</strong> بيلغي إنشاء مستودع Git جديد</li>
+          <li><strong>git add .:</strong> بيضيف كل الملفات للمستودع</li>
+          <li><strong>git commit:</strong> بيخزن التغييرات مع رسالة وصفية</li>
+          <li><strong>git remote add:</strong> بيربط المشروع المحلي بـ GitHub</li>
+          <li><strong>git push:</strong> بيرفع الكود على GitHub</li>
+        </ul>
+
+        <h3>ملف .gitignore</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">.gitignore</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code># الملفات اللي لازم تتخطى
+.next/
+node_modules/
+.env
+.env.local
+.DS_Store
+.vscode/</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ خطر أمني</div>
+          <div class="callout-content">
+            لو رفعت .env.local على GitHub بال случай، المفاتيح السرية بتاعتك هتكون ظاهرة للعالم كله. لو حصل كده، ا立马 اعمل rotate لكل المفاتيح.
+          </div>
+        </div>
+
+        <h2>🔗 ربط Vercel بـ GitHub</h2>
+
+        <h3>إنشاء حساب Vercel</h3>
+        <ol class="step-list">
+          <li>روح على vercel.com واضغط Sign Up</li>
+          <li>اختر Continue with GitHub</li>
+          <li>أكد التفويض لـ Vercel</li>
+          <li>اختار Free Plan (Hobby)</li>
+        </ol>
+
+        <h3>إنشاء مشروع جديد</h3>
+        <ol class="step-list">
+          <li>اضغط New Project من لوحة التحكم</li>
+          <li>اختر Import Git Repository</li>
+          <li>اختر مشروعك من القائمة</li>
+          <li>اضغط Import</li>
+        </ol>
+
+        <h3>إعداد المشروع</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">الإعدادات</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>Framework Preset: Next.js
+Build Command: npm run build
+Output Directory: .next
+Install Command: npm install</code></pre>
+        </div>
+
+        <p>في أغلب الحالات، Vercel بيكشف الإعدادات تلقائياً. مش محتاج تغير حاجة.</p>
+
+        <h3>النشر من التيرمينال (اختياري)</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">نشر عبر CLI</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code>npm install -g vercel
+vercel login
+vercel          # للتطوير
+vercel --prod   # للإنتاج</code></pre>
+        </div>
+
+        <h2>🔐 إعداد Environment Variables</h2>
+        <p>المتغيرات البيئية بتحتوي على معلومات سرية مش عايزها تظهر في الكود.</p>
+
+        <h3>لماذا نستخدمها؟</h3>
+        <p>لو حطيت المفاتيح السرية في الكود ورفعته على GitHub، أي حد يقدر يسرقها. عشان كده بنخفيها في ملفات منفصلة.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -209,206 +311,132 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
 
 # Site URL
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-# Stripe (optional)
-STRIPE_SECRET_KEY=sk_test_...
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...</code></pre>
+NEXT_PUBLIC_SITE_URL=http://localhost:3000</code></pre>
         </div>
 
-        <p>شوف يا صديقي، كل متغير ليه دور:</p>
+        <h3>شرح المتغيرات</h3>
         <ul>
-          <li><strong>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:</strong> مفتاح Clerk العام. بيبدأ بـ pk_.</li>
-          <li><strong>CLERK_SECRET_KEY:</strong> مفتاح Clerk السري. بيبدأ بـ sk_. لا تشاركه مع حد!</li>
-          <li><strong>NEXT_PUBLIC_SUPABASE_URL:</strong> رابط مشروع Supabase بتاعك.</li>
-          <li><strong>NEXT_PUBLIC_SUPABASE_ANON_KEY:</strong> مفتاح Supabase العام.</li>
-          <li><strong>SUPABASE_SERVICE_ROLE_KEY:</strong> مفتاح Supabase السري. بيستخدم في السيرفر بس.</li>
-          <li><strong>NEXT_PUBLIC_SITE_URL:</strong> رابط الموقع. في الإنتاج، لازم يتغير لرابط Vercel.</li>
+          <li><strong>NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:</strong> المفتاح العام. بيبدأ بـ pk_</li>
+          <li><strong>CLERK_SECRET_KEY:</strong> المفتاح السري. بيبدأ بـ sk_. لا تشاركه!</li>
+          <li><strong>NEXT_PUBLIC_SUPABASE_URL:</strong> رابط مشروع Supabase</li>
+          <li><strong>NEXT_PUBLIC_SUPABASE_ANON_KEY:</strong> المفتاح العام لـ Supabase</li>
+          <li><strong>SUPABASE_SERVICE_ROLE_KEY:</strong> المفتاح السري. للسيرفر بس</li>
+          <li><strong>NEXT_PUBLIC_SITE_URL:</strong> رابط الموقع. في الإنتاج يتغير لرابط Vercel</li>
         </ul>
 
         <div class="callout callout-info">
-          <div class="callout-title">💡 ليه في NEXT_PUBLIC ومش NEXT_PUBLIC؟</div>
+          <div class="callout-title">💡 NEXT_PUBLIC وليه مش؟</div>
           <div class="callout-content">
-            المتغيرات اللي بتبدأ بـ NEXT_PUBLIC متاحة للعميل (المستخدم). يعني ممكن تظهر في المتصفح. المتغيرات اللي مش بتبدأ بـ NEXT_PUBLIC بتشتغل بس على السيرفر. يعني السر مش هيتعرض.
+            المتغيرات اللي بتبدأ بـ NEXT_PUBLIC متاحة للعميل. مش ممكن تحط فيها مفاتيح سرية. اللي مش بتبدأ بـ NEXT_PUBLIC بتشتغل بس على السيرفر.
           </div>
         </div>
 
-        <h3>إعداد Environment Variables على Vercel</h3>
-        <p>بعد رفع المشروع على Vercel، يجب إضافة المتغيرات البيئية من خلال لوحة التحكم:</p>
-
+        <h3>إضافة المتغيرات على Vercel</h3>
         <ol class="step-list">
-          <li>
-            <strong>افتح لوحة تحكم Vercel</strong> واختر مشروعك
-          </li>
-          <li>
-            <strong>اذهب إلى Settings</strong> ثم Environment Variables
-          </li>
-          <li>
-            <strong>أضف كل متغير</strong> بشكل منفصل مع القيم الصحيحة
-          </li>
-          <li>
-            <strong>اختر البيئات</strong> (Production, Preview, Development)
-          </li>
-          <li>
-            <strong>اضغط Save</strong> لحفظ كل متغير
-          </li>
+          <li>افتح Vercel Dashboard واختر مشروعك</li>
+          <li>اذهب إلى Settings ثم Environment Variables</li>
+          <li>أضف كل متغير بشكل منفصل</li>
+          <li>اختار البيئات (Production و Preview)</li>
+          <li>اضغط Save لكل متغير</li>
         </ol>
 
         <div class="callout callout-warning">
           <div class="callout-title">⚠️ غلطة شائعة</div>
           <div class="callout-content">
-            بعض المطورين بيحطوا متغيرات البيئة في Production بس. لازم تحطها في Preview كمان عشانhiênات النشر المسبقة (Preview Deployments) تشتغل صح.
+            بعض المطورين بيحطوا المتغيرات في Production بس. لازم تحطها في Preview كمان عشان Preview Deployments تشتغل صح.
           </div>
         </div>
 
-        <h2>🚀 نشر المشروع على Vercel</h2>
-        <p>Vercel هو أفضل منصة لنشر مشاريع Next.js. إليك الخطوات:</p>
+        <h2>🗄️ إعداد Supabase للإنتاج</h2>
 
-        <h3>الطريقة الأولى: من خلال واجهة Vercel</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">خطوات النشر</span>
-            <span class="code-block-lang">text</span>
-          </div>
-          <pre><code>1. اذهب إلى vercel.com وسجل دخول بحسابك
-2. اضغط "New Project"
-3. اختر "Import Git Repository"
-4. اختر مستودع GitHub الخاص بك
-5. اضغط "Import"
-6. تأكد من إعدادات البناء:
-   - Framework Preset: Next.js
-   - Build Command: npm run build
-   - Output Directory: .next
-7. أضف Environment Variables
-8. اضغط "Deploy"</code></pre>
-        </div>
-
-        <p>الخطوات دي بسيطة جداً. انت بتعمل:</p>
-        <ul>
-          <li><strong>تسجيل دخول:</strong> استخدم حساب GitHub بتاعك.</li>
-          <li><strong>New Project:</strong> مشروع جديد.</li>
-          <li><strong>Import:</strong> استيراد المشروع من GitHub.</li>
-          <li><strong>Settings:</strong> تأكد إن الإعدادات صحيحة.</li>
-          <li><strong>Deploy:</strong> اضغط وانتظر. النشر بياخد تقريباً دقيقة واحدة.</li>
-        </ul>
-
-        <h3>الطريقة الثانية: من خلال CLI</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">تثبيت ونشر عبر CLI</span>
-            <span class="code-block-lang">bash</span>
-          </div>
-          <pre><code># تثبيت Vercel CLI
-npm install -g vercel
-
-# تسجيل الدخول
-vercel login
-
-# نشر المشروع (للتطوير)
-vercel
-
-# نشر للإنتاج
-vercel --prod</code></pre>
-        </div>
-
-        <p>الطريقة دي أسرع لو انت بتشتغل من التيرمينال. شوف:</p>
-        <ul>
-          <li><strong>npm install -g vercel:</strong> بيثبّت Vercel CLI عالمياً.</li>
-          <li><strong>vercel login:</strong> بيسجّلك دخول.</li>
-          <li><strong>vercel:</strong> بينشر المشروع في بيئة التطوير (Preview).</li>
-          <li><strong>vercel --prod:</strong> بينشر المشروع للإنتاج.</li>
-        </ul>
-
-        <div class="callout callout-info">
-          <div class="callout-title">💡 الفرق بين Preview و Production</div>
+        <h3>قائمة مراجعة Supabase</h3>
+        <div class="callout callout-success">
+          <div class="callout-title">✅ قبل النشر</div>
           <div class="callout-content">
-            Preview هو نسخة تجريبية من الموقع. بتحطها في رابط عشوائي. مفيدة للمعاينة قبل النشر. Production هو الموقع الحقيقي اللي المستخدمين بيشوفوه. لازم تكون متأكد إن كل حاجة شغالة قبل ما تعمل deploy للإنتاج.
+            <ul>
+              <li>✅ تفعيل Row Level Security (RLS) على كل جدول</li>
+              <li>✅ كتابة Policies مناسبة لكل جدول</li>
+              <li>✅ مراجعة Database Functions</li>
+              <li>✅ إنشاء Backup من القاعدة</li>
+              <li>✅ تأكد المفتاح العام محدود الصلاحيات</li>
+            </ul>
           </div>
         </div>
 
-        <h3>إعدادات next.config.js للنشر</h3>
         <div class="code-block">
           <div class="code-block-header">
-            <span class="code-block-title">next.config.js</span>
-            <span class="code-block-lang">javascript</span>
+            <span class="code-block-title">تفعيل RLS وكتابة Policies</span>
+            <span class="code-block-lang">sql</span>
           </div>
-          <pre><code>/** @type {import('next').NextConfig} */
-const nextConfig = {
-  // تحسين الأداء للإنتاج
-  experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons']
-  },
-  
-  // إعدادات الصور
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**.supabase.co'
-      }
-    ],
-    formats: ['image/avif', 'image/webp']
-  },
-  
-  // تعطيل Strict Mode في الإنتاج
-  reactStrictMode: true,
-  
-  // تحسين الحزم
-  webpack: (config, { isServer }) =&gt; {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false
-      };
-    }
-    return config;
-  }
-};
+          <pre><code>-- تفعيل RLS على جدول المنتجات
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 
-module.exports = nextConfig;</code></pre>
+-- السماح بالقراءة للجميع
+CREATE POLICY "Products are viewable by everyone"
+ON products FOR SELECT USING (true);
+
+-- السماح بالكتابة للمشرفين بس
+CREATE POLICY "Only admins can insert products"
+ON products FOR INSERT
+WITH CHECK (auth.uid() IN (
+  SELECT user_id FROM admin_users
+));</code></pre>
         </div>
 
-        <p>الإعدادات دي مهمة للإنتاج:</p>
-        <ul>
-          <li><strong>optimizePackageImports:</strong> بيحسّن المكتبات الكبيرة.</li>
-          <li><strong>images.remotePatterns:</strong> بيسمح بالصور من Supabase.</li>
-          <li><strong>reactStrictMode:</strong> بيشدد أخطاء React. مفيد للتطوير.</li>
-          <li><strong>webpack fallback:</strong> بيعطل بعض المكتبات اللي مش محتاجها على العميل.</li>
-        </ul>
+        <h2>👤 إعداد Clerk للإنتاج</h2>
 
-        <h2>🌐 إعداد نطاق مخصص (Custom Domain)</h2>
-        <p>بعد النشر، ستحصل على رابط مثل <code>market.vercel.app</code>. يمكنك تغييره لنطاق مخصص.</p>
-
-        <h3>خطوات إعداد النطاق المخصص</h3>
+        <h3>خطوات الإعداد</h3>
         <ol class="step-list">
-          <li>
-            <strong>شراء النطاق</strong> من مسجل نطاقات (مثل Namecheap, GoDaddy)
-          </li>
-          <li>
-            <strong>الذهاب إلى Vercel Dashboard</strong> → مشروعك → Settings → Domains
-          </li>
-          <li>
-            <strong>إضافة النطاق</strong> وكتابته (مثلاً: market.com)
-          </li>
-          <li>
-            <strong>تحديث DNS Records</strong> عند مسجل النطاق:
-            <ul>
-              <li>Type: A</li>
-              <li>Name: @</li>
-              <li>Value: 76.76.21.21</li>
-            </ul>
-          </li>
-          <li>
-            <strong>انتظار التفعيل</strong> (قد يستغرق 24-48 ساعة)
-          </li>
+          <li>افتح Clerk Dashboard واختر مشروعك</li>
+          <li>اذهب إلى Configure ثم Paths</li>
+          <li>أضف رابط موقعك في Allowed Redirect URLs</li>
+          <li>أضف: https://market-store.vercel.app/**</li>
+          <li>لو عندك Domain مخصص، أضفه كمان</li>
         </ol>
 
         <div class="code-block">
           <div class="code-block-header">
-            <span class="code-block-title">DNS Records</span>
+            <span class="code-block-title">Redirect URLs المطلوبة</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code># للتطوير المحلي
+http://localhost:3000/**
+
+# لبيئة Vercel
+https://market-store.vercel.app/**
+
+# للنطاق المخصص
+https://market.com/**</code></pre>
+        </div>
+
+        <h2>🌐 اسم Domain مخصص</h2>
+        <p>بعد النشر، موقعك هيشتغل على market-store.vercel.app. لو عايز اسم احترافي، محتاج Domain مخصص.</p>
+
+        <h3>خطوات شراء Domain</h3>
+        <ol class="step-list">
+          <li>اختار اسم Domain مناسب (قصير وسهل)</li>
+          <li>البحث عن.Domain في Namecheap أو GoDaddy</li>
+          <li>شراء Domain (حوالي 10-15 دولار/سنة)</li>
+        </ol>
+
+        <h3>نصائح لاختار Domain</h3>
+        <ul>
+          <li><strong>قصيرة:</strong> shop.com أحسن من myamazingonlinestore.com</li>
+          <li><strong>.com هو الأفضل:</strong> لو متاح، ده الأشهر</li>
+          <li><strong>متعلق بالنشاط:</strong> مثال: alnoor-books.com</li>
+        </ul>
+
+        <h3>ربط Domain بـ Vercel</h3>
+        <ol class="step-list">
+          <li>افتح Vercel Dashboard → مشروعك → Settings → Domains</li>
+          <li>أضف Domain (مثلاً: market.com)</li>
+          <li>استنسخ DNS Records من Vercel</li>
+          <li>روح على لوحة تحكم Domain وعدّل الـ DNS</li>
+        </ol>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">DNS Records المطلوبة</span>
             <span class="code-block-lang">text</span>
           </div>
           <pre><code># للنطاق الرئيسي
@@ -422,207 +450,262 @@ Name: www
 Value: cname.vercel-dns.com</code></pre>
         </div>
 
-        <div class="callout callout-info">
-          <div class="callout-title">💡 تثبيت SSL تلقائي</div>
-          <div class="callout-content">
-            Vercel يوفر شهادة SSL مجانية تلقائياً لكل نطاق. لا حاجة لتثبيت شهادة يدوياً. يعني موقعك هيشتغل على HTTPS من غير أي إعداد إضافي.
-          </div>
-        </div>
+        <p>التفعيل بيأخذ من 24 لـ 48 ساعة. استن لحد ما يخلص.</p>
 
         <div class="callout callout-warning">
-          <div class="callout-title">⚠️ مهمة بعد تغيير النطاق</div>
+          <div class="callout-title">⚠️ تحديث بعد Domain</div>
           <div class="callout-content">
-            بعد ما تغيّر النطاق، لازم تحدّث NEXT_PUBLIC_SITE_URL في متغيرات البيئة على Vercel. وكمان لازم تحدّث روابط Clerk و Supabase عشان تشتغل على النطاق الجديد.
+            بعد تفعيل Domain، حدّث NEXT_PUBLIC_SITE_URL في Vercel وحدّث Redirect URLs في Clerk Dashboard.
           </div>
         </div>
 
-        <h2>✅ التحقق بعد النشر</h2>
-        <p>بعد النشر، تأكد من فحص جميع الميزات:</p>
+        <h2>🔒 شهادة SSL و HTTPS</h2>
+        <p>HTTPS هو بروتوكول أمن بيشتغل عليه كل المواقع المحترمة. لما بتفتح موقع وتشوف قفل أخضر، ده معناه إن الاتصال مشفّر.</p>
 
+        <h3>ليه HTTPS مهم؟</h3>
+        <ul>
+          <li><strong>الأمان:</strong> بيشفّر كل البيانات</li>
+          <li><strong>SEO:</strong> Google بتحب المواقع الآمنة</li>
+          <li><strong>الثقة:</strong> المستخدمين بيثقوا في المواقع الآمنة</li>
+          <li><strong>المتاجر:</strong> ضروري لقبول بطاقات الائتمان</li>
+        </ul>
+
+        <p>الخبر الحلو: Vercel بيوفر SSL مجاني تلقائياً. مش محتاج تعمل أي حاجة.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 تأكد من HTTPS</div>
+          <div class="callout-content">
+            افتح الموقع في المتصفح وشوف شريط العنوان. لو فيه قفل أخضر أو "Secure"، يبقى HTTPS شغال. أو اكتب في Terminal: curl -I https://your-site.vercel.app
+          </div>
+        </div>
+
+        <h2>❌ أخطاء شائعة في النشر</h2>
+
+        <h3>الخطأ 1: Environment Variables ناقصة</h3>
+        <p><strong>السبب:</strong> المتغيرات مش مضافة على Vercel.<br>
+        <strong>الحل:</strong> تأكد إن كل المتغيرات موجودة في Settings → Environment Variables. وتأكد إن الأسماء متطابقة بالظبط.</p>
+
+        <h3>الخطأ 2: نسيان عمل Build</h3>
+        <p><strong>السبب:</strong> المشروع شغال على localhost بس.<br>
+        <strong>الحل:</strong> جرّب npm run build على الكمبيوتر. لو في أخطاء، اتصلحها قبل النشر.</p>
+
+        <h3>الخطأ 3: رفع .env.local على GitHub</h3>
+        <p><strong>السبب:</strong> الملف مش موجود في .gitignore.<br>
+        <strong>الحل:</strong> احذف الملف من GitHub فوراً وعمل rotate لكل المفاتيح.</p>
+
+        <h3>الخطأ 4: الروابط الثابتة</h3>
+        <p><strong>السبب:</strong> استخدام localhost:3000 في الكود.<br>
+        <strong>الحل:</strong> استخدم process.env.NEXT_PUBLIC_SITE_URL بدل الروابط الثابتة.</p>
+
+        <h3>الخطأ 5: مشاكل الصور</h3>
+        <p><strong>السبب:</strong> الصور مش محملة من HTTPS أو domains مش مضافة في next.config.js.<br>
+        <strong>الحل:</strong> تأكد إن الصور من HTTPS واضف الـ domains في next.config.js.</p>
+
+        <h3>الخطأ 6: نسيان Redirect URLs في Clerk</h3>
+        <p><strong>السبب:</strong> Clerk مش عارف يرجع المستخدم.<br>
+        <strong>الحل:</strong> أضف رابط موقعك في Clerk Dashboard → Configure → Paths → Redirect URLs.</p>
+
+        <h3>الخطأ 7: Route Handlers مش شغالة</h3>
+        <p><strong>السبب:</strong> في اختلافات بين dev و production في معالجة الطلبات.<br>
+        <strong>الحل:</strong> جرّب تعمل npm run build وشوف لو في أخطاء. وتأكد إن الـ Route Handlers مكتوبة صح.</p>
+
+        <h3>الخطأ 8: Server Components و Client Components</h3>
+        <p><strong>السبب:</strong> استخدام 'use client' في أماكن مش محتاجها أو استخدام Server Features في Client Component.<br>
+        <strong>الحل:</strong> راجع الكود وتأكد إن كل Component في مكانه الصح.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة للتجنب</div>
+          <div class="callout-content">
+            قبل ما تنشر، اعمل npm run build على جهازك. لو البناء نجح من غير أخطاء، يبقى المشروع جاهز للنشر. لو في أخطاء، اتصلحها الأول.
+          </div>
+        </div>
+
+        <h2>✅ قائمة ما بعد النشر</h2>
+
+        <h3>فحص عام</h3>
+        <ul>
+          <li>✅ افتح الموقع وتأكد إنه شغال</li>
+          <li>✅ تأكد إنه على HTTPS (قفل أخضر)</li>
+          <li>✅ افتحه على الموبايل (responsive)</li>
+          <li>✅ تأكد السرعة كويسة (أقل من 3 ثواني)</li>
+          <li>✅ افتح Console (F12) ومفيش أخطاء حمراء</li>
+          <li>✅ جرّب تسجيل دخول وخروج</li>
+          <li>✅ جرّب إضافة منتج للسلة</li>
+          <li>✅ جرّب عملية الشراء بالكامل</li>
+          <li>✅ تأكد إن الصور كلها بتتحمل</li>
+          <li>✅ تأكد إن الروابط الداخلية كلها شغالة</li>
+        </ul>
+
+        <h3>فحص الصفحات</h3>
         <div class="table-wrapper">
           <table>
             <thead>
               <tr>
-                <th>الفحص</th>
+                <th>الصفحة</th>
                 <th>الرابط</th>
-                <th>الملاحظات</th>
+                <th>التيار</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>الصفحة الرئيسية</strong></td>
+                <td><strong>الرئيسية</strong></td>
                 <td>/</td>
-                <td>تأكد من تحميل الصور والروابط</td>
+                <td>تحميل المنتجات والبانر</td>
               </tr>
               <tr>
-                <td><strong>صفحة المنتجات</strong></td>
+                <td><strong>المنتجات</strong></td>
                 <td>/products</td>
-                <td>تأكد من عمل البحث والفلتر</td>
+                <td>البحث والفلتر</td>
               </tr>
               <tr>
-                <td><strong>تفاصيل المنتج</strong></td>
+                <td><strong>التفاصيل</strong></td>
                 <td>/products/[id]</td>
-                <td>تأكد من عرض الصور والمعلومات</td>
+                <td>عرض الصور والمعلومات</td>
+              </tr>
+              <tr>
+                <td><strong>السلة</strong></td>
+                <td>/cart</td>
+                <td>إضافة وحذف المنتجات</td>
+              </tr>
+              <tr>
+                <td><strong>الدفع</strong></td>
+                <td>/checkout</td>
+                <td>عملية الشراء</td>
               </tr>
               <tr>
                 <td><strong>تسجيل الدخول</strong></td>
                 <td>/sign-in</td>
-                <td>تأكد من عمل Clerk</td>
+                <td>عمل Clerk</td>
               </tr>
               <tr>
-                <td><strong>Admin Dashboard</strong></td>
+                <td><strong>Admin</strong></td>
                 <td>/admin</td>
-                <td>تأكد من حماية المسارات</td>
-              </tr>
-              <tr>
-                <td><strong>API Routes</strong></td>
-                <td>/api/*</td>
-                <td>تأكد من عمل endpoints</td>
+                <td>حماية المسارات</td>
               </tr>
             </tbody>
           </table>
         </div>
 
+        <h3>النشر التلقائي</h3>
+        <p>من أعظم ميزات Vercel: كل ما تعمل git push، الموقع بيتحدث تلقائياً. مش محتاج تعمل أي حاجة.</p>
+
         <div class="code-block">
           <div class="code-block-header">
-            <span class="code-block-title">فحص الأداء</span>
+            <span class="code-block-title">النشر التلقائي</span>
             <span class="code-block-lang">bash</span>
           </div>
-          <pre><code># فحص الأداء باستخدام Lighthouse
-npx lighthouse https://your-domain.com --output html
-
-# فحص الروابط المكسورة
-npx broken-link-checker https://your-domain.com
-
-# فحص SEO
-npx seo-checker https://your-domain.com</code></pre>
+          <pre><code>git add .
+git commit -m "إصلاح خطأ في صفحة المنتجات"
+git push
+# Vercel هتبدأ تبني وتنشر تلقائياً</code></pre>
         </div>
 
-        <h2>🔄 النشر التلقائي (CI/CD)</h2>
-        <p>Vercel يوفر النشر التلقائي مع كل push إلى GitHub:</p>
-
-        <div class="callout callout-success">
-          <div class="callout-title">✅ ميزة النشر التلقائي</div>
+        <div class="callout callout-info">
+          <div class="callout-title">💡 Preview Deployments</div>
           <div class="callout-content">
-            عند ربط GitHub مع Vercel، سيتم نشر أي تعديل جديد تلقائياً. يعني كل ما تعمل git push، الموقع بيتتحدث. كمان يمكنك إعداد معاينة قبل الدمج (Preview Deployments).
+            لو بتشتغل مع فريق أو بتعمل Pull Request، Vercel بينشر نسخة تجريبية. كده تقدر تراجع التعديلات قبل الدمج.
           </div>
         </div>
+
+        <h3>مراقبة الأداء بعد النشر</h3>
+        <p>بعد النشر، لازم تراقب أداء موقعك بشكل مستمر:</p>
+        <ul>
+          <li><strong>Vercel Analytics:</strong> راقب Web Vitals (LCP, FID, CLS)</li>
+          <li><strong>Google Search Console:</strong> راقب SEO و#indexed pages</li>
+          <li><strong>Sentry:</strong> راقب الأخطاء في Production</li>
+        </ul>
 
         <div class="code-block">
           <div class="code-block-header">
-            <span class="code-block-title">vercel.json (اختياري)</span>
-            <span class="code-block-lang">json</span>
+            <span class="code-block-title">فحص سريع من Terminal</span>
+            <span class="code-block-lang">bash</span>
           </div>
-          <pre><code>{
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "outputDirectory": ".next",
-  "installCommand": "npm install",
-  "regions": ["iad1"],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
-    }
-  ]
-}</code></pre>
+          <pre><code># فحص سرعة الموقع
+curl -o /dev/null -s -w "%{time_total}\n" https://your-site.vercel.app
+
+# فحص SSL
+echo | openssl s_client -connect your-site.vercel.app:443 -servername your-site.vercel.app 2>/dev/null | openssl x509 -noout -dates</code></pre>
         </div>
 
-        <p>الـ vercel.json ده اختياري. بس لو حطيته، بيديك تحكم أكتر:</p>
+        <h2>📝 تمرين عملي</h2>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 التمرين 1: رفع المشروع على GitHub</div>
+          <div class="callout-content">
+            أنشئ حساب GitHub وثبّت Git وارفع المشروع باستخدام الأوامر اللي اتعلمناها.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 التمرين 2: النشر على Vercel</div>
+          <div class="callout-content">
+            سجّل على Vercel واربطه بـ GitHub وأضف المتغيرات واضغط Deploy. تأكد الموقع شغال.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 التمرين 3: إعداد Supabase</div>
+          <div class="callout-content">
+            فعّل RLS على كل جداول واكتب Policies مناسبة وجرّبها.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 التمرين 4: Domain مخصص</div>
+          <div class="callout-content">
+            اشتر Domain وربطه بـ Vercel وحدّث Redirect URLs في Clerk.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎯 التمرين 5: الفحص الشامل</div>
+          <div class="callout-content">
+            افتح الموقع على الكمبيوتر والموبايل وجرّب كل صفحة وتأكد مفيش أخطاء في Console.
+          </div>
+        </div>
+
+        <h2>📋 ملخص الدرس</h2>
+        <p>ألف مبروك يا صديقي! وصلنا لنهاية الدرس. خلينا نلخص اللي اتعلمناه:</p>
+
         <ul>
-          <li><strong>regions:</strong> الموقع هيتنشر في منطقة معينة.iad1 هي أمريكا الشمالية.</li>
-          <li><strong>headers:</strong> بيحط headers أمنية. X-Content-Type-Options بيمنع المتصفح من تفسير الملفات بشكل غلط. X-Frame-Options بيمنع الموقع من الظهور في iframe.</li>
+          <li>✅ النشر هو نقل المشروع من جهازك لسيرفر على الإنترنت</li>
+          <li>✅ الفرق بين Development و Production مهم جداً</li>
+          <li>✅ Vercel هو الأفضل لنشر مشاريع Next.js</li>
+          <li>✅ GitHub هو المستودع اللي بنخزن فيه الكود</li>
+          <li>✅ Environment Variables بتخفي المفاتيح السرية</li>
+          <li>✅ Supabase محتاج RLS و Policies للإنتاج</li>
+          <li>✅ Clerk محتاج Redirect URLs للإنتاج</li>
+          <li>✅ Domain مخصص بيعطي مصداقية للموقع</li>
+          <li>✅ HTTPS ضروري للأمان والثقة</li>
+          <li>✅ في أخطاء شائعة لازم تتجنبها</li>
         </ul>
 
-        <h2>📊 مراقبة الأداء</h2>
-        <p>بعد النشر، راقب أداء موقعك باستخدام:</p>
-
-        <ul>
-          <li><strong>Vercel Analytics:</strong> مراقبة Web Vitals. بيقيس LCP و FID و CLS.</li>
-          <li><strong>Vercel Speed Insights:</strong> قياس سرعة التحميل من أماكن مختلفة.</li>
-          <li><strong>Google Search Console:</strong> مراقبة SEO. بيريك الناس بتبحث عن ايه وبتوصل لموقعك ازاي.</li>
-          <li><strong>Uptime Monitoring:</strong> مراقبةوقت التشغيل. بيبلغك لو الموقع وقع.</li>
-        </ul>
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 مبروك!</div>
+          <div class="callout-content">
+            كده انت دلوقتي تقدر تنشر متجرك الإلكتروني على الإنترنت! ده إنجاز كبير يا صديقي.
+          </div>
+        </div>
 
         <div class="callout callout-info">
-          <div class="callout-title">💡 نصيحة مهمة</div>
+          <div class="callout-title">💡 الدرس الجاي</div>
           <div class="callout-content">
-            بعد النشر الأول، راقب الموقع لمدة أسبوع. شوف لو في أخطاء في Console. شوف لو السرعة كويسة. لو لقيت مشاكل، اتصلحها بسرعة قبل ما العملاء يشوفوها.
-          </div>
-        </div>
-
-        <h2>📝 تمارين عملية</h2>
-
-        <div class="callout callout-success">
-          <div class="callout-title">🎯 تمرين 1: نشر المشروع</div>
-          <div class="callout-content">
-            اعمل push للمشروع على GitHub ونشره على Vercel. تأكد إن كل حاجة شغالة.
-          </div>
-        </div>
-
-        <div class="callout callout-success">
-          <div class="callout-title">🎯 تمرين 2: أضف متغيرات البيئة</div>
-          <div class="callout-content">
-            حط كل متغيرات البيئة على Vercel واختبر إنها شغالة.
-          </div>
-        </div>
-
-        <div class="callout callout-success">
-          <div class="callout-title">🎯 تمرين 3: جرّب Lighthouse</div>
-          <div class="callout-content">
-            شغّل Lighthouse على الموقع المنشور وشوف الـ score. حاول تحسّنه.
-          </div>
-        </div>
-
-        <h2>📝 ملخص الدرس</h2>
-        <p>في الدرس ده اتعلمنا:</p>
-        <ul>
-          <li>✅ قائمة ما قبل النشر</li>
-          <li>✅ إعداد متغيرات البيئة</li>
-          <li>✅ نشر المشروع على Vercel</li>
-          <li>✅ إعداد نطاق مخصص</li>
-          <li>✅ التحقق بعد النشر</li>
-          <li>✅ النشر التلقائي (CI/CD)</li>
-          <li>✅ مراقبة الأداء</li>
-          <li>✅ تمارين عملية</li>
-        </ul>
-
-        <div class="callout callout-success">
-          <div class="callout-title">🎉 الدرس الجاي</div>
-          <div class="callout-content">
-            في الدرس الجاي هنتعلم عن <strong>تخصيص القالب</strong> - كيف تغير الألوان والشعارات والمحتوى ليتناسب مع علامتك التجارية.
+            في الدرس الجاي هنتعلم عن <strong>تخصيص القالب</strong> - إزاي تغيّر الألوان والشعارات والمحتوى عشان يناسب العلامة التجارية بتاعتك.
           </div>
         </div>
 
       </div>
 
-      <!-- Navigation -->
       <div class="lesson-nav">
-        <a href="22-seo-performance.html" class="nav-btn">
-          <span class="nav-btn-label">← السابق</span>
-          <span class="nav-btn-title">SEO والأداء</span>
-        </a>
-        <a href="24-customization.html" class="nav-btn nav-btn-next">
-          <span class="nav-btn-label">التالي →</span>
-          <span class="nav-btn-title">تخصيص القالب</span>
-        </a>
+        <a href="22-seo-performance.html" class="prev">الدرس السابق</a>
+        <a href="24-customization.html" class="next">الدرس الجاي</a>
       </div>
-
     </div>
   </div>
-
+  <footer class="footer">
+    <div class="container">
+      <p>🛒 دورة بناء متجر إلكتروني - جميع الحقوق محفوظة © 2026</p>
+    </div>
+  </footer>
 </body>
 </html>

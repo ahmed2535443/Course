@@ -32,11 +32,11 @@
           <span>/</span>
           <span>الدرس 09</span>
         </div>
-        <h1>نظام التخطيط</h1>
+        <h1>نظام التخطيط في Next.js</h1>
         <div class="meta">
-          <span>⏱️ 35 دقيقة</span>
+          <span>⏱️ 50 دقيقة</span>
           <span>📖 عملي</span>
-          <span>الوحدة 3: واجهة المستخدم</span>
+          <span>الوحدة 3: بناء الواجهات</span>
         </div>
       </div>
 
@@ -45,15 +45,28 @@
 
         <h2>🎯 أهداف الدرس</h2>
         <ul>
+          <li>فهم إيه هو الـ Layout System ولإيه مهم في Next.js</li>
+          <li>شرح ملف layout.js الأساسي وازاي بيشتغل</li>
+          <li>فهم الـ children prop وإزاي بتشتغل</li>
           <li>بناء ShopLayout للمتجر</li>
-          <li>إنشاء Header بتأثير Glass مع تنقل وسلة مشتريات</li>
-          <li>بناء Footer بروابط متنوعة</li>
-          <li>إنشاء AdminLayout مع شريط جانبي</li>
-          <li>تصميم قائمة متجاوبة للموبايل</li>
+          <li>بناء AdminLayout مع شريط جانبي</li>
+          <li>إنشاء AdminSidebar للتنقل الإداري</li>
+          <li>فهم Route Groups وليه بنستخدمها</li>
+          <li>فهم Dynamic Routes زي [id] و [...slug]</li>
+          <li>شرح Metadata وSEO في Next.js</li>
+          <li>设置 العنوان والـ Head في الصفحات</li>
+          <li>إنشاء Header Component احترافي</li>
+          <li>إنشاء Footer Component كامل</li>
+          <li>أفضل الممارسات وأنماط التخطيط</li>
+          <li>تمرين عملي للتثبيت</li>
+          <li>ملخص شامل للدرس</li>
         </ul>
 
+        <!-- Section 1: Introduction -->
+        <h2>1️⃣ مقدمة عن Layout System</h2>
+        
         <div class="callout callout-info">
-          <div class="callout-title">💡 إيه هو نظام التخطيط (Layout System)؟</div>
+          <div class="callout-title">💡 إيه هو التخطيط (Layout)؟</div>
           <div class="callout-content">
             <p>مرحب بيك في الدرس التاسع! النهارده هنتكلم عن موضوع أساسي جداً في أي موقع ويب: التخطيط (Layout). فكر كده كده: لو هتبني بيت، محتاج هيكلاً أساسياً يحدد هيكل الغرف والطوابق. التخطيط في الويب زيه بالظبط — بيحدد هيكل الصفحة كلها.</p>
             <p>في أي متجر إلكتروني، كل الصفحات عندها عناصر مشتركة: الشريط العلوي (Header) فيه الشعار والتنقل وسلة المشتريات، والشريط السفلي (Footer) فيه الروابط ومعلومات التواصل. بدل ما نكرر الكود ده في كل صفحة، بنعمل Layout واحد نستخدمه في كل الصفحات.</p>
@@ -61,9 +74,174 @@
           </div>
         </div>
 
-        <h2>📁 هيكل ملفات التخطيط</h2>
-        <p>خلينا نشوف هيكل الملفات اللي هنبناه النهارده:</p>
+        <h3>ليه بنستخدم Layout في Next.js؟</h3>
+        <p>قبل ما نبدأ، خلينا نفهم ليه الـ Layout مهم أوي:</p>
+        <ul>
+          <li><strong>تقليل تكرار الكود</strong>: بدل ما نكتب نفس الـ Header والـ Footer في كل صفحة، بنكتبهم مرة واحدة في الـ Layout</li>
+          <li><strong>استمرارية التجربة</strong>: المستخدم بيفضل يشوف نفس الـ Header والـ Footer وهو بينقل بين الصفحات</li>
+          <li><strong>أداء أفضل</strong>: لما المستخدم بينقل بين الصفحات، الـ Next.js بيحافظ على الـ Layout وبيحفظ المحتوى اللي مش محتاج يتغير</li>
+          <li><strong>تنظيم أفضل</strong>: الكود بيكون منظم ومرتب وسهل الصيانة</li>
+          <li><strong>سهولة التعديل</strong>: لو عايز تغير الـ Header، بتغيره مرة واحدة وبيتأثر على كل الصفحات</li>
+        </ul>
 
+        <p>في المتجر بتاعنا، بنحتاج تخطيطين مختلفين:</p>
+        <ul>
+          <li><strong>ShopLayout</strong>: تخطيط للمتجر العام — فيه Header وFooter عادي</li>
+          <li><strong>AdminLayout</strong>: تخطيط للوحة التحكم — فيه شريط جانبي وشريط علوي مختلف</li>
+        </ul>
+
+        <!-- Section 2: Root Layout -->
+        <h2>2️⃣ شرح layout.js الأساسي</h2>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 إيه هو Root Layout؟</div>
+          <div class="callout-content">
+            <p>الـ Root Layout ده أهم ملف layout في مشروعك. هو الملف اللي في مجلد <code>app</code> الرئيسي، وبي contient كل الصفحات في مشروعك. بدون الـ Root Layout، مشروعك مش هيشتغل خالص!</p>
+            <p>الـ Root Layout بيعمل حاجات مهمة جداً:</p>
+            <ul>
+              <li>بي contient الـ HTML structure الأساسية (html, head, body)</li>
+              <li>بي contient الـ Providers (زي Auth, Cart, Theme)</li>
+              <li>بي contient الـ Global CSS</li>
+              <li>بي contient الـ Metadata الأساسية للموقع</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/layout.js — الـ Root Layout</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import './globals.css';
+
+export const metadata = {
+  title: 'Market - متجرك الإلكتروني',
+  description: 'تسوّق أفضل المنتجات بأسعار منافسة',
+};
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html lang="ar" dir="rtl"&gt;
+      &lt;body&gt;
+        {children}
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+        </div>
+
+        <p>خلينا نشرح الكود خطوة بخطوة:</p>
+
+        <p><strong>السطر الأول: <code>import './globals.css';</code></strong></p>
+        <p>بنستورد الـ CSS الرئيسي للموقع. الـ globals.css ده فيه الأنماط العامة اللي بتطبق على كل الصفحات. زيه زي ما تلبس هدومك الأساسية قبل ما تلبس الهدوم الخارجية.</p>
+
+        <p><strong>السطر التاني: <code>export const metadata</code></strong></p>
+        <p>ده объект فيه معلومات عن الموقع بتاعك. الـ metadata دي مهمة جداً لمحركات البحث (SEO). لما حد يبحث عن موقعك في Google، المعلومات دي هي اللي بتظهر في نتايج البحث.</p>
+
+        <p><strong>الدالة <code>RootLayout</code></strong></p>
+        <p>دي الدالة الرئيسية اللي بتعمل الـ Layout. بتأخذ <code>children</code> كمعامل — وده المحتوى اللي جوا الـ Layout ده. يعني لو عندك صفحة الرئيسية، الـ children هتكون محتوى الصفحة الرئيسية.</p>
+
+        <p><strong>الـ HTML Structure</strong></p>
+        <p>بنحدد <code>lang="ar"</code> عشان نقول للمتصفح إن اللغة عربية، و<code>dir="rtl"</code> عشان نحدد إن الاتجاه من اليمين لليسار.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ ملاحظات مهمة للـ Root Layout</div>
+          <div class="callout-content">
+            <ul>
+              <li>الـ Root Layout لازم يكون في <code>app/layout.js</code> — مش في مجلد تاني</li>
+              <li>لازم يكون فيه <code>&lt;html&gt;</code> و <code>&lt;body&gt;</code> tags</li>
+              <li>الـ children لازم يكون جوا الـ <code>&lt;body&gt;</code></li>
+              <li>مش هتقدر تستخدم <code>"use client"</code> في الـ Root Layout لأن الـ metadata مش بتشتغل معاه</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Section 3: Children Prop -->
+        <h2>3️⃣ شرح children prop</h2>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 إيه هو الـ children prop؟</div>
+          <div class="callout-content">
+            <p>الـ children prop دي واحدة من أهم المفاهيم في React. فكر فيها كده: لو عندك صندوق (الـ Layout)، والـ children هو المحتوى اللي جوا الصندوق ده.</p>
+            <p>يعني لما بتكتب <code>&lt;Layout&gt;&lt;Page /&gt;&lt;/Layout&gt;</code>، الـ <code>&lt;Page /&gt;</code> ده هو الـ children بتاع الـ Layout.</p>
+          </div>
+        </div>
+
+        <p>خلينا نشوف مثال بسيط:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال بسيط على children</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>// ده الـ Layout
+function Layout({ children }) {
+  return (
+    &lt;div&gt;
+      &lt;header&gt;الشريط العلوي&lt;/header&gt;
+      &lt;main&gt;{children}&lt;/main&gt;
+      &lt;footer&gt;الشريط السفلي&lt;/footer&gt;
+    &lt;/div&gt;
+  );
+}
+
+// ده المستخدم للـ Layout
+function HomePage() {
+  return (
+    &lt;Layout&gt;
+      &lt;h1&gt;مرحباً بالعالم&lt;/h1&gt;
+      &lt;p&gt;ده محتوى الصفحة الرئيسية&lt;/p&gt;
+    &lt;/Layout&gt;
+  );
+}
+
+// النتيجة النهائية هتكون:
+// &lt;div&gt;
+//   &lt;header&gt;الشريط العلوي&lt;/header&gt;
+//   &lt;main&gt;
+//     &lt;h1&gt;مرحباً بالعالم&lt;/h1&gt;
+//     &lt;p&gt;ده محتوى الصفحة الرئيسية&lt;/p&gt;
+//   &lt;/main&gt;
+//   &lt;footer&gt;الشريط السفلي&lt;/footer&gt;
+// &lt;/div&gt;</code></pre>
+        </div>
+
+        <p>في Next.js App Router، الـ children بتتحول تلقائياً. يعني لما بتكتب ملف <code>app/page.js</code> (صفحة الرئيسية)، المحتوى بتاعها بيتحول لـ children في الـ <code>app/layout.js</code>.</p>
+
+        <h3>مثال عملي في مشروعنا</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/layout.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import ShopLayout from '@/components/layout/ShopLayout';
+
+export default function Layout({ children }) {
+  // الـ children هنا هو محتوى أي صفحة جوا مجلد (shop)
+  // يعني لو عندك app/(shop)/products/page.js
+  // الـ children هتكون محتوى صفحة المنتجات
+  
+  return (
+    &lt;ShopLayout&gt;
+      {children}
+    &lt;/ShopLayout&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">💡 نصيحة مهمة</div>
+          <div class="callout-content">
+            <p>فكّر في الـ children كـ "ثغرة" في الـ Layout. الـ Layout بيحةط الهيكل العام (Header, Footer)، والـ children بتملا المحتوى الخاص بكل صفحة. الطريقة دي بتخلي الـ Layout مرن وقابل لإعادة الاستخدام.</p>
+          </div>
+        </div>
+
+        <!-- Section 4: ShopLayout -->
+        <h2>4️⃣ إنشاء ShopLayout</h2>
+
+        <p>الآن هنبني التخطيط الرئيسي للمتجر. الـ ShopLayout ده هيكون في كل صفحات المتجر — الصفحة الرئيسية، صفحة المنتجات، صفحة التفاصيل، السلة، وغيرها.</p>
+
+        <h3>هيكل ملفات التخطيط</h3>
         <div class="file-tree">
           <div class="file-tree-item folder">📁 components/layout/</div>
           <div class="file-tree-item file">├── 📄 Header.jsx              # الشريط العلوي</div>
@@ -80,10 +258,654 @@
           </div>
         </div>
 
-        <h2>🏗️ الخطوة 1: مكون Header</h2>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/layout/ShopLayout.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Header from './Header';
+import Footer from './Footer';
+
+export default function ShopLayout({ children }) {
+  return (
+    &lt;div className="min-h-screen flex flex-col bg-gray-950"&gt;
+      {/* Header */}
+      &lt;Header /&gt;
+
+      {/* Main Content */}
+      &lt;main className="flex-1 pt-16"&gt;
+        {children}
+      &lt;/main&gt;
+
+      {/* Footer */}
+      &lt;Footer /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>شرح الكود بالتفصيل</h3>
+        <p>خلينا نشرح كل جزء:</p>
+
+        <p><strong><code>min-h-screen flex flex-col</code></strong></p>
+        <p>دي classes مهمة أوي من Tailwind CSS:</p>
+        <ul>
+          <li><code>min-h-screen</code>: بيخلي الـ div على الأقل بارتفاع الشاشة كلها. ده مهم عشان الـ Footer يفضل في الآخر حتى لو الصفحة قصيرة</li>
+          <li><code>flex</code>: بيعمل الـ div container مرن (flexbox). ده بيساعدنا نرتب العناصر أفقياً أو عمودياً</li>
+          <li><code>flex-col</code>: بيرتب العناصر عمودياً (من فوق لتحت). يعني الـ Header فوق، والـ main في النص، والـ Footer تحت</li>
+        </ul>
+
+        <p><strong><code>flex-1</code> على الـ main</strong></p>
+        <p>ده معناه إن الـ main ياخد كل المساحة المتاحة. لو الصفحة طويلة، الـ Footer هينزل لتحت. لو الصفحة قصيرة، الـ Footer هيفضل في الآخر. الطريقة دي بتخلي الـ Footer دايماً في المكان الصح.</p>
+
+        <p><strong><code>pt-16</code> على الـ main</strong></p>
+        <p>ده من أهم الأسطر! الـ Header بتاعنا ثابت (fixed) في أعلى الشاشة، فمحتاجين مسافة فوق عشان المحتوى ما يختفيش تحته. بدون الـ padding ده، أول محتوى في الصفحة هيبان تحت الـ Header. الـ 16 هنا معناها 4rem (64px) — نفس ارتفاع الـ Header.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ خطأ شائع</div>
+          <div class="callout-content">
+            <p>كتير الناس بتنسى تضيف <code>pt-16</code> وبتتطلع ليه أول محتوى مختفي! لو الـ Header بتاعك <code>fixed</code> أو <code>sticky</code>، لازم تضيف padding عشان المحتوى ما يختفيش تحته.</p>
+          </div>
+        </div>
+
+        <!-- Section 5: AdminLayout -->
+        <h2>5️⃣ إنشاء AdminLayout</h2>
+
+        <p>الـ AdminLayout مختلف تماماً عن ShopLayout. فيه شريط جانبي (Sidebar) فيه الروابط الإدارية، وشريط علوي (TopBar) فيه معلومات المستخدم. الـ Layout ده بيستخدم في كل صفحات لوحة التحكم.</p>
+
+        <h3>ليه AdminLayout مختلف؟</h3>
+        <ul>
+          <li>الـ ShopLayout فيه Header وFooter عادي — ده للمستخدم العادي</li>
+          <li>الـ AdminLayout فيه Sidebar وTopBar — ده للمدير</li>
+          <li>الـ AdminLayout محتاج مصادقة (Auth) عشان نتأكد إن المستخدم مدير</li>
+          <li>الـ AdminLayout فيه روابط خاصة بالإدارة زي إدارة المنتجات والطلبات والمستخدمين</li>
+        </ul>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/layout/AdminLayout.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useAuth, useUser, SignOutButton } from '@clerk/nextjs';
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  Settings,
+  LogOut,
+  ChevronLeft,
+  Menu,
+  Store,
+} from 'lucide-react';
+import { cn } from '@/lib/cn';
+import AdminSidebar from './AdminSidebar';
+
+export default function AdminLayout({ children }) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const pathname = usePathname();
+  const { userId } = useAuth();
+  const { user } = useUser();
+
+  return (
+    &lt;div className="min-h-screen bg-gray-950 flex"&gt;
+      {/* Sidebar */}
+      &lt;AdminSidebar
+        isOpen={isSidebarOpen}
+        onToggle={() =&gt; setIsSidebarOpen(!isSidebarOpen)}
+        pathname={pathname}
+        user={user}
+      /&gt;
+
+      {/* Main Content */}
+      &lt;div className={cn(
+        "flex-1 transition-all duration-300",
+        isSidebarOpen ? "mr-64" : "mr-20"
+      )}&gt;
+        {/* Top Bar */}
+        &lt;header className="h-16 bg-gray-900/50 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-6"&gt;
+          &lt;button
+            onClick={() =&gt; setIsSidebarOpen(!isSidebarOpen)}
+            className="md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+          &gt;
+            &lt;Menu className="w-5 h-5" /&gt;
+          &lt;/button&gt;
+          
+          &lt;div className="flex items-center gap-4"&gt;
+            &lt;span className="text-gray-400 text-sm"&gt;
+              مرحباً، {user?.firstName}
+            &lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/header&gt;
+
+        {/* Page Content */}
+        &lt;main className="p-6"&gt;
+          {children}
+        &lt;/main&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>شرح مكونات AdminLayout</h3>
+        <ul>
+          <li><strong><code>isSidebarOpen</code></strong>: State بيحكم هل الشريط الجانبي مفتوح ولا مطوي. لما يكون مفتوح، العرض 64 (w-64). لما يكون مطوي، العرض 20 (w-20)</li>
+          <li><strong><code>mr-64 / mr-20</code></strong>: المحتوى الرئيسي بيتحرك يمين حسب حالة الشريط الجانبي. لأننا شغالين RTL، بنستخدم margin-right بدل margin-left</li>
+          <li><strong><code>"use client"</code></strong>: محتاجينه عشان بنستخدم useState و React hooks</li>
+          <li><strong><code>useAuth()</code> و <code>useUser()</code></strong>: من Clerk للتحقق من المستخدم</li>
+        </ul>
+
+        <!-- Section 6: AdminSidebar -->
+        <h2>6️⃣ إنشاء AdminSidebar</h2>
+
+        <p>الـ AdminSidebar ده الشريط الجانبي اللي فيه الروابط الإدارية. منفصل عن الـ AdminLayout عشان يبقى سهل التعديل وإعادة الاستخدام.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/layout/AdminSidebar.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import Link from 'next/link';
+import { cn } from '@/lib/cn';
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  Settings,
+  LogOut,
+  ChevronLeft,
+  Store,
+} from 'lucide-react';
+import { SignOutButton } from '@clerk/nextjs';
+
+const sidebarLinks = [
+  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/products', label: 'المنتجات', icon: Package },
+  { href: '/admin/orders', label: 'الطلبات', icon: ShoppingCart },
+  { href: '/admin/users', label: 'المستخدمين', icon: Users },
+  { href: '/admin/settings', label: 'الإعدادات', icon: Settings },
+];
+
+export default function AdminSidebar({ isOpen, onToggle, pathname, user }) {
+  return (
+    &lt;aside
+      className={cn(
+        "fixed right-0 top-0 h-full bg-gray-900 border-l border-white/10 transition-all duration-300 z-40",
+        isOpen ? "w-64" : "w-20"
+      )}
+    &gt;
+      {/* Logo */}
+      &lt;div className="h-16 flex items-center justify-between px-4 border-b border-white/10"&gt;
+        &lt;Link href="/admin" className="flex items-center gap-2"&gt;
+          &lt;div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center"&gt;
+            &lt;Store className="w-5 h-5 text-white" /&gt;
+          &lt;/div&gt;
+          {isOpen && (
+            &lt;span className="text-white font-bold"&gt;Admin&lt;/span&gt;
+          )}
+        &lt;/Link&gt;
+        &lt;button
+          onClick={onToggle}
+          className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+        &gt;
+          &lt;ChevronLeft className={cn(
+            "w-5 h-5 transition-transform",
+            !isOpen && "rotate-180"
+          )} /&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+
+      {/* Navigation */}
+      &lt;nav className="p-4 space-y-2"&gt;
+        {sidebarLinks.map((link) =&gt; {
+          const isActive = pathname === link.href;
+          return (
+            &lt;Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
+                isActive
+                  ? "bg-indigo-500/20 text-indigo-300"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+              )}
+            &gt;
+              &lt;link.icon className="w-5 h-5 flex-shrink-0" /&gt;
+              {isOpen && (
+                &lt;span className="font-medium"&gt;{link.label}&lt;/span&gt;
+              )}
+            &lt;/Link&gt;
+          );
+        })}
+      &lt;/nav&gt;
+
+      {/* User Section */}
+      &lt;div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10"&gt;
+        &lt;div className={cn(
+          "flex items-center gap-3",
+          !isOpen && "justify-center"
+        )}&gt;
+          &lt;div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0"&gt;
+            &lt;span className="text-white text-sm font-medium"&gt;
+              {user?.firstName?.[0] || "A"}
+            &lt;/span&gt;
+          &lt;/div&gt;
+          {isOpen && (
+            &lt;div className="flex-1 min-w-0"&gt;
+              &lt;p className="text-white text-sm font-medium truncate"&gt;
+                {user?.firstName} {user?.lastName}
+              &lt;/p&gt;
+              &lt;p className="text-gray-400 text-xs truncate"&gt;
+                {user?.emailAddresses?.[0]?.emailAddress}
+              &lt;/p&gt;
+            &lt;/div&gt;
+          )}
+        &lt;/div&gt;
+        
+        {isOpen && (
+          &lt;div className="mt-4 flex gap-2"&gt;
+            &lt;Link
+              href="/"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors text-sm"
+            &gt;
+              &lt;Store className="w-4 h-4" /&gt;
+              &lt;span&gt;المتجر&lt;/span&gt;
+            &lt;/Link&gt;
+            &lt;SignOutButton&gt;
+              &lt;button className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors text-sm"&gt;
+                &lt;LogOut className="w-4 h-4" /&gt;
+              &lt;/button&gt;
+            &lt;/SignOutButton&gt;
+          &lt;/div&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/aside&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>شرح AdminSidebar بالتفصيل</h3>
+        <ul>
+          <li><strong><code>fixed right-0</code></strong>: الشريط الجانبي ثابت في مكانه، مش بيتغير مع التمرير. لأننا RTL، بنحطه على اليمين</li>
+          <li><strong><code>z-40</code></strong>: بيخلي الشريط يظهر فوق المحتوى التاني</li>
+          <li><strong><code>rotate-180</code></strong>: الأيقونة بتدور 180 درجة لما الشريط يتقلص. ده بيدي إحساس بالتفاعلية</li>
+          <li><strong><code>flex-shrink-0</code></strong>: الأيقونات ما بتتقلصش لو الشريط اتضغط</li>
+          <li><strong><code>truncate</code></strong>: لو النص طويل، بيقطعه وبيحط "..." في الآخر</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">💡 ليه فصلنا الـ Sidebar في ملف منفصل؟</div>
+          <div class="callout-content">
+            <p>فصلنا الـ AdminSidebar في ملف منفصل عشان:</p>
+            <ul>
+              <li>يسهل التعديل عليه من غير ما نلمس الـ AdminLayout</li>
+              <li>ممكن نعيد استخدامه في مكان تاني</li>
+              <li>الكود يكون أنظف وأسهل في القراءة</li>
+              <li>لو عايز نغير الروابط، بنغيرها في مكان واحد بس</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Section 7: Route Groups -->
+        <h2>7️⃣ شرح Route Groups</h2>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 إيه هي الـ Route Groups؟</div>
+          <div class="callout-content">
+            <p>الـ Route Groups دي ميزة في Next.js App Router بتخليك تgroup الصفحات في مجلدات من غير ما تغير المسار الفعلي. يعني لما تكتب <code>(shop)</code> في اسم المجلد، الأقواس معناها إن المجلد ده مش جزء من المسار.</p>
+          </div>
+        </div>
+
+        <h3>مثال عملي</h3>
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/</div>
+          <div class="file-tree-item folder">├── 📁 (shop)/</div>
+          <div class="file-tree-item file">│   ├── 📄 layout.js         # ShopLayout</div>
+          <div class="file-tree-item file">│   ├── 📄 page.js           # الصفحة الرئيسية</div>
+          <div class="file-tree-item folder">│   ├── 📁 products/</div>
+          <div class="file-tree-item file">│   │   ├── 📄 page.js       # /products</div>
+          <div class="file-tree-item folder">│   │   └── 📁 [id]/</div>
+          <div class="file-tree-item file">│   │       └── 📄 page.js   # /products/123</div>
+          <div class="file-tree-item folder">├── 📁 (admin)/</div>
+          <div class="file-tree-item file">│   ├── 📄 layout.js         # AdminLayout</div>
+          <div class="file-tree-item file">│   ├── 📄 page.js           # /admin</div>
+          <div class="file-tree-item folder">│   └── 📁 products/</div>
+          <div class="file-tree-item file">│       └── 📄 page.js       # /admin/products</div>
+          <div class="file-tree-item file">└── 📄 layout.js             # Root Layout</div>
+        </div>
+
+        <p>لاحظ الأرقام دي:</p>
+        <ul>
+          <li>صفحة المنتجات: <code>/products</code> — مش <code>/shop/products</code></li>
+          <li>صفحة تفاصيل المنتج: <code>/products/123</code> — مش <code>/shop/products/123</code></li>
+          <li>لوحة التحكم: <code>/admin</code> — مش <code>/admin/admin</code></li>
+        </ul>
+
+        <p>يعني الأقواس <code>( )</code> بتقول للـ Next.js: "المجلد ده بس للتنظيم الداخلي، مش في المسار الفعلي".</p>
+
+        <h3>ليه بنستخدم Route Groups؟</h3>
+        <ul>
+          <li><strong>تنظيم أفضل</strong>: ممكن تgroup الصفحات حسب الوظيفة</li>
+          <li><strong>تخطيطات مختلفة</strong>: كل مجموعة ممكن يكون عندها layout مختلف</li>
+          <li><strong>metadata مختلفة</strong>: كل مجموعة ممكن يكون عندها metadata مختلفة</li>
+        </ul>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/layout.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import ShopLayout from '@/components/layout/ShopLayout';
+
+export const metadata = {
+  title: 'Market - متجرك الإلكتروني',
+  description: 'تسوّق أفضل المنتجات بأسعار منافسة',
+};
+
+export default function Layout({ children }) {
+  return (
+    &lt;ShopLayout&gt;
+      {children}
+    &lt;/ShopLayout&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(admin)/layout.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import AdminLayout from '@/components/layout/AdminLayout';
+
+export const metadata = {
+  title: 'Admin - لوحة التحكم',
+};
+
+export default function Layout({ children }) {
+  return (
+    &lt;AdminLayout&gt;
+      {children}
+    &lt;/AdminLayout&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ ملاحظة مهمة</div>
+          <div class="callout-content">
+            <p>الـ Root Layout (اللي في <code>app/layout.js</code>) لازم يبقى موجود دايماً. الـ Route Groups بتاعتنا بتعمل layout إضافي جواها، لكن الـ Root Layout هو الأساس.</p>
+          </div>
+        </div>
+
+        <!-- Section 8: Dynamic Routes -->
+        <h2>8️⃣ شرح Dynamic Routes</h2>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 إيه هي الـ Dynamic Routes؟</div>
+          <div class="callout-content">
+            <p>الـ Dynamic Routes دي بتخليك تعمل صفحات بتتغير حسب الرابط. يعني مثلاً صفحة تفاصيل المنتج — كل منتج عنده ID مختلف، فمحتاجين صفحة واحدة تشتغل مع كل الـ IDs.</p>
+          </div>
+        </div>
+
+        <h3>أنواع Dynamic Routes</h3>
+
+        <p><strong>1. [id] — مسار بمتغير واحد</strong></p>
+        <p>بيستخدم لما يكون عندك متغير واحد في الرابط:</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/products/[id]/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>export default function ProductPage({ params }) {
+  // params.id هتكون القيمة من الرابط
+  // يعني لو الرابط /products/123، params.id هتكون "123"
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;تفاصيل المنتج رقم {params.id}&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <p><strong>2. [...slug] — مسار بعدد متغير من الأجزاء</strong></p>
+        <p>بيستخدم لما يكون عندك عدد متغير من أجزاء الرابط:</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/[...slug]/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>export default function Page({ params }) {
+  // params.slug هتكون array فيها كل أجزاء الرابط
+  // يعني لو الرابط /categories/electronics/phones
+  // params.slug هتكون ["categories", "electronics", "phones"]
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;المسار: {params.slug.join(' / ')}&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <p><strong>3. [[...slug]] — مسار اختياري</strong></p>
+        <p>زي الـ [...slug] بس ممكن يكون فاضي:</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/[[...slug]]/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>export default function Page({ params }) {
+  // params.slug ممكن تكون undefined لو الرابط فاضي
+  // يعني الرابط / كمان بيشتغل
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;المسار: {params.slug?.join(' / ') || 'الرئيسية'}&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>مثال عملي في مشروعنا</h3>
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/(shop)/products/</div>
+          <div class="file-tree-item file">├── 📄 page.js               # /products</div>
+          <div class="file-tree-item folder">└── 📁 [id]/</div>
+          <div class="file-tree-item file">    └── 📄 page.js           # /products/123</div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">💡 نصيحة</div>
+          <div class="callout-content">
+            <p>لما تستخدم Dynamic Routes، تأكد إنك بتعمل validation للـ params. يعني تتأكد إن الـ ID فعلاً رقم مش نص عشوائي.</p>
+          </div>
+        </div>
+
+        <!-- Section 9: Metadata -->
+        <h2>9️⃣ شرح Metadata و SEO</h2>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 إيه هو الـ Metadata؟</div>
+          <div class="callout-content">
+            <p>الـ Metadata دي معلومات عن الصفحة بتاعتك بتتغير في الـ HTML، مش بتظهر للمستخدم مباشرة، لكن محركات البحث (زي Google) والسوشيال ميديا بتستخدمها.</p>
+            <p>الـ Metadata بتتحكم في حاجات زي:</p>
+            <ul>
+              <li>عنوان الصفحة اللي بيظهر في تبويب المتصفح</li>
+              <li>الوصف اللي بيظهر في نتايج البحث</li>
+              <li>الصورة اللي بتظهر لما حد يشاركن الرابط</li>
+              <li>كلمات المفتاحية اللي بتساعد الموقع يظهر في البحث</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>إزاي تكتب Metadata في Next.js</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/page.js — Metadata بسيطة</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>export const metadata = {
+  title: 'Market - متجرك الإلكتروني',
+  description: 'تسوّق أفضل المنتجات بأسعار منافسة في مصر',
+  keywords: 'تسوق, متجر إلكتروني, منتجات, أسعار منافسة',
+  openGraph: {
+    title: 'Market - متجرك الإلكتروني',
+    description: 'تسوّق أفضل المنتجات بأسعار منافسة في مصر',
+    images: ['/og-image.jpg'],
+  },
+};
+
+export default function HomePage() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;مرحباً بك في Market&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>Metadata ديناميكية</h3>
+        <p>ممكن تعمل metadata بتتغير حسب الصفحة:</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/products/[id]/page.js — Metadata ديناميكية</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>export async function generateMetadata({ params }) {
+  // جلب بيانات المنتج من الـ API
+  const product = await fetch(`https://api.example.com/products/${params.id}`);
+  const data = await product.json();
+
+  return {
+    title: `${data.name} - Market`,
+    description: data.description,
+    openGraph: {
+      title: data.name,
+      description: data.description,
+      images: [data.image],
+    },
+  };
+}
+
+export default async function ProductPage({ params }) {
+  const product = await fetch(`https://api.example.com/products/${params.id}`);
+  const data = await product.json();
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{data.name}&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ ملاحظات مهمة على Metadata</div>
+          <div class="callout-content">
+            <ul>
+              <li>الـ metadata export لازم يكون في ملف الصفحة نفسه، مش في component تاني</li>
+              <li>مش هتقدر تستخدم <code>"use client"</code> في الصفحة اللي فيها metadata</li>
+              <li>الـ title بيتم دمجها مع الـ title بتاع الـ Layout تلقائياً</li>
+              <li>لو عايز تغير الـ title بالكامل، استخدم <code>title: { absolute: 'عنوان مخصص' }</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Section 10: Head and Title -->
+        <h2>🔟 شرح Head و Title</h2>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 إزاي تتحكم في عنوان الصفحة؟</div>
+          <div class="callout-content">
+            <p>في Next.js، مش محتاج تكتب <code>&lt;head&gt;</code> يدوي. الـ Next.js بيتعامل معاه تلقائياً. كل اللي عليك تفعله هو إنك تكتب metadata في الصفحة.</p>
+          </div>
+        </div>
+
+        <h3>أنماط العنوان المختلفة</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">أنماط العنوان في Metadata</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>// النمط 1: عنوان بسيط
+export const metadata = {
+  title: 'الصفحة الرئيسية',
+};
+// النتيجة: الصفحة الرئيسية | Market
+
+// النمط 2: عنوان مخصص بالكامل
+export const metadata = {
+  title: { absolute: 'عنوان مخصص تماماً' },
+};
+// النتيجة: عنوان مخصص تماماً (بدون | Market)
+
+// النمط 3: عنوان متغير حسب الصفحة
+export async function generateMetadata({ params }) {
+  return {
+    title: `تفاصيل المنتج ${params.id}`,
+  };
+}
+// النتيجة: تفاصيل المنتج 123 | Market
+
+// النمط 4: عنوان مع template
+// في layout.js
+export const metadata = {
+  title: {
+    template: '%s | Market',
+    default: 'Market - متجرك الإلكتروني',
+  },
+};
+// في page.js
+export const metadata = {
+  title: 'المنتجات',
+};
+// النتيجة: المنتجات | Market</code></pre>
+        </div>
+
+        <h3>الـ Head في Next.js</h3>
+        <p>في Next.js، الـ <code>&lt;head&gt;</code> بتتعمل تلقائياً. يعني لو كتبت metadata في الصفحة، الـ Next.js هيعمل الـ <code>&lt;head&gt;</code> ويحط فيه العنوان والوصف والـ tags التانية.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال على إزاي الـ Next.js بيعمل الـ Head</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;!-- لو كتبت في page.js --&gt;
+&lt;!-- export const metadata = { title: 'المنتجات', description: 'تصفح منتجاتنا' }; --&gt;
+
+&lt;!-- الـ Next.js هيعمل الـ Head كده --&gt;
+&lt;head&gt;
+  &lt;title&gt;المنتجات | Market&lt;/title&gt;
+  &lt;meta name="description" content="تصفح منتجاتنا" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;link rel="icon" href="/favicon.ico" /&gt;
+&lt;/head&gt;</code></pre>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">💡 ملخص</div>
+          <div class="callout-content">
+            <p>مش محتاج تقلق على الـ <code>&lt;head&gt;</code> في Next.js. كل اللي عليك تفعله هو إنك تكتب metadata في الصفحة أو الـ Layout، والـ Next.js هيتعامل مع الباقي.</p>
+          </div>
+        </div>
+
+        <!-- Section 11: Header Component -->
+        <h2>1️⃣1️⃣ إنشاء Header Component</h2>
+
         <p>الHeader هو أهم عنصر في أي موقع ويب. هو أول حاجة المستخدم بيشوفها لما يفتح الصفحة. لازم يكون واضح وجميل وسهل الاستخدام.</p>
 
-        <p>في المتجر بتاعنا، الHeader هيعمل الأدوار دي:</p>
+        <h3>أدوات الـ Header</h3>
         <ul>
           <li><strong>الشعار (Logo)</strong>: رابط للصفحة الرئيسية</li>
           <li><strong>التنقل (Navigation)</strong>: روابط للصفحات المختلفة</li>
@@ -93,8 +915,6 @@
           <li><strong>حساب المستخدم (User Menu)</strong>: تسجيل الدخول أو الحساب</li>
           <li><strong>قائمة الموبايل (Mobile Menu)</strong>: قائمة للشاشات الصغيرة</li>
         </ul>
-
-        <p>الHeader بتاعنا فيه تأثير مهم اسمه Glass Effect. ده تأثير بيخلي الـ Header شفاف شوية لما المستخدم يكون في أعلى الصفحة، وبيتمسخ لما ينزل. التأثير ده بيعطي إحساس بالعمق والحداثة.</p>
 
         <div class="code-block">
           <div class="code-block-header">
@@ -253,28 +1073,26 @@ export default function Header() {
 }</code></pre>
         </div>
 
+        <h3>شرح المكونات المستخدمة</h3>
         <div class="callout callout-info">
-          <div class="callout-title">💡 شرح المكونات</div>
+          <div class="callout-title">💡 شرح الـ Hooks المستخدمة</div>
           <div class="callout-content">
             <ul>
-              <li><strong>usePathname()</strong>: لمعرفة المسار الحالي وتحديد الرابط النشط</li>
-              <li><strong>useAuth() و useUser()</strong>: للتحقق من حالة تسجيل الدخول</li>
-              <li><strong>useCart()</strong>: لجلب عدد عناصر السلة</li>
-              <li><strong>useEffect</strong>: للكشف عن التمرير وتغيير شكل Header</li>
+              <li><strong><code>usePathname()</code></strong>: لمعرفة المسار الحالي وتحديد الرابط النشط</li>
+              <li><strong><code>useAuth() و useUser()</code></strong>: للتحقق من حالة تسجيل الدخول</li>
+              <li><strong><code>useCart()</code></strong>: لجلب عدد عناصر السلة</li>
+              <li><strong><code>useEffect</code></strong>: للكشف عن التمرير وتغيير شكل Header</li>
             </ul>
           </div>
         </div>
 
-        <h3>شرح تفصيلي لأجزاء الـ Header</h3>
-        <p>خلينا نفصص في كل جزء:</p>
-
-        <p><strong>تأثير التمرير (Scroll Effect)</strong>:</p>
+        <h3>تأثير التمرير (Scroll Effect)</h3>
         <p>في السطور اللي بتستخدم <code>useEffect</code>، بنسمع لحدث التمرير (scroll event). لما المستخدم ينزل أكتر من 20 بكسل، بنغير قيمة <code>isScrolled</code> لـ true. وبما إن الـ className بتاع الـ Header بيعتمد على القيمة دي، بتتغير الشكل تلقائياً.</p>
 
-        <p><strong>الروابط النشطة (Active Links)</strong>:</p>
+        <h3>الروابط النشطة (Active Links)</h3>
         <p>بنستخدم <code>usePathname()</code> عشان نعرف الصفحة الحالية. وبعدين بنقارنها بكل رابط. لو متطابقة، بنضيف فئة "<code>bg-white/10</code>" عشان نبين إن الرابط ده هو النشط.</p>
 
-        <p><strong>عداد السلة (Cart Badge)</strong>:</p>
+        <h3>عداد السلة (Cart Badge)</h3>
         <p>بنحسب عدد العناصر في السلة باستخدام <code>reduce</code>. لو العدد أكبر من صفر، بنظهر Badge صغير فوق أيقونة السلة فيه العدد. لو صفر، مش بنظهر حاجة.</p>
 
         <div class="callout callout-warning">
@@ -282,126 +1100,19 @@ export default function Header() {
           <div class="callout-content">
             <ul>
               <li><strong>الخطأ</strong>: استخدام <code>position: fixed</code> بدون <code>padding-top</code> للمحتوى — النتيجة: أول محتوى بيختفي تحت الـ Header</li>
-              <li><strong>الخطأ</strong>: نسيان <code>z-50</strong> — النتيجة: عناصر تانية بتظهر فوق الـ Header</li>
+              <li><strong>الخطأ</strong>: نسيان <code>z-50</code> — النتيجة: عناصر تانية بتظهر فوق الـ Header</li>
               <li><strong>الخطأ</strong>: عدم التعامل مع <code>window</code> في Server Component — النتيجة: خطأ في Server Side Rendering</li>
               <li><strong>الحل</strong>: دايماً استخدم <code>"use client"</code> في المكونات اللي بتتفاعل مع المستخدم</li>
             </ul>
           </div>
         </div>
 
-        <h2>📱 الخطوة 2: قائمة الموبايل</h2>
-        <p>مكون MobileMenu للقائمة على الأجهزة المحمولة. في الأجهزة الصغيرة، الـ Navigation العادي مش بيكون مناسب، فبنعمل قائمة جانبية بتظهر لما المستخدم يضغط على أيقونة القائمة (Hamburger Menu).</p>
+        <!-- Section 12: Footer Component -->
+        <h2>1️⃣2️⃣ إنشاء Footer Component</h2>
 
-        <p>المكون ده بيتكون من أجزاء:</p>
-        <ul>
-          <li><strong>Overlay</strong>: خلفية شافة سوداء بتظهر ورا القائمة</li>
-          <li><strong>Panel</strong>: القائمة نفسها على الجانب الأيمن (لأننا شغالين RTL)</li>
-          <li><strong>Navigation Links</strong>: الروابط الرئيسية</li>
-          <li><strong>Auth Links</strong>: روابط تسجيل الدخول أو الحساب</li>
-        </ul>
-
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">components/layout/MobileMenu.jsx</span>
-            <span class="code-block-lang">jsx</span>
-          </div>
-          <pre><code>"use client";
-
-import Link from 'next/link';
-import { useAuth } from '@clerk/nextjs';
-import { cn } from '@/lib/cn';
-import { X, User, LogIn } from 'lucide-react';
-
-export default function MobileMenu({ isOpen, onClose, navLinks, pathname }) {
-  const { isSignedIn } = useAuth();
-
-  if (!isOpen) return null;
-
-  return (
-    &lt;div className="md:hidden fixed inset-0 top-16 z-40"&gt;
-      {/* Overlay */}
-      &lt;div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      /&gt;
-      
-      {/* Menu Content */}
-      &lt;div className="absolute right-0 top-0 w-72 h-full bg-gray-900/95 backdrop-blur-xl border-l border-white/10 overflow-y-auto"&gt;
-        &lt;div className="p-4"&gt;
-          {/* Close Button */}
-          &lt;button
-            onClick={onClose}
-            className="absolute top-4 left-4 p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-          &gt;
-            &lt;X className="w-5 h-5" /&gt;
-          &lt;/button&gt;
-
-          {/* Navigation Links */}
-          &lt;nav className="mt-8 space-y-2"&gt;
-            {navLinks.map((link) =&gt; (
-              &lt;Link
-                key={link.href}
-                href={link.href}
-                onClick={onClose}
-                className={cn(
-                  "block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200",
-                  pathname === link.href
-                    ? "bg-indigo-500/20 text-indigo-300"
-                    : "text-white/70 hover:text-white hover:bg-white/5"
-                )}
-              &gt;
-                {link.label}
-              &lt;/Link&gt;
-            ))}
-          &lt;/nav&gt;
-
-          {/* Divider */}
-          &lt;div className="my-6 border-t border-white/10" /&gt;
-
-          {/* Auth Links */}
-          &lt;div className="space-y-2"&gt;
-            {isSignedIn ? (
-              &lt;&gt;
-                &lt;Link
-                  href="/account"
-                  onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-                &gt;
-                  &lt;User className="w-5 h-5" /&gt;
-                  &lt;span&gt;حسابي&lt;/span&gt;
-                &lt;/Link&gt;
-                &lt;Link
-                  href="/orders"
-                  onClick={onClose}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-                &gt;
-                  &lt;span&gt;طلباتي&lt;/span&gt;
-                &lt;/Link&gt;
-              &lt;/&gt;
-            ) : (
-              &lt;Link
-                href="/sign-in"
-                onClick={onClose}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-500 text-white font-medium"
-              &gt;
-                &lt;LogIn className="w-5 h-5" /&gt;
-                &lt;span&gt;تسجيل الدخول&lt;/span&gt;
-              &lt;/Link&gt;
-            )}
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  );
-}</code></pre>
-        </div>
-
-        <p>ملاحظة مهمة: لاحظ إننا بنستخدم <code>md:hidden</code> و <code>md:block</code>. ده معناه إن القائمة دي بتظهر بس على الشاشات الصغيرة (أقل من breakpoint <code>md</code> اللي هو 768px). على الشاشات الكبيرة، الـ Navigation العادي هو اللي بيظهر.</p>
-
-        <h2>🦶 الخطوة 3: مكون Footer</h2>
         <p>الFooter هو الشريط السفلي في الصفحة. مهما طالت الصفحة، الـ Footer دايماً بيكون في الآخر. فيه روابط مهمة ومعلومات التواصل ووسائل الاجتماعية.</p>
 
-        <p>في المتجر بتاعنا، الـ Footer فيه 3 أقسام رئيسية:</p>
+        <h3>أقسام الـ Footer</h3>
         <ul>
           <li><strong>المتجر</strong>: روابط للمنتجات والعروض والجديد</li>
           <li><strong>الدعم</strong>: الأسئلة الشائعة والشحن والتتبع</li>
@@ -480,9 +1191,9 @@ export default function Footer() {
           {Object.entries(footerLinks).map(([title, links]) =&gt; (
             &lt;div key={title}&gt;
               &lt;h3 className="text-white font-semibold mb-4"&gt;
-                {title === 'shop' &amp;&amp; 'المتجر'}
-                {title === 'support' &amp;&amp; 'الدعم'}
-                {title === 'company' &amp;&amp; 'الشركة'}
+                {title === 'shop' && 'المتجر'}
+                {title === 'support' && 'الدعم'}
+                {title === 'company' && 'الشركة'}
               &lt;/h3&gt;
               &lt;ul className="space-y-2"&gt;
                 {links.map((link) =&gt; (
@@ -520,9 +1231,10 @@ export default function Footer() {
 }</code></pre>
         </div>
 
-        <p>ملاحظة على الكود: لاحظ إننا بنستخدم <code>Object.entries(footerLinks).map</code>. ده معناه إننا بنمشي على كل عنصر في الـ Object وبنطبع الروابط. الطريقة دي أحسن من إننا نكرر الكود 3 مرات (مرة لكل قسم).</p>
+        <h3>شرح الكود</h3>
+        <p>لاحظ إننا بنستخدم <code>Object.entries(footerLinks).map</code>. ده معناه إننا بنمشي على كل عنصر في الـ Object وبنطبع الروابط. الطريقة دي أحسن من إننا نكرر الكود 3 مرات (مرة لكل قسم).</p>
 
-        <div class="callout callout-info">
+        <div class="callout callout-success">
           <div class="callout-title">💡 نصائح لتصميم Footer جيد</div>
           <div class="callout-content">
             <ul>
@@ -535,286 +1247,108 @@ export default function Footer() {
           </div>
         </div>
 
-        <h2>🏪 الخطوة 4: ShopLayout</h2>
-        <p>التخطيط الرئيسي للمتجر. ده المكون اللي بيلف كل صفحات المتجر. ببساطة: Header في الأول، المحتوى في النص، والFooter في الآخر.</p>
+        <!-- Section 13: Best Practices -->
+        <h2>1️⃣3️⃣ أفضل الممارسات وأنماط التخطيط</h2>
 
+        <div class="callout callout-info">
+          <div class="callout-title">💡 أنماط التخطيط الشائعة</div>
+          <div class="callout-content">
+            <p>فيه أنماط كتير للتخطيط في الويب. خلينا نشوف أهمها:</p>
+          </div>
+        </div>
+
+        <h3>النمط 1: Header + Content + Footer</h3>
+        <p>ده النمط الأساسي وده اللي بنستخدمه في ShopLayout:</p>
         <div class="code-block">
           <div class="code-block-header">
-            <span class="code-block-title">components/layout/ShopLayout.jsx</span>
+            <span class="code-block-title">النمط الأساسي</span>
             <span class="code-block-lang">jsx</span>
           </div>
-          <pre><code>import Header from './Header';
-import Footer from './Footer';
-
-export default function ShopLayout({ children }) {
+          <pre><code>function Layout({ children }) {
   return (
-    &lt;div className="min-h-screen flex flex-col bg-gray-950"&gt;
-      {/* Header */}
+    &lt;div className="min-h-screen flex flex-col"&gt;
       &lt;Header /&gt;
-
-      {/* Main Content */}
-      &lt;main className="flex-1 pt-16"&gt;
-        {children}
-      &lt;/main&gt;
-
-      {/* Footer */}
+      &lt;main className="flex-1"&gt;{children}&lt;/main&gt;
       &lt;Footer /&gt;
     &lt;/div&gt;
   );
 }</code></pre>
         </div>
 
-        <p>ملاحظة مهمة: لاحظ <code>pt-16</code> على الـ <code>main</code>. ده عشان الـ Header ثابت (fixed) في أعلى الشاشة، فمحتاجين مسافة فوق عشان المحتوى ما يختفيش تحته. بدون الـ padding ده، أول محتوى في الصفحة هيبان تحت الـ Header.</p>
-
-        <p>كمان لاحظ <code>flex-1</code>. ده بيخلي الـ main ياخد كل المساحة المتاحة. لو الصفحة طويلة، الـ Footer هينزل لتحت. لو الصفحة قصيرة، الـ Footer هيفضل في الآخر. الطريقة دي بتخلي الـ Footer دايماً في المكان الصح.</p>
-
-        <h2>🔧 الخطوة 5: AdminLayout</h2>
-        <p>التخطيط الخاص بلوحة التحكم. ده مختلف تماماً عن تخطيط المتجر. فيه شريط جانبي (Sidebar) فيه الروابط الإدارية، وشريط علوي (TopBar) فيه معلومات المستخدم.</p>
-
-        <p>الـ AdminLayout أهم من ShopLayout في بعض النواحي:</p>
-        <ul>
-          <li>فيه شريط جانبي قابل للطي (Collapsible Sidebar)</li>
-          <li>محتاج Clerk Auth للتحقق من صلاحيات المستخدم</li>
-          <li>متجاوب مع الشاشات الصغيرة (Mobile Friendly)</li>
-          <li>فيه روابط خاصة بالإدارة زي إدارة المنتجات والطلبات والمستخدمين</li>
-        </ul>
-
+        <h3>النمط 2: Sidebar + Content</h3>
+        <p>ده النمط اللي بنستخدمه في AdminLayout:</p>
         <div class="code-block">
           <div class="code-block-header">
-            <span class="code-block-title">components/layout/AdminLayout.jsx</span>
+            <span class="code-block-title">نمط الشريط الجانبي</span>
             <span class="code-block-lang">jsx</span>
           </div>
-          <pre><code>"use client";
-
-import { useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useAuth, useUser, SignOutButton } from '@clerk/nextjs';
-import {
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Users,
-  Settings,
-  LogOut,
-  ChevronLeft,
-  Menu,
-  Store,
-} from 'lucide-react';
-import { cn } from '@/lib/cn';
-
-const sidebarLinks = [
-  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/products', label: 'المنتجات', icon: Package },
-  { href: '/admin/orders', label: 'الطلبات', icon: ShoppingCart },
-  { href: '/admin/users', label: 'المستخدمين', icon: Users },
-  { href: '/admin/settings', label: 'الإعدادات', icon: Settings },
-];
-
-export default function AdminLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const pathname = usePathname();
-  const { userId } = useAuth();
-  const { user } = useUser();
-
+          <pre><code>function AdminLayout({ children }) {
   return (
-    &lt;div className="min-h-screen bg-gray-950 flex"&gt;
-      {/* Sidebar */}
-      &lt;aside
-        className={cn(
-          "fixed left-0 top-0 h-full bg-gray-900 border-r border-white/10 transition-all duration-300 z-40",
-          isSidebarOpen ? "w-64" : "w-20"
-        )}
-      &gt;
-        {/* Logo */}
-        &lt;div className="h-16 flex items-center justify-between px-4 border-b border-white/10"&gt;
-          &lt;Link href="/admin" className="flex items-center gap-2"&gt;
-            &lt;div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center"&gt;
-              &lt;Store className="w-5 h-5 text-white" /&gt;
-            &lt;/div&gt;
-            {isSidebarOpen &amp;&amp; (
-              &lt;span className="text-white font-bold"&gt;Admin&lt;/span&gt;
-            )}
-          &lt;/Link&gt;
-          &lt;button
-            onClick={() =&gt; setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-          &gt;
-            &lt;ChevronLeft className={cn(
-              "w-5 h-5 transition-transform",
-              !isSidebarOpen &amp;&amp; "rotate-180"
-            )} /&gt;
-          &lt;/button&gt;
-        &lt;/div&gt;
-
-        {/* Navigation */}
-        &lt;nav className="p-4 space-y-2"&gt;
-          {sidebarLinks.map((link) =&gt; {
-            const isActive = pathname === link.href;
-            return (
-              &lt;Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
-                  isActive
-                    ? "bg-indigo-500/20 text-indigo-300"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
-                )}
-              &gt;
-                &lt;link.icon className="w-5 h-5 flex-shrink-0" /&gt;
-                {isSidebarOpen &amp;&amp; (
-                  &lt;span className="font-medium"&gt;{link.label}&lt;/span&gt;
-                )}
-              &lt;/Link&gt;
-            );
-          })}
-        &lt;/nav&gt;
-
-        {/* User Section */}
-        &lt;div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10"&gt;
-          &lt;div className={cn(
-            "flex items-center gap-3",
-            !isSidebarOpen &amp;&amp; "justify-center"
-          )}&gt;
-            &lt;div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center flex-shrink-0"&gt;
-              &lt;span className="text-white text-sm font-medium"&gt;
-                {user?.firstName?.[0] || "A"}
-              &lt;/span&gt;
-            &lt;/div&gt;
-            {isSidebarOpen &amp;&amp; (
-              &lt;div className="flex-1 min-w-0"&gt;
-                &lt;p className="text-white text-sm font-medium truncate"&gt;
-                  {user?.firstName} {user?.lastName}
-                &lt;/p&gt;
-                &lt;p className="text-gray-400 text-xs truncate"&gt;
-                  {user?.emailAddresses?.[0]?.emailAddress}
-                &lt;/p&gt;
-              &lt;/div&gt;
-            )}
-          &lt;/div&gt;
-          
-          {isSidebarOpen &amp;&amp; (
-            &lt;div className="mt-4 flex gap-2"&gt;
-              &lt;Link
-                href="/"
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-colors text-sm"
-              &gt;
-                &lt;Store className="w-4 h-4" /&gt;
-                &lt;span&gt;المتجر&lt;/span&gt;
-              &lt;/Link&gt;
-              &lt;SignOutButton&gt;
-                &lt;button className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors text-sm"&gt;
-                  &lt;LogOut className="w-4 h-4" /&gt;
-                &lt;/button&gt;
-              &lt;/SignOutButton&gt;
-            &lt;/div&gt;
-          )}
-        &lt;/div&gt;
-      &lt;/aside&gt;
-
-      {/* Main Content */}
-      &lt;div className={cn(
-        "flex-1 transition-all duration-300",
-        isSidebarOpen ? "ml-64" : "ml-20"
-      )}&gt;
-        {/* Top Bar */}
-        &lt;header className="h-16 bg-gray-900/50 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-6"&gt;
-          &lt;button
-            onClick={() =&gt; setIsSidebarOpen(!isSidebarOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-          &gt;
-            &lt;Menu className="w-5 h-5" /&gt;
-          &lt;/button&gt;
-          
-          &lt;div className="flex items-center gap-4"&gt;
-            &lt;span className="text-gray-400 text-sm"&gt;
-              مرحباً، {user?.firstName}
-            &lt;/span&gt;
-          &lt;/div&gt;
-        &lt;/header&gt;
-
-        {/* Page Content */}
-        &lt;main className="p-6"&gt;
-          {children}
-        &lt;/main&gt;
+    &lt;div className="flex"&gt;
+      &lt;Sidebar /&gt;
+      &lt;div className="flex-1"&gt;
+        &lt;TopBar /&gt;
+        &lt;main&gt;{children}&lt;/main&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   );
 }</code></pre>
         </div>
 
-        <p>ملاحظات مهمة على الكود:</p>
+        <h3>النمط 3: Multi-level Layout</h3>
+        <p>ده نمط متقدم فيه تخطيطات متعددة المستويات:</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">التخطيط متعدد المستويات</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>// Root Layout
+function RootLayout({ children }) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;Providers&gt;
+          {children}
+        &lt;/Providers&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}
+
+// Shop Layout
+function ShopLayout({ children }) {
+  return (
+    &lt;div&gt;
+      &lt;Header /&gt;
+      &lt;main&gt;{children}&lt;/main&gt;
+      &lt;Footer /&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Product Layout
+function ProductLayout({ children }) {
+  return (
+    &lt;div&gt;
+      &lt;ProductBreadcrumb /&gt;
+      {children}
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>أفضل الممارسات</h3>
         <ul>
-          <li><strong>isSidebarOpen</strong>: ده State بيحكم هل الشريط الجانبي مفتوح ولا مطوي. لما يكون مفتوح، العرض 64 (w-64). لما يكون مطوي، العرض 20 (w-20)</li>
-          <li><strong>rotate-180</strong>: الأيقونة بتدور 180 درجة لما الشريط يتقلص. ده بيدي إحساس بالتفاعلية</li>
-          <li><strong>ml-64 / ml-20</strong>: المحتوى الرئيسي بيتحرك يمين أو شمال حسب حالة الشريط الجانبي</li>
-          <li><strong>flex-shrink-0</strong>: الأيقونات ما بتتقلصش لو الشريط اتضغط</li>
-          <li><strong>SignOutButton</strong>: ده من Clerk، بيعمل تسجيل خروج من المستخدم</li>
+          <li><strong>فصل المكونات</strong>: كل Layout في ملف منفصل</li>
+          <li><strong>إعادة الاستخدام</strong>: استخدم نفس الـ Layout في أماكن كتير</li>
+          <li><strong>المرونة</strong>: خلي الـ Layout يقبل children عشان يكون مرن</li>
+          <li><strong>الأداء</strong>: استخدم <code>"use client"</code> بس لما تكون محتاج hooks</li>
+          <li><strong>الوصولية</strong>: استخدم semantic HTML و <code>aria-labels</code></li>
+          <li><strong>المتجاوبة</strong>: خلي التخطيط يشتغل على كل الشاشات</li>
         </ul>
 
         <div class="callout callout-warning">
-          <div class="callout-title">⚠️ ملاحظات هامة</div>
-          <div class="callout-content">
-            <ul>
-              <li>تأكد من استخدام <code>"use client"</code> في المكونات التي تستخدم React Hooks</li>
-              <li>AdminLayout يحتاج Clerk Auth للتحقق من المستخدم</li>
-              <li>الشريط الجانبي متجاوب مع الشاشات الصغيرة</li>
-              <li>استخدم <code>z-40</code> عشان الشريط الجانبي يظهر فوق المحتوى</li>
-              <li>استخدم <code>transition-all duration-300</code> عشان الحركة تكون سلسة</li>
-            </ul>
-          </div>
-        </div>
-
-        <h2>📐 الخطوة 6: تخطيط الصفحة الرئيسية</h2>
-        <p>الآن نحتاج نربط التخطيط بالصفحات في Next.js App Router. الطريقة سهلة: بنعمل ملف <code>layout.js</code> في كل مجلد، والـ Next.js بيطبقه تلقائياً على كل الصفحات جوا المجلد ده.</p>
-
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">app/(shop)/layout.js</span>
-            <span class="code-block-lang">jsx</span>
-          </div>
-          <pre><code>import ShopLayout from '@/components/layout/ShopLayout';
-
-export const metadata = {
-  title: 'Market - متجرك الإلكتروني',
-  description: 'تسوّق أفضل المنتجات بأسعار منافسة',
-};
-
-export default function Layout({ children }) {
-  return (
-    &lt;ShopLayout&gt;
-      {children}
-    &lt;/ShopLayout&gt;
-  );
-}</code></pre>
-        </div>
-
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">app/(admin)/layout.js</span>
-            <span class="code-block-lang">jsx</span>
-          </div>
-          <pre><code>import AdminLayout from '@/components/layout/AdminLayout';
-
-export const metadata = {
-  title: 'Admin - لوحة التحكم',
-};
-
-export default function Layout({ children }) {
-  return (
-    &lt;AdminLayout&gt;
-      {children}
-    &lt;/AdminLayout&gt;
-  );
-}</code></pre>
-        </div>
-
-        <p>ملاحظة مهمة: لاحظ إننا بنستخدم <code>(shop)</code> و <code>(admin)</code> في المسارات. ده اسمه Route Groups في Next.js. الأقواس معناها إن المجلد ده مش جزء من المسار الفعلي. يعني المستخدم بيدخل <code>/products</code> مش <code>/shop/products</code>.</p>
-
-        <h2>🚨 أخطاء شائعة يجب تجنبها</h2>
-        <div class="callout callout-warning">
-          <div class="callout-title">⚠️ الأخطاء اللي لازم تتجنبها</div>
+          <div class="callout-title">⚠️ أخطاء يجب تجنبها</div>
           <div class="callout-content">
             <ul>
               <li><strong>الخطأ 1</strong>: استخدام <code>position: fixed</code> للـ Header بدون padding للمحتوى — النتيجة: أول محتوى بيختفي</li>
@@ -826,20 +1360,91 @@ export default function Layout({ children }) {
           </div>
         </div>
 
-        <h2>✅ تمارين عملية للتدرب</h2>
+        <!-- Section 14: Practice Exercise -->
+        <h2>1️⃣4️⃣ تمرين عملي</h2>
+
         <div class="callout callout-success">
           <div class="callout-title">📝 جرّب اللي اتعلمتة!</div>
           <div class="callout-content">
-            <p><strong>التمرين 1</strong>: أضف شريط بحث في الـ Header يظهر لما المستخدم يضغط على أيقونة البحث. الشريط يظهر بتأثير slide down.</p>
-            <p><strong>التمرين 2</strong>: عدّل الـ Footer يعرض شعار وسائل التواصل بناءً على بيانات من API.</p>
-            <p><strong>التمرين 3</strong>: أضف زرار "رجوع للأعلى" يظهر لما المستخدم ينزل الصفحة أكتر من 500px.</p>
-            <p><strong>التمرين 4</strong>: عدّل AdminLayout يضيف Dark Mode Toggle.</p>
-            <p><strong>التمرين 5</strong>: أضف Breadcrumb في كل صفحة يبين المسار الحالي.</p>
-            <p><strong>التمرين 6</strong>: أنشئ <code>DashboardLayout</code> جديد للصفحات الإدارية يختلف عن AdminLayout.</p>
+            <p>الآن بعد ما فهمت الـ Layout System، جرّب التمرين ده عشان تثبّت معلوماتك:</p>
+            
+            <p><strong>التمرين 1: بحث في Header</strong></p>
+            <p>أضف شريط بحث في الـ Header يظهر لما المستخدم يضغط على أيقونة البحث. الشريط يظهر بتأثير slide down.</p>
+            <ul>
+              <li>اعمل state جديد اسمه <code>isSearchOpen</code></li>
+              <li>لما المستخدم يضغط على أيقونة البحث، اقلب القيمة</li>
+              <li>اعرض input field بتأثير slide down</li>
+              <li>خلي الـ input يكون فيه placeholder "ابحث عن منتجات..."</li>
+            </ul>
+
+            <p><strong>التمرين 2: بيانات ديناميكية في Footer</strong></p>
+            <p>عدّل الـ Footer يعرض شعار وسائل التواصل بناءً على بيانات من API.</p>
+            <ul>
+              <li>اعمل async function تجيب بيانات التواصل من API</li>
+              <li>استخدم الـ data في عرض الأيقونات</li>
+              <li>لو الـ API فشل، اعرض أيقونات افتراضية</li>
+            </ul>
+
+            <p><strong>التمرين 3: زرار رجوع للأعلى</strong></p>
+            <p>أضف زرار "رجوع للأعلى" يظهر لما المستخدم ينزل الصفحة أكتر من 500px.</p>
+            <ul>
+              <li>استخدم <code>useEffect</code> عشان تسمع لحدث التمرير</li>
+              <li>اعمل state اسمه <code>showScrollTop</code></li>
+              <li>اعرض الزرار بتأثير fade in/out</li>
+              <li>لما تضغط عليه، رجّع المستخدم لأعلى الصفحة بـ smooth scroll</li>
+            </ul>
+
+            <p><strong>التمرين 4: Dark Mode في Admin</strong></p>
+            <p>عدّل AdminLayout يضيف Dark Mode Toggle.</p>
+            <ul>
+              <li>اعمل ThemeContext يتحكم في الوضع</li>
+              <li>أضف زرار في TopBar يقلب بين Light و Dark</li>
+              <li>احفظ الاختيار في localStorage</li>
+              <li>اعرض التغيير فوراً من غير ما المستخدم يعيد تحميل الصفحة</li>
+            </ul>
+
+            <p><strong>التمرين 5: Breadcrumb</strong></p>
+            <p>أضف Breadcrumb في كل صفحة يبين المسار الحالي.</p>
+            <ul>
+              <li>اعمل component اسمه <code>Breadcrumb</code></li>
+              <li>استخدم <code>usePathname()</code> عشان تعرف المسار</li>
+              <li>اعرض الروابط بشكل صحيح (من اليمين لليسار)</li>
+              <li>خلي الصفحة الحالية مش رابط</li>
+            </ul>
+
+            <p><strong>التمرين 6: DashboardLayout جديد</strong></p>
+            <p>أنشئ <code>DashboardLayout</code> جديد للصفحات الإدارية يختلف عن AdminLayout.</p>
+            <ul>
+              <li>اعمل تخطيط جديد فيه TopBar بس (من غير Sidebar)</li>
+              <li>استخدمه في صفحات معينة زي الملف الشخصي</li>
+              <li>اربطه بـ Route Group جديد</li>
+            </ul>
           </div>
         </div>
 
-        <h2>📋 ملخص التخطيطات</h2>
+        <!-- Section 15: Summary -->
+        <h2>1️⃣5️⃣ ملخص الدرس</h2>
+
+        <p>في الدرس ده اتعلمنا حاجات كتير مهمة:</p>
+
+        <h3>النقاط الرئيسية</h3>
+        <ul>
+          <li>✅ فهم إيه هو الـ Layout System وليه مهم في Next.js</li>
+          <li>✅ شرح الـ Root Layout وإزاي بيشتغل</li>
+          <li>✅ فهم الـ children prop وإزاي بتتحول تلقائياً</li>
+          <li>✅ بناء ShopLayout للمتجر</li>
+          <li>✅ بناء AdminLayout مع شريط جانبي</li>
+          <li>✅ إنشاء AdminSidebar للتنقل الإداري</li>
+          <li>✅ فهم Route Groups وليه بنستخدمها</li>
+          <li>✅ فهم Dynamic Routes زي [id] و [...slug]</li>
+          <li>✅ شرح Metadata وSEO</li>
+          <li>✅ فهم إزاي تتحكم في العنوان والـ Head</li>
+          <li>✅ إنشاء Header Component احترافي</li>
+          <li>✅ إنشاء Footer Component كامل</li>
+          <li>✅ تعلم أفضل الممارسات وأنماط التخطيط</li>
+        </ul>
+
+        <h3>ملخص التخطيطات</h3>
         <div class="table-wrapper">
           <table>
             <thead>
@@ -850,6 +1455,11 @@ export default function Layout({ children }) {
               </tr>
             </thead>
             <tbody>
+              <tr>
+                <td><code>RootLayout</code></td>
+                <td>الموقع كله</td>
+                <td>HTML + Body + Providers</td>
+              </tr>
               <tr>
                 <td><code>ShopLayout</code></td>
                 <td>صفحات المتجر</td>
@@ -871,6 +1481,11 @@ export default function Layout({ children }) {
                 <td>Links + Social + Copyright</td>
               </tr>
               <tr>
+                <td><code>AdminSidebar</code></td>
+                <td>الشريط الجانبي</td>
+                <td>Navigation + User Section</td>
+              </tr>
+              <tr>
                 <td><code>MobileMenu</code></td>
                 <td>قائمة الموبايل</td>
                 <td>Navigation + Auth</td>
@@ -879,23 +1494,20 @@ export default function Layout({ children }) {
           </table>
         </div>
 
-        <h2>📝 ملخص الدرس</h2>
-        <p>في الدرس ده بنينا:</p>
+        <h3>مفاهيم مهمة تفضل فاكرها</h3>
         <ul>
-          <li>✅ Header بتأثير Glass مع تنقل وسلة مشتريات</li>
-          <li>✅ قائمة متجاوبة للموبايل</li>
-          <li>✅ Footer بروابط متنوعة ووسائل اجتماعية</li>
-          <li>✅ ShopLayout للمتجر</li>
-          <li>✅ AdminLayout مع شريط جانبي</li>
-          <li>✅ ربط التخطيطات بـ Next.js App Router</li>
+          <li><strong>Layout</strong>: الهيكل العام للصفحة — Header, Footer, Sidebar</li>
+          <li><strong>children prop</strong>: المحتوى اللي جوا الـ Layout</li>
+          <li><strong>Route Groups</strong>: تنظيم الصفحات من غير تغيير المسار</li>
+          <li><strong>Dynamic Routes</strong>: صفحات بتتغير حسب الرابط</li>
+          <li><strong>Metadata</strong>: معلومات عن الصفحة لمحركات البحث</li>
+          <li><strong>"use client"</code>: مكون بيتفاعل مع المستخدم</li>
         </ul>
-
-        <p>الدرس ده كان أساسي جداً. التخطيط هو الهيكل اللي كل الصفحات بتتبني عليه. لو فاهمه كويس، باقي الصفحات هتكون سهلة.</p>
 
         <div class="callout callout-success">
           <div class="callout-title">🎉 الدرس الجاي</div>
           <div class="callout-content">
-            في الدرس الجاي هنبني <strong>الصفحة الرئيسية</strong> مع Hero Section و Featured Products. هنستخدم التخطيطات اللي ابنيناها النهارده عشان نبني أحسن صفحة رئيسية في التاريخ!
+            في الدرس الجاي هنبني <strong>الصفحة الرئيسية</strong> مع Hero Section و Featured Products. هنستخدم التخطيطات اللي ابنيناها النهارده عشان نبني أحسن صفحة رئيسية في التاريخ! هنlearn إزاي نصمم Hero Section جميلة، وإزاي نعرض المنتجات بشكل احترافي.
           </div>
         </div>
 
@@ -915,6 +1527,13 @@ export default function Layout({ children }) {
 
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>🛒 دورة بناء متجر إلكتروني - جميع الحقوق محفوظة © 2026</p>
+    </div>
+  </footer>
 
 </body>
 </html>

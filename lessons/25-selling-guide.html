@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>الدرس 25 - دليل البيع والربح</title>
+  <title>الدرس 25 - دليل البيع والربح | دورة بناء متجر إلكتروني</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-
-  <!-- Header -->
   <header class="header">
     <div class="header-inner">
       <a href="../index.html" class="logo">
@@ -20,12 +19,8 @@
       </ul>
     </div>
   </header>
-
-  <!-- Content -->
   <div class="container">
     <div class="lesson-content">
-      
-      <!-- Header -->
       <div class="lesson-header">
         <div class="breadcrumb">
           <a href="../index.html">الرئيسية</a>
@@ -36,562 +31,1137 @@
         <div class="meta">
           <span>⏱️ 25 دقيقة</span>
           <span>📖 نظري</span>
-          <span>الوحدة 7: النشر والبيع</span>
+          <span>الوحدة 7: ما بعد البناء</span>
         </div>
       </div>
 
-      <!-- Body -->
+      <!-- Section 1: مبروك خلصت الدورة -->
       <div class="lesson-body">
-
-        <h2>🎯 أهداف الدرس</h2>
-        <ul>
-          <li>كيفية تجهيز القالب للبيع</li>
-          <li>تحديد استراتيجيات التسعير</li>
-          <li>التسويق للقالب وجذب العملاء</li>
-          <li>تقديم دعم العملاء</li>
-          <li>تحديث القالب باستمرار</li>
-        </ul>
-
-        <h2>💡 مقدمة عن البيع</h2>
-        <p>أهلاً بيكم يا صديقي في الدرس الأخير والأخطر من الكورس كله! الدرس ده مش عن البرمجة، ده عن ازاي تحوّل شغلك لفلوس.</p>
-
-        <p>لحد كده انت بنيت متجر إلكتروني كامل ومحسّن ومنشور. لكن السؤال الأهم: ازاي تبيعه؟ أو ازاي تستخدمه تجاري؟ الدرس ده هيجاوبك على كل الأسئلة دي.</p>
-
-        <div class="callout callout-info">
-          <div class="callout-title">💡 ليه لازم تتعلم البيع؟</div>
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 مبروك! خلصت الدورة!</div>
           <div class="callout-content">
+            <p>ألف مبروك يا صديقي! وصلت للدرس الأخير والأخطر من الكورس كله! انت دلوقتي عندك كل المعرفة اللي محتاجها عشان تبني متجر إلكتروني كامل من الصفر.</p>
+            <p>من أول سطر كود لحد ما نشرت المشروع وشغّلته على الإنترنت. مش بس كده، انت اتعلمت ازاي تحسّن الموقع وتخليه سريع ومحسّن لمحركات البحث.</p>
+            <p>الدرس ده هيبقى ختام كورس جميل، وهنتعلم فيه ازاي تحوّل الشغل ده كله لفلوس حقيقية. يعني هنتعلم ازاي تبيع القالب اللي بنيته، أو ازاي تستخدمه لفتح متجرك الخاص.</p>
             <ul>
-              <li>الكود لوحده مش بيكفي. لازم تعرف ازاي تبيعه.</li>
-              <li>التسعير الغلط ممكن يخسّرك عملاء كتير أو يخسّرك فلوس.</li>
-              <li>الدعم الجيد بيزود رضا العملاء وبيجيبلك عملاء جدد.</li>
-              <li>التحديث المستمر بيحافظ على قيمة القالب.</li>
+              <li>خلّصت 25 درس كاملين</li>
+              <li>بنيت متجر إلكتروني احترافي</li>
+              <li>اتعلمت Next.js و Supabase و Clerk</li>
+              <li>عرفت ازاي تحسّن الأداء والـ SEO</li>
+              <li>دلوقتي جاهز للخطوة الجاية: البيع والربح!</li>
             </ul>
           </div>
         </div>
 
-        <p>في الدرس ده هنتعلم ازاي تجهز القالب للبيع، وتختار السعر الصح، وتسوق له، وتدعم العملاء، وتحديثه باستمرار. خليني أقولك سر: أحسن مطور في العالم مش هيكسب لو مش عارف يبيع.</p>
+        <!-- Section 2: ملخص اللي اتعلمناه -->
+        <h2>📚 ملخص اللي اتعلمناه في 25 درس</h2>
+        <p>خلّينا نعمل ملخص سريع لكل حاجة اتعلمناها في الكورس ده. كل درس كان بيبني على اللي قبله، والنتيجة النهائية كانت متجر إلكتروني كامل وشغّال.</p>
 
-        <h2>📦 تجهيز القالب للبيع</h2>
-        <p>قبل بيع القالب، تأكد من تجهيزه بشكل احترافي:</p>
-
-        <h3>1. تنظيف الكود</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">نظافة الكود</span>
-            <span class="code-block-lang">bash</span>
-          </div>
-          <pre><code># حذف الملفات غير المستخدمة
-rm -rf .next
-rm -rf node_modules/.cache
-rm -rf .vercel
-
-# مراجعة الكود وتنقيف التعليقات غير الضرورية
-npm run lint
-
-# التأكد من عدم وجود أخطاء
-npm run build</code></pre>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الدرس</th>
+                <th>الموضوع</th>
+                <th>اللي اتعلمناه</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>مقدمة في الكورس</td>
+                <td>إيه اللي هنتعلمه، وإيه الأدوات اللي هنستخدمها</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>إعداد بيئة العمل</td>
+                <td>تثبيت Node.js و VS Code وإعداد المشروع</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>أساسيات Next.js</td>
+                <td>الـ App Router و الـ Layout و الـ Pages</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>تصميم الـ Header والـ Footer</td>
+                <td>بناء الهيكل الأساسي للموقع</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>صفحة المنتجات</td>
+                <td>عرض المنتجات مع البحث والفلتر</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>صفحة تفاصيل المنتج</td>
+                <td>عرض تفاصيل المنتج مع الصور والمواصفات</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>نظام السلة</td>
+                <td>إضافة المنتجات للسلة وتعديلها وحذفها</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>نظام الدفع</td>
+                <td>إعداد صفحات الدفع والفوترة</td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td>نظام المستخدمين</td>
+                <td>تسجيل الدخول والحسابات الشخصية</td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td>لوحة تحكم الأدمن</td>
+                <td>إدارة المنتجات والطلبات والمستخدمين</td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>قاعدة البيانات</td>
+                <td>إعداد Supabase و تصميم الـ Tables</td>
+              </tr>
+              <tr>
+                <td>12</td>
+                <td>المصادقة والتفويض</td>
+                <td>إعداد Clerk و حماية الـ Routes</td>
+              </tr>
+              <tr>
+                <td>13</td>
+                <td>رفع الصور والملفات</td>
+                <td>إدارة صور المنتجات والرفع على السيرفر</td>
+              </tr>
+              <tr>
+                <td>14</td>
+                <td>البحث والفلتر</td>
+                <td>نظام بحث متقدم وفلتر حسب الفئات والأسعار</td>
+              </tr>
+              <tr>
+                <td>15</td>
+                <td>نظام المفضلة</td>
+                <td>إضافة المنتجات للمفضلة وحفظها</td>
+              </tr>
+              <tr>
+                <td>16</td>
+                <td>الإشعارات</td>
+                <td>إرسال إشعارات للعملاء والأدمن</td>
+              </tr>
+              <tr>
+                <td>17</td>
+                <td>تحسين الأداء</td>
+                <td>تقليل حجم الـ Bundle وتحسين التحميل</td>
+              </tr>
+              <tr>
+                <td>18</td>
+                <td>التصميم المتجاوب</td>
+                <td>جعل الموقع يعمل على جميع الأجهزة</td>
+              </tr>
+              <tr>
+                <td>19</td>
+                <td>تحسين الـ SEO</td>
+                <td>جعل الموقع يظهر في نتائج البحث</td>
+              </tr>
+              <tr>
+                <td>20</td>
+                <td>اختبار الموقع</td>
+                <td>الـ Testing و إصلاح الأخطاء</td>
+              </tr>
+              <tr>
+                <td>21</td>
+                <td>النشر على Vercel</td>
+                <td>رفع المشروع على الإنترنت</td>
+              </tr>
+              <tr>
+                <td>22</td>
+                <td>إعداد النطاق</td>
+                <td>شراء النطاق وربطه بالموقع</td>
+              </tr>
+              <tr>
+                <td>23</td>
+                <td>الأمان والحماية</td>
+                <td>حماية الموقع من الاختراقات</td>
+              </tr>
+              <tr>
+                <td>24</td>
+                <td>تخصيص القالب</td>
+                <td>ازاي تغيّر الألوان والنصوص والتصميم</td>
+              </tr>
+              <tr>
+                <td>25</td>
+                <td>دليل البيع والربح</td>
+                <td>ازاي تحوّل شغلك لفلوس (الدرس الحالي)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <p>خطوات التنظيف دي ضرورية قبل البيع:</p>
+        <div class="callout callout-info">
+          <div class="callout-title">💡 فكرة مهمة</div>
+          <div class="callout-content">
+            الكورس ده مش بس بيساعدك تتعلم تقنيات برمجة، ده كمان بيساعدك ازاي تفكر كـ "رائد أعمال". لأن امتلاك مهارات البرمجة لوحدها مش كفاية، لازم تعرف ازاي تستخدمها لتوليد دخل.
+          </div>
+        </div>
+
+        <!-- Section 3: خطوات ما بعد البناء -->
+        <h2>🚀 خطوات ما بعد البناء</h2>
+        <p>بعد ما خلّصت بناء المتجر ونشرته على الإنترنت، في كذا خطوة مهمة لازم تعملها عشان تضمن نجاح الموقع وتحقيق مبيعات حقيقية.</p>
+
+        <h3>الخطوة الأولى: المراجعة النهائية</h3>
+        <p>قبل ما تبدأ تسوّق للموقع، تأكد إن كل حاجة شغّالة تمام:</p>
         <ul>
-          <li><strong>حذف الملفات المؤقتة:</strong> ملفات .next و node_modules/.cache مش محتاجها.</li>
-          <li><strong>lint:</strong> بيفحص الكود وبيقولك لو في تعليقات غلط أو متغيرات مش مستخدمة.</li>
-          <li><strong>build:</strong> لو البناء نجح، يعني الكود شغال. لو في خطأ، لازم تصلحه.</li>
+          <li><strong>اختبر كل صفحة:</strong> ادخل على كل صفحة في الموقع وتأكد إنها بتحمّل صح.</li>
+          <li><strong>اختبر على الموبايل:</strong> افتح الموقع على موبايلك وشوف التصميم شكله ازاي.</li>
+          <li><strong>اختبر سرعة التحميل:</strong> استخدم أداة Google PageSpeed Insights وشوف النتيجة.</li>
+          <li><strong>تأكد من الروابط:</strong> اضغط على كل رابط وتأكد إنه بيوصلك للصفحة الصح.</li>
+          <li><strong>اختبر النماذج:</strong> لو فيه نماذج تواصل أو تسجيل، اختبرها كويس.</li>
+          <li><strong>تأكد من أمان الموقع:</strong> لازم الموقع يكون عليه شهادة SSL (HTTPS).</li>
+        </ul>
+
+        <h3>الخطوة التانية: إعداد التحليلات</h3>
+        <p>لازم تعرف الناس بتعمل إيه في موقعك. ايه الصفحات اللي بيدخلوا عليها؟ ايه المنتجات اللي بيشترواها؟ ازاي بيوصلوا لموقعك؟</p>
+        <ul>
+          <li><strong>Google Analytics:</strong> عشان تتابع حركة الزوار وسلوكهم.</li>
+          <li><strong>Google Search Console:</strong> عشان تعرف الموقع بيظهر في بحث جوجل ازاي.</li>
+          <li><strong>Heatmaps:</strong> أدوات زي Hotjar عشان تشوف الناس بتنقر فين بالظبط.</li>
+        </ul>
+
+        <h3>الخطوة التالتة: تحديد الجمهور المستهدف</h3>
+        <p>مش هتقدر تسوّق لأي حد وأي حد. لازم تعرف مين العميل المثالي بتاعك:</p>
+        <ul>
+          <li><strong>العمر:</strong> العميل بتاعك شاب ولا كبير في السن؟</li>
+          <li><strong>الموقع:</strong> فين بالظبط في العالم؟ عربي ولا أجنبي؟</li>
+          <li><strong>الميزانية:</strong> مستعد يدفع كام؟</li>
+          <li><strong>المشاكل:</strong> إيه المشكلة اللي عايز يحلها؟</li>
+          <li><strong>القنوات:</strong> بيستخدم إيه من وسائل التواصل؟ تويتر ولا فيسبوك ولا لينكدإن؟</li>
         </ul>
 
         <div class="callout callout-warning">
-          <div class="callout-title">⚠️ غلطة فادحة</div>
+          <div class="callout-title">⚠️ غلطة شائعة</div>
           <div class="callout-content">
-            لا تبيع القالب فيه console.log() أو تعليقات قديمة أو متغيرات مش مستخدمة. ده بيدي انطباع غير احترافي. الكود لازم يكون نظيف ومتسق.
+            كتير من المبتدئين بيعملوا غلطة إنهم بيستهدفوا "الكل". بس الحقيقة إنك لما بتحاول تبيع لأي حد، أنت مش بتبيع لأي حد. لازم تحدد شريحة معينة وتتركّز عليها.
           </div>
         </div>
 
-        <h3>2. إنشاء ملف README.md</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">README.md</span>
-            <span class="code-block-lang">markdown</span>
-          </div>
-          <pre><code># Market Store - متجر إلكتروني متكامل
-
-متجر إلكتروني متكامل بتصميم عصري وأداء عالي باستخدام Next.js 16, Clerk, Supabase, و Tailwind CSS.
-
-## المميزات
-
-- 🛍️ صفحة منتجات مع بحث وفلتر
-- 🛒 نظام سلة مشتريات كامل
-- ❤️ نظام مفضلة
-- 🔐 تسجيل دخول مع Clerk
-- 📊 لوحة تحكم Admin
-- 📱 تصميم متجاوب
-- ⚡ أداء عالي
-
-## المتطلبات
-
-- Node.js 18+
-- حساب مجاني على Clerk
-- حساب مجاني على Supabase
-
-## التثبيت
-
-1. استنساخ المستودع
-2. تثبيت الالتبعيات: `npm install`
-3. إعداد ملف `.env.local`
-4. تشغيل المشروع: `npm run dev`
-
-## التخصيص
-
-راجع ملف `CUSTOMIZATION.md` لشرح كيفية تخصيص القالب.
-
-## الدعم
-
-لأي استفسار، تواصل معنا عبر البريد الإلكتروني.
-
-## الترخيص
-
-رخصة استخدام شخصي. يُمنَع إعادة البيع أو التوزيع.</code></pre>
-        </div>
-
-        <p>الـ README ده أول حاجة العميل بيشوفها. لازم يكون:</p>
+        <h3>الخطوة الرابعة: إعداد قنوات البيع</h3>
+        <p>فيه أكتر من طريقة تبيع بيها القالب. شوف الأنسب ليك:</p>
         <ul>
-          <li><strong>واضح:</strong> يشرح المميزات ببساطة.</li>
-          <li><strong>شامل:</strong> فيه كل المعلومات اللي العميل محتاجها.</li>
-          <li><strong>مرتب:</strong> استخدام headings و bullet points.</li>
-          <li><strong>عربي:</strong> لو بتبيع لعملاء عرب، لازم يكون بالعربي.</li>
+          <li><strong>المتجر الخاص بيك:</strong> لو عندك موقع خاص، تقدر تبيع من عليه مباشرة.</li>
+          <li><strong>منصات البيع:</strong> منصات زي Gumroad أو LemonSqueezy سهلة الإعداد.</li>
+          <li><strong>أسواق القوالب:</strong> ThemeForest و Creative Market فيها مشترين جاهزين.</li>
+          <li><strong>التواصل المباشر:</strong> تقدر تبيع للعملاء مباشرة عبر البريد أو وسائل التواصل.</li>
         </ul>
 
-        <h3>3. إنشاء ملف LICENSE</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">LICENSE</span>
-            <span class="code-block-lang">text</span>
-          </div>
-          <pre><code>رخصة الاستخدام الشخصي - Market Store
+        <!-- Section 4: تحسين SEO للمنتجات -->
+        <h2>🔍 تحسين SEO للمنتجات</h2>
+        <p>تحسين محركات البحث (SEO) مهم جداً عشان الناس تلاقي منتجاتك لما بتدور على حاجة في جوجل. لو مش ظاهر في نتائج البحث، يبقى أنت مش موجود.</p>
 
-يُمنَع إعادة البيع أو التوزيع
-يُمنَع استخدام المشروع في مواقع أخرى
-يُسمح بالتخصيص للاستخدام الشخصي فقط
-
-للحصول على ترخيص تجاري، تواصل معنا.</code></pre>
-        </div>
-
-        <p>الـ LICENSE مهم جداً. هو بيحدد права العميل. شوف:</p>
+        <h3>العنوان (Title Tag)</h3>
+        <p>العنوان هو أول حاجة الـ Google بتشوفها. لازم يكون:</p>
         <ul>
-          <li><strong>استخدام شخصي:</strong> العميل يقدر يستخدم القالب لمتجره الشخصي بس.</li>
-          <li><strong>ممنوع إعادة البيع:</strong> العميل مش هيبع القالب تاني.</li>
-          <li><strong>ممنوع التوزيع:</strong> العميل مش هينشر القالب على الإنترنت.</li>
-          <li><strong>تخصيص:</strong> العميل يقدر يغير الألوان والنصوص والتصميم.</li>
+          <li>يحتوي على الكلمة المفتاحية الرئيسية في الأول.</li>
+          <li>يكون بين 50-60 حرف.</li>
+          <li>يكون جذاب ويخلي الناس عايزة تضغط.</li>
         </ul>
 
-        <div class="callout callout-info">
-          <div class="callout-title">💡 نصيحة مهمة</div>
-          <div class="callout-content">
-            لو عايز تبيع القالب لأكتر من عميل، استخدم ترخيص تجاري. الترخيص الشخصي أرخص بس بيتخطى بعميل واحد. الترخيص أغلى بس بيتخطى لأكتر من عميل.
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال على عنوان جيد</span>
+            <span class="code-block-lang">html</span>
           </div>
+          <pre><code>&lt;title&gt;قالب متجر إلكتروني Next.js - تصميم عصري وسريع&lt;/title&gt;</code></pre>
         </div>
 
-        <h2>💰 استراتيجيات التسعير</h2>
-        <p>تحديد السعر المناسب يعتمد على عدة عوامل:</p>
+        <h3>الوصف Meta Description</h3>
+        <p>الوصف اللي بيظهر تحت العنوان في نتائج البحث. لازم يكون:</p>
+        <ul>
+          <li>بين 150-160 حرف.</li>
+          <li>يشرح المنتج بوضوح.</li>
+          <li>يحتوي على دعوة للعمل (Call to Action).</li>
+        </ul>
 
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال على وصف جيد</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;meta name="description" content="قالب متجر إلكتروني متكامل مبني بـ Next.js 16. يشمل نظام سلة مشتريات، لوحة تحكم، وتصميم متجاوب. اشترِ الآن وابدأ بيعك!"&gt;</code></pre>
+        </div>
+
+        <h3>الكلمات المفتاحية</h3>
+        <p>لازم تعرف الناس بتبحث عن إيه. استخدم أدوات زي:</p>
+        <ul>
+          <li><strong>Google Keyword Planner:</strong> أداة مجانية من Google.</li>
+          <li><strong>Ubersuggest:</strong> بتكشفلك الكلمات المفتاحية ومستوى المنافسة.</li>
+          <li><strong>Ahrefs:</strong> أداة احترافية للـ SEO.</li>
+          <li><strong>AnswerThePublic:</strong> بيكشفلك الأسئلة اللي الناس بتسألها.</li>
+        </ul>
+
+        <h3>تحسين صور المنتجات</h3>
+        <ul>
+          <li><strong>اسم الملف:</strong> متسيبش الصورة باسم "image1.png". سمّها بشكل وصفي زي "template-store-nextjs.webp".</li>
+          <li><strong>النص البديل (Alt Text):</strong> اكتب وصف للصورة يحتوي على الكلمة المفتاحية.</li>
+          <li><strong>حجم الصورة:</strong> صغّر حجم الصور قبل الرفع. مثلاً WebP أحسن من PNG.</li>
+        </ul>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">تحسين صور المنتج</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;img
+  src="/images/template-store.webp"
+  alt="قالب متجر إلكتروني بتصميم عصري"
+  width="800"
+  height="600"
+  loading="lazy"
+/&gt;</code></pre>
+        </div>
+
+        <h3>الـ Schema Markup</h3>
+        <p>ده كود إضافي بيساعد الـ Google يفهم محتوى صفحتك أحسن. مثلاً، تقدر تضيف معلومات عن التقييمات والأسعار:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Schema للمنتج</span>
+            <span class="code-block-lang">json</span>
+          </div>
+          <pre><code>{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "قالب متجر إلكتروني Next.js",
+  "description": "قالب متجر إلكتروني متكامل",
+  "brand": {
+    "@type": "Brand",
+    "name": "Market Store"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "99",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "120"
+  }
+}</code></pre>
+        </div>
+
+        <!-- Section 5: تحسين سرعة الموقع -->
+        <h2>⚡ تحسين سرعة الموقع</h2>
+        <p>سرعة الموقع من أهم العوامل اللي بتأثر على تجربة المستخدم وترتيب الموقع في نتائج البحث. كل ثانية تأخير في التحميل ممكن تخسّرك 7% من المبيعات.</p>
+
+        <h3>أخطاء سرعة شائعة</h3>
+        <ul>
+          <li><strong>صور كبيرة الحجم:</strong> صور غير مضغوطة بتباطئ التحميل بشكل رهيب.</li>
+          <li><strong>كود غير محسّن:</strong> ملفات CSS و JavaScript كتير وبطّال.</li>
+          <li><strong>بدون caching:</strong> كل مرة العميل بيدخل الموقع، بيحمل كل حاجة من الأول.</li>
+          <li><strong>استضافة رخيصة:</strong> السيرفر بطيء بيقّل سرعة الموقع.</li>
+          <li><strong>بدون CDN:</strong> لو الزوار من أماكن بعيدة عن السيرفر، الموقع هيبقى بطيء.</li>
+        </ul>
+
+        <h3>حلول تحسين السرعة</h3>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">تحسين الصور في Next.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>// استخدم Next.js Image بدل الصور العادية
+import Image from 'next/image';
+
+&lt;Image
+  src="/images/product.jpg"
+  alt="وصف المنتج"
+  width={400}
+  height={300}
+  priority={false}
+  placeholder="blur"
+/&gt;
+
+// الصور هتتحول تلقائياً لـ WebP
+// وتحمّل بس لما العميل يوصلها</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">تفعيل الـ Caching</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>// في next.config.js
+module.exports = {
+  experimental: {
+    // تفعيل الـ Static Generation
+    staticPageGenerationTimeout: 120,
+  },
+  // ضغط الإخراج
+  output: 'standalone',
+  // تحسين الصور
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200],
+  },
+};</code></pre>
+        </div>
+
+        <h3>أدوات قياس السرعة</h3>
         <div class="table-wrapper">
           <table>
             <thead>
               <tr>
-                <th>الاستراتيجية</th>
-                <th>السعر</th>
-                <th>المناسب لـ</th>
+                <th>الأداة</th>
+                <th>الرابط</th>
+                <th>بتقيس إيه</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>السعر المنخفض</strong></td>
-                <td>$29 - $49</td>
-                <td>جذب عدد كبير من العملاء</td>
+                <td><strong>Google PageSpeed Insights</strong></td>
+                <td>pagespeed.web.dev</td>
+                <td>الأداء على الموبايل والكمبيوتر</td>
               </tr>
               <tr>
-                <td><strong>متوسط الأسعار</strong></td>
-                <td>$79 - $129</td>
-                <td>التوازن بين الجودة والكمية</td>
+                <td><strong>GTmetrix</strong></td>
+                <td>gtmetrix.com</td>
+                <td>سرعة التحميل وتفاصيل الأداء</td>
               </tr>
               <tr>
-                <td><strong>السعر العالي</strong></td>
-                <td>$199 - $299</td>
-                <td>القالب المتميز مع الدعم</td>
+                <td><strong>Lighthouse</strong></td>
+                <td>مدمج في Chrome</td>
+                <td>اختبار شامل للأداء والـ SEO</td>
+              </tr>
+              <tr>
+                <td><strong>WebPageTest</strong></td>
+                <td>webpagetest.org</td>
+                <td>اختبار من أماكن مختلفة حول العالم</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <p>اختيار السعر مش سهل. خليني أقولك العوامل اللي بتحدد السعر:</p>
-        <ul>
-          <li><strong>جودة الكود:</strong> لو الكود نظيف ومحسّن، السعر يبقى أعلى.</li>
-          <li><strong>المميزات:</strong> كل ما الميزات أكتر، السعر يبقى أعلى.</li>
-          <li><strong>التصميم:</strong> التصميم الجذاب بيزود القيمة.</li>
-          <li><strong>الدعم:</strong> لو بتدعم العملاء، السعر يبقى أعلى.</li>
-          <li><strong>السوق:</strong> شوف المنافسين وشوف بيحطوا سعر كام.</li>
-          <li><strong>الجمهور:</strong> العملاء العرب بيفضّلوا أسعار أقل من الأجانب.</li>
-        </ul>
-
-        <h3>نماذج التسعير</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">خطط التسعير</span>
-            <span class="code-block-lang">text</span>
-          </div>
-          <pre><code>الخطة الأساسية - $49
-- القالب الأساسي
-- تحديثات لمدة سنة
-- دعم عبر البريد الإلكتروني
-
-الخطة الاحترافية - $99
-- القالب الأساسي
-- تحديثات مدى الحياة
-- دعم على مدار الساعة
-- ملفات التصميم (Figma)
-
-خطة المؤسسات - $199
-- كل مميزات الخطة الاحترافية
-- تخصيص حسب الطلب
-- تدريب فريق
-- تقرير أداء شهري</code></pre>
-        </div>
-
-        <p>الخطط التلاتة دي بتساعدك تستهدف شرائح مختلفة من العملاء:</p>
-        <ul>
-          <li><strong>الأساسية ($49):</strong> للمبتدئين واللي عايزين يجربوا. سعر منخفض يجذب عدد كبير.</li>
-          <li><strong>الاحترافية ($99):</strong> للمحترفين والشركات الصغيرة. فيها أكتر ومميزة.</li>
-          <li><strong>المؤسسات ($199):</strong> للكبيرة. فيها تخصيص وتدريب. سعر عالي بس عائد كبير.</li>
-        </ul>
-
         <div class="callout callout-info">
-          <div class="callout-title">💡 نصيحة ذهبية</div>
-          <div class="callout-content">
-            ابدأ بالسعر المنخفض عشان تجذب عملاء كتير. وبعدين ارفع السعر تدريجياً كل ما تحس إن الطلب زاد. سعر البداية مش السعر النهائي.
-          </div>
-        </div>
-
-        <h2>📢 التسويق للقالب</h2>
-        <p>للوصول لعملاء محتملين، استخدم هذه القنوات:</p>
-
-        <h3>1. منصات بيع القوالب</h3>
-        <ul>
-          <li><strong>ThemeForest</strong> - أكبر منصة لبيع قوالب الويب. فيها ملايين المشترين.</li>
-          <li><strong>Creative Market</strong> - منصة مميزة للتصاميم. الشريحة فيها شباب مبدعين.</li>
-          <li><strong>Gumroad</strong> - منصة بسيطة للمنتجات الرقمية. سهلة الإعداد.</li>
-          <li><strong>ProductHunt</strong> - لإطلاق المنتج الجديد. ممتاز للدعاية المجانية.</li>
-        </ul>
-
-        <div class="callout callout-info">
-          <div class="callout-title">💡 أي منصة تختار؟</div>
+          <div class="callout-title">💡 هدف السرعة</div>
           <div class="callout-content">
             <ul>
-              <li>لو عايز أكبر عدد من المشترين: ThemeForest</li>
-              <li>لو عايز سعر أعلى: Creative Market</li>
-              <li>لو عايز تحكم أكبر: Gumroad</li>
-              <li>لو عايز دعاية مجانية: ProductHunt</li>
+              <li>وقت التحميل الأقل من 3 ثانية.</li>
+              <li>LCP (أكبر محتوى مرئي) أقل من 2.5 ثانية.</li>
+              <li>FID (تأخير أول تفاعل) أقل من 100 مللي ثانية.</li>
+              <li>CLS (تحريك التخطيط التراكمي) أقل من 0.1.</li>
             </ul>
           </div>
         </div>
 
-        <h3>2. وسائل التواصل الاجتماعي</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">استراتيجية المحتوى</span>
-            <span class="code-block-lang">text</span>
-          </div>
-          <pre><code>تويتر (X):
-- شارك مقاطع فيديو قصيرة للميزات
-- اكتب threads عن كيفية التخصيص
-- شارك تقييمات العملاء
+        <!-- Section 6: التسويق عبر السوشيال ميديا -->
+        <h2>📱 التسويق عبر السوشيال ميديا</h2>
+        <p>وسائل التواصل الاجتماعي من أقوى القنوات للوصول لعملاء محتملين. بس المشكلة إن كتير من الناس بتستخدمها غلط. خليني أقولك ازاي تستخدمها صح.</p>
 
-يوتيوب:
-- فيديو تعليمي كامل
-- مقارنة مع القوالب الأخرى
-- نصائح لتحسين المتجر
-
-لينكدإن:
-- مقالات عن تطوير الويب
-- شارك خبرتك في التجارة الإلكترونية</code></pre>
-        </div>
-
-        <p>التسويق على وسائل التواصل مهم جداً. خليني أقولك استراتيجية:</p>
+        <h3>تويتر (X) - أقوى منصة للمطورين</h3>
+        <p>تويتر من أحسن المنصات للوصول لجمهور التقنية. خليني أقولك استراتيجية فعّالة:</p>
         <ul>
-          <li><strong>تويتر (X):</strong> انشر يومياً. شارك مقاطع فيديو قصيرة للميزات. اكتب threads عن التخصيص.</li>
-          <li><strong>يوتيوب:</strong> فيديو واحد طويل يشرح كل حاجة. الناس بتحب الفيديوهات.</li>
-          <li><strong>لينكدإن:</strong> مقالات مفصلة عن تطوير الويب. ممتاز للمحترفين.</li>
-          <li><strong>انستغرام:</strong> صور جذابة للمتجر. ممتاز للعملاء العرب.</li>
+          <li><strong>انشر يومياً:</strong> التwittrs بتحب الاستمرارية. انشر يومياً حتى لو بسيط.</li>
+          <li><strong>شارك процесс التطوير:</strong> الناس بتحب تشوف انت بتعمل إيه. ابعت صور للـ Code أو للتصميم.</li>
+          <li><strong>اكتب threads:</strong> Threads ممتازة للمحتوى المفصّل. مثلاً "5 نصائح لتحسين سرعة المتجر".</li>
+          <li><strong>شارك النتائج:</strong> لو عملت حاجة ونجحت، شارك النتيجة مع الأرقام.</li>
+          <li><strong>تفاعل مع الآخرين:</strong> ريتويت وعلّق على بوستات المطورين الآخرين.</li>
         </ul>
 
-        <h3>3. التسويق بالمحتوى</h3>
-        <div class="callout callout-info">
-          <div class="callout-title">💡 أفكار محتوى</div>
-          <div class="callout-content">
-            <ul>
-              <li>مقال: "كيف تبني متجر إلكتروني في 2024"</li>
-              <li>فيديو: "مراجعة كاملة للقالب"</li>
-              <li>بودكاست: "نصائح للتجارة الإلكترونية"</li>
-              <li>ورشة عمل مجانية عبر الإنترنت</li>
-            </ul>
-          </div>
-        </div>
-
-        <p>التسويق بالمحتوى أقوى أنواع التسويق. لأنك بتدي قيمة مجانية للناس، فبيثقوا فيك وبيشتروا منك.</p>
-
-        <h2>🤝 دعم العملاء</h2>
-        <p>دعم العملاء الجيد يزيد من رضاهم ويشجعهم على التوصية بالقالب:</p>
-
-        <h3>قنوات الدعم</h3>
         <div class="code-block">
           <div class="code-block-header">
-            <span class="code-block-title">إعداد نظام الدعم</span>
+            <span class="code-block-title">مثال على بوست تويتر فعّال</span>
             <span class="code-block-lang">text</span>
           </div>
-          <pre><code>البريد الإلكتروني:
-- رد خلال 24 ساعة
-- استخدام قالب رد جاهز
-- توثيق الأسئلة الشائعة
+          <pre><code>بنيت متجر إلكتروني كامل في 30 يوم بـ Next.js 🛒
 
-Discord Server:
-- قناة خاصة بالمشترين
-- مساعدة فورية
-- مشاركة التحديثات
+النتيجة:
+✅ سرعة تحميل 98/100 على PageSpeed
+✅ مبيعات وصلت $5000 في أول شهر
+✅ 500+ زائر يومياً
 
-التذاكر (Tickets):
-- نظام تذاكر منظم
-- تتبع المشاكل
-- حلول دائمة</code></pre>
+في البوست ده هقولك بالظبط ازاي عملتها 👇
+
+[Thread]</code></pre>
         </div>
 
-        <p>الدعم الجيد بيعمل 3 حاجات:</p>
+        <h3>يوتيوب - المحتوى الطويل</h3>
+        <p>يوتيوب أحسن منصة للمحتوى التعليمي الطويل. فيديو واحد كويس ممكن يجيبلك زوار لسنوات:</p>
         <ul>
-          <li><strong>يرضي العميل الحالي:</strong> لما بتساعد العميل بسرعة وبأدب، بيكون مبسوط.</li>
-          <li><strong>بيجيب عملاء جدد:</strong> العميل المبسوط بيقول لصحابه عنك.</li>
-          <li><strong>بيقلل المشاكل:</strong> لما بتوثق الأسئلة الشائعة، بيقّل الأسئلة المتكررة.</li>
+          <li><strong>فيديوهات تعليمية:</strong> اشرح الناس ازاي تستخدم القالب.</li>
+          <li><strong>فيديوهات مراجعة:</strong> اعمل فيديو بتشاور فيه على مميزات القالب.</li>
+          <li><strong>فيديوهات مقارنة:</strong> قارن القالب بتاعك مع القوالب التانية.</li>
+          <li><strong>-thumbnails جذابة:</strong> الصورة المصغرة مهمة جداً. خليها لونية وواضحة.</li>
         </ul>
 
-        <h3>قالب الرد على الاستفسارات</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">قالب الرد</span>
-            <span class="code-block-lang">text</span>
-          </div>
-          <pre><code>مرحباً [اسم العميل]،
-
-شكراً لتواصلك معنا.
-
-بخصوص استفسارك عن [الموضوع]،
-
-[الإجابة على الاستفسار]
-
-إذا كان لديك أي أسئلة أخرى، لا تتردد في التواصل معنا.
-
-مع تحياتنا،
-فريق الدعم</code></pre>
-        </div>
-
-        <div class="callout callout-success">
-          <div class="callout-title">✅ نصيحة ذهبية</div>
-          <div class="callout-content">
-            أنشئ قاعدة بيانات للأسئلة الشائعة (FAQ) لتوفير الوقت في الرد على الاستفسارات المتكررة. كمان استخدم ردود جاهزة للأسئلة الشائعة.
-          </div>
-        </div>
-
-        <h2>🔄 تحديث القالب باستمرار</h2>
-        <p>الحفاظ على القالب محدّثاً يزيد من قيمته ويحافظ على رضا العملاء:</p>
-
-        <h3>جدول التحديثات</h3>
-        <div class="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>النوع</th>
-                <th>التكرار</th>
-                <th>المحتوى</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>تحديثات أمان</strong></td>
-                <td>فوراً</td>
-                <td>إصلاح الثغرات الأمنية</td>
-              </tr>
-              <tr>
-                <td><strong>تحديثات صغيرة</strong></td>
-                <td>شهرياً</td>
-                <td>تحسينات وإصلاح أخطاء</td>
-              </tr>
-              <tr>
-                <td><strong>تحديثات كبرى</strong></td>
-                <td>كل 3 أشهر</td>
-                <td>ميزات جديدة وتحسينات كبيرة</td>
-              </tr>
-              <tr>
-                <td><strong>تحديثات الإطار</strong></td>
-                <td>عند الإصدار الجديد</td>
-                <td>ترقية Next.js و المكتبات</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3>إنشاء ملف CHANGELOG.md</h3>
-        <div class="code-block">
-          <div class="code-block-header">
-            <span class="code-block-title">CHANGELOG.md</span>
-            <span class="code-block-lang">markdown</span>
-          </div>
-          <pre><code># Changelog
-
-## [1.2.0] - 2024-03-15
-
-### Added
-- نظام تقييم المنتجات
-- صفحة "عن المتجر"
-- تحسينات الأداء
-
-### Fixed
-- إصلاح مشكلة في السلة
-- تحسين استجابة الموبايل
-
-## [1.1.0] - 2024-02-01
-
-### Added
-- نظام المفضلة
-- بحث متقدم
-- فلتر حسب السعر
-
-### Fixed
-- تحسين سرعة التحميل
-- إصلاح أخطاء في التصنيفات
-
-## [1.0.0] - 2024-01-01
-
-### Added
-- الإصدار الأول من القالب</code></pre>
-        </div>
-
-        <p>الـ CHANGELOG مهم جداً لأنه:</p>
+        <h3>لينكدإن - للمحترفين</h3>
+        <p>لينكدإن من أحسن المنصات لو بتستهدف شركات أو محترفين:</p>
         <ul>
-          <li>بيبين للعملاء إن القالب بيتغير وبيتحسن.</li>
-          <li>بيساعدهم يعرفوا اتحسن ايه.</li>
-          <li>بيزود ثقتهم فيك.</li>
-          <li>بيحل مشاكل التوثيق.</li>
+          <li><strong>مقالات مفصلة:</strong> اكتب مقالات عن تجربتك في بناء المتجر.</li>
+          <li><strong>مشاركة النتائج:</strong> شارك الأرقام والنتائج الحقيقية.</li>
+          <li><strong>بناء شبكة علاقات:</strong> تواصل مع أصحاب الشركات اللي ممكن يحتاجوا متجر.</li>
         </ul>
 
-        <h2>📊 قياس النجاح</h2>
-        <p>تابع هذه المؤشرات لقياس نجاحك:</p>
+        <h3>انستغرام - للتصميم البصري</h3>
+        <p>انستغرام ممتاز لو المنتج بتاعك فيه تصميم جميل:</p>
+        <ul>
+          <li><strong>Reels:</strong> فيديوهات قصيرة بتوضح المميزات.</li>
+          <li><strong>Stories:</strong> خلف الكواليس وعملية التطوير.</li>
+          <li><strong>Posts:</strong> صور جذابة للتصميم النهائي.</li>
+        </ul>
 
+        <!-- Section 7: إعداد Google Analytics -->
+        <h2>📊 إعداد Google Analytics</h2>
+        <p>Google Analytics أداة مجانية من Google بتساعدك تعرف الناس بتعمل إيه في موقعك. من غيرها، أنت بتشتغل في الظلام.</p>
+
+        <h3>خطوات الإعداد</h3>
+        <ol>
+          <li>ادخل على analytics.google.com</li>
+          <li>اعمل حساب جديد (لو معندكش).</li>
+          <li>اعمل Property جديد للموقع بتاعك.</li>
+          <li>اختار "Web" كنوع الـ Platform.</li>
+          <li>أدخل رابط الموقع بتاعك.</li>
+          <li>هتاخد Measurement ID يبدأ بـ "G-".</li>
+        </ol>
+
+        <h3>إضافة Analytics للموقع</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">إضافة Google Analytics في Next.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>// في ملف layout.tsx أو layout.js
+import Script from 'next/script';
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html lang="ar" dir="rtl"&gt;
+      &lt;head&gt;
+        {/* Google Analytics */}
+        &lt;Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+          strategy="afterInteractive"
+        /&gt;
+        &lt;Script id="google-analytics" strategy="afterInteractive"&gt;
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX');
+          `}
+        &lt;/Script&gt;
+      &lt;/head&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>المؤشرات اللي لازم تتابعها</h3>
         <div class="table-wrapper">
           <table>
             <thead>
               <tr>
                 <th>المؤشر</th>
+                <th>إيه معناه</th>
                 <th>الهدف</th>
-                <th>الأداة</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>عدد المبيعات</strong></td>
-                <td>100+ مبيعة/شهر</td>
-                <td>Gumroad Dashboard</td>
+                <td><strong>المستخدمون النشطون</strong></td>
+                <td>عدد الزوار الفعليين</td>
+                <td>يزيد يوماً بعد يوم</td>
               </tr>
               <tr>
-                <td><strong>التقييمات</strong></td>
-                <td>4.5+ نجوم</td>
-                <td>منصة البيع</td>
+                <td><strong>معدل الارتداد</strong></td>
+                <td>النسبة اللي بتمشي من غير ما تعمل حاجة</td>
+                <td>أقل من 40%</td>
               </tr>
               <tr>
-                <td><strong>معدل التحويل</strong></td>
-                <td>2-5%</td>
-                <td>Google Analytics</td>
+                <td><strong>متوسط مدة الجلسة</strong></td>
+                <td>المتوسط الوقت اللي بيقضيه الزائر</td>
+                <td>أكثر من دقيقتين</td>
               </tr>
               <tr>
-                <td><strong>معدل الرضا</strong></td>
-                <td>90%+</td>
-                <td>استبيانات</td>
+                <td><strong>الصفحات لكل جلسة</strong></td>
+                <td>متوسط عدد الصفحات اللي بيزورها</td>
+                <td>أكثر من 2</td>
+              </tr>
+              <tr>
+                <td><strong>مصدر الزيارات</strong></td>
+                <td>الزوار بيوصلوا منين</td>
+                <td>متنوع (بحث، سوشيال، مباشر)</td>
               </tr>
             </tbody>
           </table>
         </div>
 
+        <!-- Section 8: إعداد Google Search Console -->
+        <h2>🔎 إعداد Google Search Console</h2>
+        <p>Google Search Console أداة مجانية بتساعدك تعرف الموقع بتاعك بيظهر في بحث جوجل ازاي، وإيه الكلمات المفتاحية الناس بتبحث بيها.</p>
+
+        <h3>خطوات الإعداد</h3>
+        <ol>
+          <li>ادخل على search.google.com/search-console</li>
+          <li>اضغط "Add Property".</li>
+          <li>اختار "URL prefix" وأدخل رابط الموقع.</li>
+          <li>اختر طريقة التحقق (DNS أو HTML tag أو Meta tag).</li>
+        </ol>
+
+        <h3>طرق التحقق</h3>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">طريقة HTML Tag</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;!-- ضع الكود ده في &lt;head&gt; في ملف layout --&gt;
+&lt;meta name="google-site-verification" content="XXXXX_CODE_XXXXX" /&gt;</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">طريقة DNS (أنصحك بيها)</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>1. ادخل على لوحة تحكم النطاق بتاعك
+2. روح على قسم DNS Records
+3. أضف TXT Record جديد:
+   - Name: @
+   - Value: google-site-verification=XXXXX_CODE_XXXXX
+4. احفظ وانتظر التأكيد (ممكن ياخد من دقيقة لـ 48 ساعة)</code></pre>
+        </div>
+
+        <h3>أهم معلومات من Search Console</h3>
+        <ul>
+          <li><strong>الاستعلامات (Queries):</strong> الكلمات المفتاحية اللي الناس بتبحث بيها وتظهر ليها موقعك.</li>
+          <li><strong>الصفحات (Pages):</strong> أي الصفحات بتظهر أكتر في نتائج البحث.</li>
+          <li><strong>النقرات (Clicks):</strong> قد إيه من الناس ضغطت على موقعك.</li>
+          <li><strong>الظهور (Impressions):</strong> قد إيه ظهر موقعك في نتائج البحث.</li>
+          <li><strong>متوسط الموقع (Position):</strong> موقعك في النتائج (متوسط الموقع).</li>
+          <li><strong>الأخطاء (Errors):</strong> المشاكل اللي في الموقع من ناحية الـ SEO.</li>
+        </ul>
+
         <div class="callout callout-info">
-          <div class="callout-title">💡 ازاي تقيس النجاح؟</div>
+          <div class="callout-title">💡 نصيحة مهمة</div>
+          <div class="callout-content">
+            راجع Google Search Console كل أسبوع عشان تعرف الناس بتبحث عن إيه. الكلمات المفتاحية دي ممكن تساعدك تكتب محتوى يجذب زوار أكتر.
+          </div>
+        </div>
+
+        <!-- Section 9: نصائح لزيادة المبيعات -->
+        <h2>💰 نصائح لزيادة المبيعات</h2>
+        <p>النصائح دي لو طبّقتها، مبيعاتك هتزيد بشكل ملحوظ. خلينا نبدأ:</p>
+
+        <h3>1. صمم صفحة بيع قوية</h3>
+        <ul>
+          <li><strong>عنوان جذاب:</strong> ابدأ بعنوان بيلقط الانتباه.</li>
+          <li><strong>وصف المشكلة:</strong> اشرح المشكلة اللي المنتج بيححلها.</li>
+          <li><strong>الحل:</strong> اشرح ازاي المنتج بتاعك بيحل المشكلة.</li>
+          <li><strong>المميزات:</strong> اذكر المميزات الرئيسية بشكل واضح.</li>
+          <li><strong>التقييمات:</strong> شارك تقييمات العملاء السابقين.</li>
+          <li><strong>الضمان:</strong> لو فيه ضمان استرجاع، اذكره بوضوح.</li>
+          <li><strong>السعر:</strong> حط السعر بشكل واضح مع خيارات الدفع.</li>
+        </ul>
+
+        <h3>2. استخدم مبدأ الندرة</h3>
+        <p>الناس بتحب الحاجة اللي قليلة أو محدودة:</p>
+        <ul>
+          <li>"العرض ده لمدة 48 ساعة بس!"</li>
+          <li>"باقي 5 نسخ بس من الخطة الاحترافية!"</li>
+          <li>"السعر هيزيد بعد 100 عملية بيع!"</li>
+        </ul>
+
+        <h3>3. قدم إضافات مجانية</h3>
+        <p>الإضافات المجانية بتحسّن قيمة المنتج وبتخلي العميل يحس إنه بياخد أكتر مما بيدفع:</p>
+        <ul>
+          <li>ملف تعليميشرح ازاي تستخدم القالب.</li>
+          <li>قالب تصميم Figma مجاني.</li>
+          <li>دعم فني لمدة 3 شهور.</li>
+          <li>تحديثات مجانية لمدة سنة.</li>
+        </ul>
+
+        <h3>4. اجمع تقييمات العملاء</h3>
+        <ul>
+          <li>ابعت إيميل للعملاء السابقين واطلب تقييم.</li>
+          <li>قدم خصم صغير مقابل التقييم.</li>
+          <li>شارك التقييمات الإيجابية على صفحة البيع.</li>
+          <li>ردّ على التقييمات السلبية بشكل احترافي.</li>
+        </ul>
+
+        <h3>5. اعمل عروض وخصومات</h3>
+        <ul>
+          <li><strong>خصم الإطلاق:</strong> خصم 20-30% أول أسبوع.</li>
+          <li><strong>حزمة المنتجات:</strong> باع القالب مع فيديو تعليمي بسعر أقل.</li>
+          <li><strong>برنامج الإحالة:</strong> дав العملاء نسبة من كل عميل يجيبوه ليك.</li>
+          <li><strong>الأسعار المجمعة:</strong> لو اشترى أكتر من منتج، خصم له.</li>
+        </ul>
+
+        <h3>6. حسّن عملية الشراء</h3>
+        <p>كل خطوة إضافية في عملية الشراء بتخسّرك عملاء:</p>
+        <ul>
+          <li>قلل عدد الخطوات للحد الأدنى.</li>
+          <li>اقبل أكتر من طريقة دفع.</li>
+          <li>اعمل صفحة شكر بعد الشراء.</li>
+          <li>ابعت إيميل تأكيد فوراً.</li>
+        </ul>
+
+        <!-- Section 10: تسعير المنتجات -->
+        <h2>💲 تسعير المنتجات</h2>
+        <p>التسعير من أهم القرارات اللي هتاخدها. سعر غلط ممكن يخسّرك عملاء كتير أو يخسّرك فلوس كتير.</p>
+
+        <h3>استراتيجيات التسعير</h3>
+
+        <h4>1. تسعير بالتكلفة (Cost-Plus)</h4>
+        <p>تحسب تكلفة صنع المنتج وتضيف عليها هامش ربح:</p>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">حساب السعر</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>تكلفة التطوير: 100 ساعة × $50/ساعة = $5,000
+إجمالي التكلفة: $5,000
+هامش الربح: 50%
+السعر النهائي: $5,000 × 1.5 = $7,500
+
+لو عايز تبيع 100 نسخة:
+السعر لكل نسخة: $7,500 ÷ 100 = $75</code></pre>
+        </div>
+
+        <h4>2. تسعير بالقيمة (Value-Based)</h4>
+        <p>تحسب السعر بناءً على القيمة اللي المنتج بيقدمها للعميل. مثلاً:</p>
+        <ul>
+          <li>لو المنتج بيوفر على العميل 200 ساعة شغل سنوياً.</li>
+          <li>وكل ساعة شغل بـ $50.</li>
+          <li>القيمة = 200 × 50 = $10,000.</li>
+          <li>تقدر تحط السعر $500-$1000 والعميل لسه بياخد قيمة عالية.</li>
+        </ul>
+
+        <h4>3. تسعير بالمنافسة (Competitive)</h4>
+        <p>تشوف المنافسين بيحطوا سعر كام وتحط سعر قريب:</p>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>المنتج</th>
+                <th>سعر المنافس</th>
+                <th>السعر المقترح</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>قالب أساسي</td>
+                <td>$49</td>
+                <td>$39 (أرخص شوية)</td>
+              </tr>
+              <tr>
+                <td>قالب احترافي</td>
+                <td>$99</td>
+                <td>$89 (أرخص شوية)</td>
+              </tr>
+              <tr>
+                <td>باقة كاملة</td>
+                <td>$199</td>
+                <td>$179 (أرخص شوية)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>نصائح التسعير</h3>
+        <ul>
+          <li><strong>متبدأش رخيص جداً:</strong> السعر الرخيص بيدي انطباع إن الجودة وحشة.</li>
+          <li><strong>اعرض أكتر من خطة:</strong> لما بتعرض 3 خطط، العميل بيفضّل اللي في النص.</li>
+          <li><strong>استخدم الأسعار النفسية:</strong> $99 أحسن من $100. $199 أحسن من $200.</li>
+          <li><strong>جرّب وغيّر:</strong> جرّب سعر لمدة شهر وشوف النتيجة. لو محتاج تغيّر، غيّر.</li>
+          <li><strong>اعرض خصومات ذكية:</strong> خصم 20% أحسن من خصم $20.</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">✅ قاعدة ذهبية</div>
+          <div class="callout-content">
+            السعر الصح هو السعر اللي العميل بيرتح ليه وبيحس إنه واخد قيمة. متخفش من رفع السعر لو المنتج فعلاً بيقدم قيمة حقيقية.
+          </div>
+        </div>
+
+        <!-- Section 11: إدارة المخزون -->
+        <h2>📦 إدارة المخزون</h2>
+        <p>لو بتبيع منتجات رقمية، مش محتاج إدارة مخزون تقليدية. بس لازم تعرف ازاي تدير المنتجات الرقمية بتاعتك:</p>
+
+        <h3>إدارة المنتجات الرقمية</h3>
+        <ul>
+          <li><strong>تنظيم الملفات:</strong> خلي كل منتج في مجلد منفصل.</li>
+          <li><strong>النسخ الاحتياطي:</strong> اعمل نسخ احتياطي للمنتجات على سحابة تانية.</li>
+          <li><strong>التحديثات:</strong> لما بتعمل تحديث للمنتج، خلي النسخة القديمة متاحة كـ "legacy".</li>
+          <li><strong>إدارة الإصدارات:</strong> استخدم Git لتنظيم إصدارات المنتج.</li>
+        </ul>
+
+        <h3>إدارة المنتجات المادية (لو بتبيع منتجات حقيقية)</h3>
+        <ul>
+          <li><strong>تتبع المخزون:</strong> استخدم جدول Excel أو أداة متخصصة.</li>
+          <li><strong>حد إعادة الطلب:</strong> لما المخزون يوصل لحد معين، اطلب تاني.</li>
+          <li><strong>فواتير الموردين:</strong> حافظ على سجل لكل مشترياتك.</li>
+          <li><strong>تتبع الشحنات:</strong> تابع الشحنات من المورد للعميل.</li>
+        </ul>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">جدول تتبع المخزون (نموذج)</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>المنتج          | المخزون الحالي | الحد الأدنى | الحد الأقصى | حالة الطلب
+----------------|---------------|------------|------------|----------
+قالب أساسي     | 1000          | 200        | -          | ✅ كافي
+قالب احترافي   | 500           | 100        | -          | ✅ كافي
+باقة الدعم     | 0             | 50         | 200        | ⚠️ لازم نطلب
+ملف تعليمي     | ∞               | -          | -          | ✅ رقمي</code></pre>
+        </div>
+
+        <!-- Section 12: التعامل مع العملاء -->
+        <h2>🤝 التعامل مع العملاء</h2>
+        <p>العملاء هم مصدر رزقك. تعاملهم بشكل كويس هو مفتاح النجاح. خلينا نشوف ازاي تتعامل معهم:</p>
+
+        <h3>قواعد التعامل مع العملاء</h3>
+        <ul>
+          <li><strong>رد بسرعة:</strong> رد على الرسائل خلال 24 ساعة كحد أقصى.</li>
+          <li><strong>كن مهذباً:</strong> حتى لو العميل غلطان، كن مهذباً ومحترم.</li>
+          <li><strong>افهم المشكلة:</strong> قبل ما تحل، افهم المشكلة كويس.</li>
+          <li><strong>اعطي حل واضح:</strong> اشرح الحل بشكل مبسط.</li>
+          <li><strong>تابع بعد الحل:</strong> بعد ما تحل المشكلة، تابع مع العميل إنها اتحلت.</li>
+        </ul>
+
+        <h3>التعامل مع الشكاوى</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">خطوات التعامل مع الشكوى</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>الخطوة 1: اسمع للعميل بانتباه
+- متقاطعش كلامه
+- خليه يكمّل كلامه
+- افهم المشكلة بالظبط
+
+الخطوة 2: اعترف بالمشكلة
+- "فاهم إن المشكلة دي مزعجة"
+- "معلش على الإزعاج"
+- "حقك عليّا/علينا"
+
+الخطوة 3: اقترح حل
+- "هحللك المشكلة دي دلوقتي"
+- "هبعتلك بديل"
+- "هعملك خصم على الطلب الجاي"
+
+الخطوة 4: تابع بعد الحل
+- "هل المشكلة اتحلت؟"
+- "محتاج حاجة تانية؟"
+- "معلش تاني على الإزعاج"</code></pre>
+        </div>
+
+        <h3>أنواع العملاء والتعامل معاهم</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>نوع العميل</th>
+                <th>الصفات</th>
+                <th>طريقة التعامل</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>الهادئ</strong></td>
+                <td>بيسأل أسئلة بسيطة ويرتاح بسرعة</td>
+                <td>رد واضح ومباشر</td>
+              </tr>
+              <tr>
+                <td><strong>المتحمس</strong></td>
+                <td>بيشتر فوراً وبيكون متحمس جداً</td>
+                <td>شجّع حماسه وابعتله محتوى إضافي</td>
+              </tr>
+              <tr>
+                <td><strong>المتشكك</strong></td>
+                <td>بيسأل أسئلة كتير ويتردد</td>
+                <td>اعطيه معلومات كتير وضمان استرجاع</td>
+              </tr>
+              <tr>
+                <td><strong>الغاضب</strong></td>
+                <td>بيشتكي من أي حاجة</td>
+                <td>استمع واعترف وحل المشكلة بسرعة</td>
+              </tr>
+              <tr>
+                <td><strong>الخبير</strong></td>
+                <td>بيعرف تقنيات كتير وعايز تفاصيل</td>
+                <td>اعطيه تفاصيل تقنية مفصّلة</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>إنشاء صفحة الأسئلة الشائعة (FAQ)</h3>
+        <p>صفحة FAQ بتوفر عليك وقت كبير لأنها بتجاوب على الأسئلة المتكررة:</p>
+        <ul>
+          <li><strong>الأسئلة التقنية:</strong> "إزاي أغيّر الألوان؟"</li>
+          <li><strong>أسئلة الدفع:</strong> "بقبل إيه من طرق الدفع؟"</li>
+          <li><strong>أسئلة الدعم:</strong> "لو واجهت مشكلة أعمل إيه؟"</li>
+          <li><strong>أسئلة التحديثات:</strong> "هيبقى فيه تحديثات قادمة؟"</li>
+        </ul>
+
+        <!-- Section 13: الأدوات المفيدة -->
+        <h2>🛠️ الأدوات المفيدة</h2>
+        <p>فيه أدوات كتير ممكن تساعدك في البيع والتسويق وإدارة العملاء. خليني أقولك على أهمها:</p>
+
+        <h3>أدوات التسويق</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الأداة</th>
+                <th>الاستخدام</th>
+                <th>التكلفة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Mailchimp</strong></td>
+                <td>البريد الإلكتروني التسويقي</td>
+                <td>مجاني لـ 500 عميل</td>
+              </tr>
+              <tr>
+                <td><strong>Canva</strong></td>
+                <td>تصميم الصور والبوستات</td>
+                <td>مجاني + احترافي</td>
+              </tr>
+              <tr>
+                <td><strong>Buffer</strong></td>
+                <td>جدولة بوستات السوشيال ميديا</td>
+                <td>مجاني لـ 3 قنوات</td>
+              </tr>
+              <tr>
+                <td><strong>ConvertKit</strong></td>
+                <td>التسويق عبر البريد الإلكتروني</td>
+                <td>مجاني لـ 1000 مشترك</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>أدوات تحليل الأداء</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الأداة</th>
+                <th>الاستخدام</th>
+                <th>التكلفة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Google Analytics</strong></td>
+                <td>تحليل حركة الزوار</td>
+                <td>مجاني</td>
+              </tr>
+              <tr>
+                <td><strong>Hotjar</strong></td>
+                <td>Heatmaps وتسجيل الجلسات</td>
+                <td>مجاني لـ 35 زيارة/يوم</td>
+              </tr>
+              <tr>
+                <td><strong>Google Search Console</strong></td>
+                <td>تحليل الظهور في نتائج البحث</td>
+                <td>مجاني</td>
+              </tr>
+              <tr>
+                <td><strong>Plausible</strong></td>
+                <td>تحليل الخصوصي بديل لـ Google Analytics</td>
+                <td>من $9/شهر</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>أدوات إدارة المشاريع</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الأداة</th>
+                <th>الاستخدام</th>
+                <th>التكلفة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Notion</strong></td>
+                <td>تنظيم المهام والمشاريع</td>
+                <td>مجاني للاستخدام الشخصي</td>
+              </tr>
+              <tr>
+                <td><strong>Trello</strong></td>
+                <td>إدارة المشاريع بالبطاقات</td>
+                <td>مجاني</td>
+              </tr>
+              <tr>
+                <td><strong>GitHub Projects</strong></td>
+                <td>إدارة مشاريع التطوير</td>
+                <td>مجاني</td>
+              </tr>
+              <tr>
+                <td><strong>Figma</strong></td>
+                <td>تصميم الواجهات</td>
+                <td>مجاني لـ 3 مشاريع</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>أدوات الدفع</h3>
+        <ul>
+          <li><strong>Stripe:</strong> من أقوى منصات الدفع. بتدعم كتير من الدول.</li>
+          <li><strong>PayPal:</strong> منصة الدفع الأشهر في العالم.</li>
+          <li><strong>LemonSqueezy:</strong> ممتاز للمنتجات الرقمية. بيتعامل مع الضرائب.</li>
+          <li><strong>Gumroad:</strong> بسيطة وسهلة. ممتازة للمبتدئين.</li>
+          <li><strong>Paddle:</strong> بديل لـ Stripe. بيتعامل مع الضرائب تلقائياً.</li>
+        </ul>
+
+        <!-- Section 14: اللي هتتعلمه بعدها -->
+        <h2>🎓 اللي هتتعلمه بعدها</h2>
+        <p>الكورس خلص، بس الرحلة لسه بدأت! فيه حاجات كتير ممكن تتعلمها بعد كده عشان تطوّر من نفسك وتكسب أكتر:</p>
+
+        <h3>تقنيات متقدمة</h3>
+        <ul>
+          <li><strong>TypeScript:</strong> لغة بتضيف أنواع بيانات لـ JavaScript. بتساعدك تكتب كود أدق وأقل أخطاء.</li>
+          <li><strong>React Server Components:</strong> ميزة جديدة في React بتحسن الأداء بشكل كبير.</li>
+          <li><strong>GraphQL:</strong> بديل عن REST API. مرونة أكبر في جلب البيانات.</li>
+          <li><strong>Docker:</strong> لحاوية التطبيقات. مفيد لو عايز تشتغل على مشاريع كبيرة.</li>
+          <li><strong>CI/CD:</strong> أنظمة النشر التلقائي. بتوفّر عليك وقت كبير.</li>
+        </ul>
+
+        <h3>مشاريع جانبية</h3>
+        <ul>
+          <li><strong>SaaS Application:</strong> ابني تطبيق كخدمة (Software as a Service).</li>
+          <li><strong>AI Integration:</strong> أضف ذكاء اصطناعي للمتجر. مثلاً توصيات المنتجات بالـ AI.</li>
+          <li><strong>Mobile App:</strong> ابني تطبيق موبايل بـ React Native.</li>
+          <li><strong>Chrome Extension:</strong> ابني امتداد لـ Chrome.</li>
+        </ul>
+
+        <h3>التسويق والمبيعات</h3>
+        <ul>
+          <li><strong>Email Marketing:</strong> التسويق عبر البريد الإلكتروني من أقوى قنوات التسويق.</li>
+          <li><strong>SEO متقدم:</strong> تعلم تقنيات الـ SEO المتقدمة.</li>
+          <li><strong>الإعلانات المدفوعة:</strong> Google Ads و Facebook Ads.</li>
+          <li><strong>بناء العلامة التجارية:</strong> ازاي تبني brand خاص بيك.</li>
+        </ul>
+
+        <h3>الريادة الأعمال</h3>
+        <ul>
+          <li><strong>المالية:</strong> اتعلم إزاي تدير فلوسك وأرباحك.</li>
+          <li><strong>القانونية:</strong> اعرف القوانين المتعلقة بالتجارة الإلكترونية في بلدك.</li>
+          <li><strong>الفريق:</strong> ازاي تبني فريق وتنمّي شغلك.</li>
+          <li><strong>التوسع:</strong> ازاي توسّع شغلك وتنقل من فرد لشركة.</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 خطة تعلم مقترحة</div>
           <div class="callout-content">
             <ul>
-              <li><strong>عدد المبيعات:</strong> احسب عدد المبيعات الشهرية. لو أقل من 100، ركّز على التسويق.</li>
-              <li><strong>التقييمات:</strong> لو أقل من 4.5 نجوم، شوف المشاكل وصلحها.</li>
-              <li><strong>معدل التحويل:</strong> لو أقل من 2%، شوف ازاي تحسّن صفحة البيع.</li>
-              <li><strong>معدل الرضا:</strong> اعمل استبيان رضا كل 3 أشهر.</li>
+              <li><strong>الأسبوع 1-2:</strong> ابدأ بـ TypeScript عشان هتساعدك في كل المشاريع الجاية.</li>
+              <li><strong>الأسبوع 3-4:</strong> اتعلم GraphQL لو عايز تبني APIs أقوى.</li>
+              <li><strong>الشهر 2:</strong> ابدأ مشروع SaaS بسيط يجمع بين اللي اتعلمتاه.</li>
+              <li><strong>الشهر 3:</strong> اتعلم التسويق عبر البريد الإلكتروني وابدأ تبني قائمة بريدية.</li>
+              <li><strong>بعد كده:</strong> ركّز على اللي يناسب أهدافك.</li>
             </ul>
           </div>
         </div>
 
-        <h2>📝 تمارين عملية</h2>
+        <!-- Section 15: نصيحة أخيرة -->
+        <h2>💎 نصيحة أخيرة</h2>
+        <p>قبل ما نخلص الكورس، عايز أقولك كلام من القلب:</p>
 
         <div class="callout callout-success">
-          <div class="callout-title">🎯 تمرين 1: جهّز القالب للبيع</div>
+          <div class="callout-title">🌟 أهم 10 نصائح لنجاحك</div>
           <div class="callout-content">
-            نظّف الكود، اعمل build، واكتب README.md و LICENSE. جرّب تنشر المشروع على Vercel وشوف لو في أي مشاكل.
+            <ol>
+              <li><strong>ابدأ دلوقتي:</strong> متستناش تبقى "جاهز 100%". ابدأ بالي عندك وكمّل وأنت ماشي.</li>
+              <li><strong>لا تستسلم:</strong> هتواجه صعوبات كتير. بس اللي بيتعب هو اللي بينجح.</li>
+              <li><strong>تعلم من أخطائك:</strong> كل خطأ هو فرصة تتعلم حاجة جديدة.</li>
+              <li><strong>اطلب المساعدة:</strong> متخفش تسأل. المجتمع التقاني من أحسن المجتمعات في العالم.</li>
+              <li><strong>شارك خبرتك:</strong> لما بتشارك اللي اتعلمتاه، بتفهمه أحسن وبتساعد غيرك.</li>
+              <li><strong>ركّز على الجودة:</strong> الجودة أحسن من الكمية. منتج واحد ممتاز أحسن من 10 منتجات عادية.</li>
+              <li><strong>اسمع للعملاء:</strong> العملاء هم اللي بيقولولك إيه اللي محتاج تصلحه.</li>
+              <li><strong>طّور من نفسك:</strong> التكنولوجيا بتتغير بسرعة. لازم تفضل تتعلم.</li>
+              <li><strong>اتكلم مع الناس:</strong> التواصل مع المطورين التانيين بيفتحلك أبواب جديدة.</li>
+              <li><strong>استمتع بالرحلة:</strong> البرمجة ممتعة. استمتع بكل لحظة!</li>
+            </ol>
           </div>
         </div>
 
-        <div class="callout callout-success">
-          <div class="callout-title">🎯 تمرين 2: حدد السعر</div>
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ تحذير مهم</div>
           <div class="callout-content">
-            شوف المنافسين وشوف بيحطوا سعر كام. حدد 3 خطط سعر (أساسية واحترافية ومؤسسات). اكتب مميزات كل خطة.
+            <p>النجاح مش بيحصل من يوم لليل. ممكن تاخد شهور أو حتى سنين عشان توصل لهدفك. بس لو استمريت وماتيحتش، النجاح هيجيلك.</p>
+            <p>أتذكر دايمًا إن كل مطور ناجح كان في يوم من الأيام مبتدئ زيك بالظبط. الفرق الوحيد إنهم استمروا.</p>
           </div>
         </div>
 
-        <div class="callout callout-success">
-          <div class="callout-title">🎯 تمرين 3: اكتب مقال تسويقي</div>
-          <div class="callout-content">
-            اكتب مقال على Medium أو مدونتك بعنوان "كيف بنيت متجر إلكتروني في 30 يوم". شاركه على تويتر ولينكدإن.
-          </div>
-        </div>
-
-        <h2>📝 ملخص الدرس</h2>
-        <p>في الدرس الأخير اتعلمنا:</p>
+        <h3>أفكار مشاريع تبدأ بيها</h3>
         <ul>
-          <li>✅ تجهيز القالب للبيع</li>
-          <li>✅ استراتيجيات التسعير</li>
-          <li>✅ التسويق للقالب</li>
-          <li>✅ دعم العملاء</li>
-          <li>✅ تحديث القالب باستمرار</li>
-          <li>✅ قياس النجاح</li>
-          <li>✅ تمارين عملية</li>
+          <li><strong>SaaS بسيط:</strong> ابني أداة بسيطة بـ Next.js وابدأ بيعها كـ شهري.</li>
+          <li><strong>قالب متجر:</strong> زي اللي اتعلمت بنائه في الكورس ده. بيعه على ThemeForest.</li>
+          <li><strong>إضافة Chrome:</strong> ابني امتداد يحل مشكلة معينة.</li>
+          <li><strong>تطبيق موبايل:</strong> استخدم React Native لبناء تطبيق موبايل.</li>
+          <li><strong>مدونة تقنية:</strong> اكتب عن تجربتك وشارك معرفتك مع الآخرين.</li>
+        </ul>
+
+        <!-- Section 16: ملخص الدرس -->
+        <h2>📋 ملخص الدرس</h2>
+        <p>في الدرس الأخير والأخطر من الكورس كله، اتعلمنا:</p>
+
+        <ul>
+          <li>✅ ازاي تجهّز القالب للبيع (تنظيف الكود و إنشاء README و LICENSE)</li>
+          <li>✅ استراتيجيات التسعير المختلفة</li>
+          <li>✅ التسويق عبر السوشيال ميديا (تويتر، يوتيوب، لينكدإن، انستغرام)</li>
+          <li>✅ إعداد Google Analytics وتتبع حركة الزوار</li>
+          <li>✅ إعداد Google Search Console و تحسين الـ SEO</li>
+          <li>✅ نصائح لزيادة المبيعات</li>
+          <li>✅ تسعير المنتجات بذكاء</li>
+          <li>✅ إدارة المخزون (رقمي ومادي)</li>
+          <li>✅ التعامل مع العملاء والشكاوى</li>
+          <li>✅ الأدوات المفيدة في التسويق والتحليل</li>
+          <li>✅ اللي هتتعلمه بعد الكورس</li>
+          <li>✅ نصائح أخيرة للنجاح</li>
         </ul>
 
         <div class="callout callout-success">
-          <div class="callout-title">🎉 مبروك!</div>
+          <div class="callout-title">🎉 مبروك! الكورس خلص!</div>
           <div class="callout-content">
-            لقد أكملت الكورس بنجاح! الآن لديك كل المعرفة اللازمة لبناء وبيع متجر إلكتروني متكامل. لا تتردد في تطبيق ما تعلمته ومشاركة تجربتك مع المجتمع.
+            <p>ألف مبروك يا صديقي! وصلت للنهاية وعندك كل المعرفة اللي محتاجها عشان تبني متجر إلكتروني كامل وتبيعه وتكسب من عليه.</p>
+            <p>الآن دورك إنك تبدأ تطبّق. ابدأ بالخطوة الصغيرة، مش لازم تعمل كل حاجة مرة واحدة. كل يوم خطوة صغيرة هتقودك للنتيجة اللي عايزها.</p>
+            <p>اتذكر دايمًا: الأفضل هو العدو الداخلي. لا تقارن نفسك بالآخرين. قارن نفسك بيك إمبارح وركّز على التحسن المستمر.</p>
           </div>
         </div>
 
         <div class="callout callout-info">
-          <div class="callout-title">💡 نصيحة أخيرة</div>
+          <div class="callout-title">💡 رسالة أخيرة</div>
           <div class="callout-content">
-            لا تتوقف عن التعلم والتطوير. الويب يتغير باستمرار، وعليك مواكبة أحدث التقنيات والأترندات للحفاظ على تنافسيتك في سوق القوالب الرقمية. ابدأ صغير، وكبر تدريجياً. وأهم حاجة: لا تستسلم!
+            <p>أنا فخور بيك إنك وصلت للنهاية. الكورس ده كان طويل ومليان معلومات، بس إنت صمدت وخلّصته. ده بيقول كتير عن شخصيتك وإرادتك.</p>
+            <p>الآن أنت عندك كل الأدوات اللي محتاجها. المعرفة في دماغك، والأدوات في إيدك، والطريق قدامك. كل حاجة محتاجها إنك تاخد الخطوة الأولى.</p>
+            <p>أتمنى ليك التوفيق والنجاح. واتذكر إنك لو محتاج أي مساعدة في أي وقت، المجتمع التقاني مليان ناس حابة تساعدك.</p>
+            <p>بالتوفيق يا بطل! 🚀</p>
           </div>
         </div>
 
       </div>
 
-      <!-- Navigation -->
       <div class="lesson-nav">
-        <a href="24-customization.html" class="nav-btn">
-          <span class="nav-btn-label">← السابق</span>
-          <span class="nav-btn-title">تخصيص القالب</span>
-        </a>
-        <a href="../index.html" class="nav-btn nav-btn-next">
-          <span class="nav-btn-label">العودة →</span>
-          <span class="nav-btn-title">الرئيسية</span>
-        </a>
+        <a href="24-customization.html" class="prev">الدرس السابق</a>
+        <a href="../index.html" class="next">الدورة خلصت! 🎉</a>
       </div>
-
     </div>
   </div>
-
+  <footer class="footer">
+    <div class="container">
+      <p>🛒 دورة بناء متجر إلكتروني - جميع الحقوق محفوظة © 2026</p>
+    </div>
+  </footer>
 </body>
 </html>

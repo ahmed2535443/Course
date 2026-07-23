@@ -8,35 +8,37 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <header class="lesson-header">
-        <div class="container">
-            <a href="../index.html" class="logo">🛒 دورة المتجر</a>
-            <nav>
-                <a href="../index.html">الرئيسية</a>
-                <a href="../index.html#course">الدورة</a>
-            </nav>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 05</span>
         </div>
-    </header>
-
-    <main class="lesson-main">
-        <div class="container">
-            <div class="breadcrumb">
-                <a href="../index.html">الرئيسية</a>
-                <span>/</span>
-                <a href="../index.html#unit-3">الوحدة 3: تأسيس المشروع</a>
-                <span>/</span>
-                <span>الدرس 5: إعداد قاعدة البيانات (Supabase)</span>
-            </div>
-
-            <h1 class="lesson-title">الدرس 5: إعداد قاعدة البيانات (Supabase)</h1>
-            <p class="lesson-subtitle">هنتعلم إزاي نستخدم Supabase لإنشاء و إدارة قاعدة بيانات مجاناً</p>
-
-            <div class="lesson-meta">
-                <span>⏱️ مدة الدرس: 60 دقيقة</span>
-                <span>📝 المستوى: مبتدئ</span>
-            </div>
-
-            <div class="lesson-body">
+        <h1>إعداد قاعدة البيانات (Supabase)</h1>
+        <div class="meta">
+          <span>⏱️ 60 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 2: تأسيس المشروع</span>
+        </div>
 
                 <!-- Section: Introduction -->
                 <h2>مقدمة مبسّطة عن قواعد البيانات</h2>
@@ -752,19 +754,19 @@ INSERT INTO products (name, description, price, discount, category, stock, featu
                     <p>هنتعلم إزاي نضيف نظام تسجيل دخول وتسجيل حساب باستخدام Clerk.</p>
                 </div>
 
-            </div>
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="04-tailwind-setup.html" class="prev">الدرس السابق</a>
+        <a href="06-clerk-auth.html" class="next">الدرس الجاي</a>
+      </div>
+    </div>
+  </div>
 
-            <div class="lesson-nav">
-                <a href="04-tailwind-setup.html" class="prev">الدرس السابق</a>
-                <a href="06-clerk-auth.html" class="next">الدرس الجاي</a>
-            </div>
-        </div>
-    </main>
-
-    <footer class="lesson-footer">
-        <div class="container">
-            <p>🛒 دورة بناء متجر إلكتروني - جميع الحقوق محفوظة © 2026</p>
-        </div>
-    </footer>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>🛒 دورة بناء متجر إلكتروني - جميع الحقوق محفوظة © 2026</p>
+    </div>
+  </footer>
 </body>
 </html>
