@@ -1,0 +1,11 @@
+{
+  "name": "market-course",
+  "version": "1.0.0",
+  "description": "Market Course - 25 lessons for building e-commerce",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
