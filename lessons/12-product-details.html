@@ -166,7 +166,7 @@ export default async function ProductPage({ params }) {
         <ul>
           <li><strong>generateMetadata</strong>: ده Function من Next.js بيسمحلك تحدد عنوان الصفحة والوصف. ده مهم للـ SEO عشان المتصفحات تقدر تفهم محتوى الصفحة.</li>
           <li><strong>notFound()</strong>: لو المنتج مش موجود في الـ API، بنعرض صفحة 404.</li>
-          <li><strong>cache: 'no-store'</strong>: ده معناه إننا عايزين البيانات تتحمّل من جديد كل مرة. لو عايزين ن缓存 البيانات، نستخدم <code>cache: 'force-cache'</code>.</li>
+          <li><strong>cache: 'no-store'</strong>: ده معناه إننا عايزين البيانات تتحمّل من جديد كل مرة. لو عايزين نخزّن البيانات مؤقتاً، نستخدم <code>cache: 'force-cache'</code>.</li>
           <li><strong>Breadcrumb</strong>: بيبين للمستخدم هو فين في الموقع. مثلاً: الرئيسية &gt; المنتجات &gt; إلكترونيات &gt; هاتف ذكي.</li>
         </ul>
 

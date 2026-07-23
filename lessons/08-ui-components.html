@@ -119,7 +119,7 @@ export function cn(...inputs) {
         <ul>
           <li><code>clsx(inputs)</code>: بتاخد البارامترات وبتتحولها لسلسلة نصية واحدة. لو في شروط، بتحقق منها. مثلاً <code>clsx("px-4", true && "bg-blue")</code> تبقى <code>"px-4 bg-blue"</code></li>
           <li><code>twMerge(...)</code>: بتاخد الناتج وبتدمج الفئات المتشابهة. مثلاً لو عندك <code>"px-4 px-8"</code> هتبقى <code>"px-8"</code> بس، لأن الـ px-8 بياخد الأولوية</li>
-          <li><code>...inputs</code>: ده spread operator، بيسمحلك تمرر عدد غير محدد من الأ参数</li>
+          <li><code>...inputs</code>: ده spread operator، بيسمحلك تمرر عدد غير محدد من المعاملات</li>
         </ul>
 
         <div class="callout callout-info">
@@ -264,7 +264,7 @@ export default function Button({
 &lt;Button&gt;أضف للسلة&lt;/Button&gt;
 
 // Button بأشكال مختلفة
-&lt;Button variant="secondary"&gt;次要&lt;/Button&gt;
+&lt;Button variant="secondary"&gt;ثانوي&lt;/Button&gt;
 &lt;Button variant="ghost"&gt;إلغاء&lt;/Button&gt;
 &lt;Button variant="danger"&gt;حذف&lt;/Button&gt;
 
@@ -292,7 +292,7 @@ export default function Button({
         <h2>📝 الخطوة 3: مكون Input</h2>
         <p>مكون Input هو zrooofy الأساسي في أي نموذج (form). هنستخدمه في البحث، تسجيل الدخول، إدخال العنوان، وغيرهم. المكون ده محتاج يكون فيه Label عشان المستخدم يعرف الحقل ده لميه، ورسائل خطأ عشان يعرف لو في مشكلة في الإدخال.</p>
 
-        <p>الميزة الأهم في المكون ده استخدام <code>forwardRef</code>. ده بيسمح للparent يوصل للـ input trực tiếp. مثلاً لما تحب تfocus على الحقل تلقائياً لما الصفحة تفتح. لو مش هتستخدم特性 ده، ممكن تحذفها بس الأفضل تسيبها.</p>
+        <p>الميزة الأهم في المكون ده استخدام <code>forwardRef</code>. ده بيسمح للparent يوصل للـ input trực tiếp. مثلاً لما تحب تfocus على الحقل تلقائياً لما الصفحة تفتح. لو مش هتستخدم ميزة ده، ممكن تحذفها بس الأفضل تسيبها.</p>
 
         <div class="code-block">
           <div class="code-block-header">
