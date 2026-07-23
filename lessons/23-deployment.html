@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 23 - نشر المشروع على Vercel</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 23</span>
+        </div>
+        <h1>نشر المشروع على Vercel</h1>
+        <div class="meta">
+          <span>⏱️ 20 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 7: النشر والبيع</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>الاستعداد للنشر على بيئة الإنتاج</li>
+          <li>إعداد متغيرات البيئة (Environment Variables)</li>
+          <li>نشر المشروع على Vercel</li>
+          <li>إعداد نطاق مخصص (Custom Domain)</li>
+          <li>التحقق بعد النشر</li>
+        </ul>
+
+        <h2>📋 قائمة ما قبل النشر</h2>
+        <p>قبل نشر المشروع، تأكد من إتمام هذه الخطوات:</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 قائمة مراجعة ما قبل النشر</div>
+          <div class="callout-content">
+            <ul>
+              <li>✅ اختبار جميع الميزات بشكل كامل</li>
+              <li>✅ مراجعة جميع الأخطاء والتنبيهات</li>
+              <li>✅ تحسين أداء الصور</li>
+              <li>✅ مراجعة Meta tags و SEO</li>
+              <li>✅ اختبار النماذج ومداخل المستخدم</li>
+              <li>✅ التأكد من عمل نظام تسجيل الدخول</li>
+              <li>✅ اختبار نظام الدفع (إن وجد)</li>
+              <li>✅ مراجعة الأمان</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>1. تنظيف المشروع</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">تنظيف الملفات غير المستخدمة</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code># حذف الملفات المؤقتة
+rm -rf .next
+rm -rf node_modules/.cache
+
+# تثبيت الاعتماديات
+npm install
+
+# بناء المشروع للتأكد من عدم وجود أخطاء
+npm run build
+
+# تنظيف ملفات التطوير
+npm cache clean --force</code></pre>
+        </div>
+
+        <h3>2. مراجعة package.json</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">package.json</span>
+            <span class="code-block-lang">json</span>
+          </div>
+          <pre><code>{
+  "name": "market-store",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "16.2.11",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "@clerk/nextjs": "7.5.22",
+    "@supabase/supabase-js": "2.110.8",
+    "framer-motion": "12.42.2",
+    "lucide-react": "1.25.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "4.0.0",
+    "autoprefixer": "10.0.1",
+    "postcss": "8.4.0"
+  }
+}</code></pre>
+        </div>
+
+        <h2>🔐 إعداد متغيرات البيئة</h2>
+        <p>المتغيرات البيئية (Environment Variables) ضرورية لتخزين المفاتيح السرية. في Next.js، نستخدم ملف <code>.env.local</code> للتطوير المحلي.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ تحذير أمني</div>
+          <div class="callout-content">
+            لا ترفع ملف <code>.env.local</code> إلى GitHub أو أي مستودع عام. تأكد من وجوده في ملف <code>.gitignore</code>.
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">.env.local</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code># Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+SUPABASE_SERVICE_ROLE_KEY=eyJ...
+
+# Site URL
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# Stripe (optional)
+STRIPE_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...</code></pre>
+        </div>
+
+        <h3>إعداد Environment Variables على Vercel</h3>
+        <p>بعد رفع المشروع على Vercel، يجب إضافة المتغيرات البيئية من خلال لوحة التحكم:</p>
+
+        <ol class="step-list">
+          <li>
+            <strong>افتح لوحة تحكم Vercel</strong> واختر مشروعك
+          </li>
+          <li>
+            <strong>اذهب إلى Settings</strong> ثم Environment Variables
+          </li>
+          <li>
+            <strong>أضف كل متغير</strong> بشكل منفصل مع القيم الصحيحة
+          </li>
+          <li>
+            <strong>اختر البيئات</strong> (Production, Preview, Development)
+          </li>
+          <li>
+            <strong>اضغط Save</strong> لحفظ كل متغير
+          </li>
+        </ol>
+
+        <h2>🚀 نشر المشروع على Vercel</h2>
+        <p>Vercel هو أفضل منصة لنشر مشاريع Next.js. إليك الخطوات:</p>
+
+        <h3>الطريقة الأولى: من خلال واجهة Vercel</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">خطوات النشر</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>1. اذهب إلى vercel.com وسجل دخول بحسابك
+2. اضغط "New Project"
+3. اختر "Import Git Repository"
+4. اختر مستودع GitHub الخاص بك
+5. اضغط "Import"
+6. تأكد من إعدادات البناء:
+   - Framework Preset: Next.js
+   - Build Command: npm run build
+   - Output Directory: .next
+7. أضف Environment Variables
+8. اضغط "Deploy"</code></pre>
+        </div>
+
+        <h3>الطريقة الثانية: من خلال CLI</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">تثبيت ونشر عبر CLI</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code># تثبيت Vercel CLI
+npm install -g vercel
+
+# تسجيل الدخول
+vercel login
+
+# نشر المشروع (للتطوير)
+vercel
+
+# نشر للإنتاج
+vercel --prod</code></pre>
+        </div>
+
+        <h3>إعدادات next.config.js للنشر</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">next.config.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // تحسين الأداء للإنتاج
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons']
+  },
+  
+  // إعدادات الصور
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co'
+      }
+    ],
+    formats: ['image/avif', 'image/webp']
+  },
+  
+  // تعطيل Strict Mode في الإنتاج
+  reactStrictMode: true,
+  
+  // تحسين الحزم
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false
+      };
+    }
+    return config;
+  }
+};
+
+module.exports = nextConfig;</code></pre>
+        </div>
+
+        <h2>🌐 إعداد نطاق مخصص (Custom Domain)</h2>
+        <p>بعد النشر، ستحصل على رابط مثل <code>market.vercel.app</code>. يمكنك تغييره لنطاق مخصص.</p>
+
+        <h3>خطوات إعداد النطاق المخصص</h3>
+        <ol class="step-list">
+          <li>
+            <strong>شراء النطاق</strong> من مسجل نطاقات (مثل Namecheap, GoDaddy)
+          </li>
+          <li>
+            <strong>الذهاب إلى Vercel Dashboard</strong> → مشروعك → Settings → Domains
+          </li>
+          <li>
+            <strong>إضافة النطاق</strong> وكتابته (مثلاً: market.com)
+          </li>
+          <li>
+            <strong>تحديث DNS Records</strong> chez مسجل النطاق:
+            <ul>
+              <li>Type: A</li>
+              <li>Name: @</li>
+              <li>Value: 76.76.21.21</li>
+            </ul>
+          </li>
+          <li>
+            <strong>انتظار التفعيل</strong> (قد يستغرق 24-48 ساعة)
+          </li>
+        </ol>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">DNS Records</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code># للنطاق الرئيسي
+Type: A
+Name: @
+Value: 76.76.21.21
+
+# للنطاق الفرعي (www)
+Type: CNAME
+Name: www
+Value: cname.vercel-dns.com</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 تثبيت SSL تلقائي</div>
+          <div class="callout-content">
+            Vercel يوفر شهادة SSL مجانية تلقائياً لكل نطاق. لا حاجة لتثبيت شهادة يدوياً.
+          </div>
+        </div>
+
+        <h2>✅ التحقق بعد النشر</h2>
+        <p>بعد النشر، تأكد من فحص جميع الميزات:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>ال检查</th>
+                <th>الرابط</th>
+                <th>الملاحظات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>الصفحة الرئيسية</strong></td>
+                <td>/</td>
+                <td>تأكد من تحميل الصور والروابط</td>
+              </tr>
+              <tr>
+                <td><strong>صفحة المنتجات</strong></td>
+                <td>/products</td>
+                <td>تأكد من عمل البحث والفلتر</td>
+              </tr>
+              <tr>
+                <td><strong>تفاصيل المنتج</strong></td>
+                <td>/products/[id]</td>
+                <td>تأكد من عرض الصور والمعلومات</td>
+              </tr>
+              <tr>
+                <td><strong>تسجيل الدخول</strong></td>
+                <td>/sign-in</td>
+                <td>تأكد من عمل Clerk</td>
+              </tr>
+              <tr>
+                <td><strong>Admin Dashboard</strong></td>
+                <td>/admin</td>
+                <td>تأكد من حماية المسارات</td>
+              </tr>
+              <tr>
+                <td><strong>API Routes</strong></td>
+                <td>/api/*</td>
+                <td>تأكد من عمل endpoints</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">فحص الأداء</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code># فحص الأداء باستخدام Lighthouse
+npx lighthouse https://your-domain.com --output html
+
+# فحص الروابط المكسورة
+npx broken-link-checker https://your-domain.com
+
+# فحص SEO
+npx seo-checker https://your-domain.com</code></pre>
+        </div>
+
+        <h2>🔄 النشر التلقائي (CI/CD)</h2>
+        <p>Vercel يوفر النشر التلقائي مع كل push إلى GitHub:</p>
+
+        <div class="callout callout-success">
+          <div class="callout-title">✅ ميزة النشر التلقائي</div>
+          <div class="callout-content">
+            عند ربط GitHub مع Vercel، سيتم نشر أي تعديل جديد تلقائياً. يمكنك أيضًا إعداد معاينة قبل الدمج (Preview Deployments).
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">vercel.json (اختياري)</span>
+            <span class="code-block-lang">json</span>
+          </div>
+          <pre><code>{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "regions": ["iad1"],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
+}</code></pre>
+        </div>
+
+        <h2>📊 مراقبة الأداء</h2>
+        <p>بعد النشر، راقب أداء موقعك باستخدام:</p>
+
+        <ul>
+          <li><strong>Vercel Analytics</strong> - مراقبة Web Vitals</li>
+          <li><strong>Vercel Speed Insights</strong> - قياس سرعة التحميل</li>
+          <li><strong>Google Search Console</strong> - مراقبة SEO</li>
+          <li><strong>Uptime Monitoring</strong> - مراقبةوقت التشغيل</li>
+        </ul>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده اتعلمنا:</p>
+        <ul>
+          <li>✅ قائمة ما قبل النشر</li>
+          <li>✅ إعداد متغيرات البيئة</li>
+          <li>✅ نشر المشروع على Vercel</li>
+          <li>✅ إعداد نطاق مخصص</li>
+          <li>✅ التحقق بعد النشر</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 الدرس الجاي</div>
+          <div class="callout-content">
+            في الدرس الجاي هنتعلم عن <strong>تخصيص القالب</strong> - كيف تغير الألوان والشعارات والمحتوى ليتناسب مع علامتك التجارية.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="22-seo-performance.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">SEO والأداء</span>
+        </a>
+        <a href="24-customization.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">تخصيص القالب</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

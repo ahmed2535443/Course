@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 14 - صفحة الدفع (Checkout)</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 14</span>
+        </div>
+        <h1>صفحة الدفع (Checkout)</h1>
+        <div class="meta">
+          <span>⏱️ 50 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 4: المميزات</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>بناء نموذج الشحن مع التحقق</li>
+          <li>إنشاء ملخص الطلب</li>
+          <li>بناء وظيفة إتمام الطلب</li>
+          <li>إنشاء صفحة تأكيد الطلب</li>
+          <li>إضافة معالجة الأخطاء</li>
+        </ul>
+
+        <h2>📁 هيكل ملفات صفحة الدفع</h2>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/(shop)/checkout/</div>
+          <div class="file-tree-item file">├── 📄 page.js                 # صفحة الدفع</div>
+          <div class="file-tree-item file">└── 📁 confirmation/</div>
+          <div class="file-tree-item file">    └── 📄 page.js             # صفحة التأكيد</div>
+          <div class="file-tree-item folder">📁 components/checkout/</div>
+          <div class="file-tree-item file">├── 📄 CheckoutForm.jsx       # نموذج الدفع</div>
+          <div class="file-tree-item file">├── 📄 ShippingForm.jsx       # نموذج الشحن</div>
+          <div class="file-tree-item file">├── 📄 PaymentMethods.jsx     # طرق الدفع</div>
+          <div class="file-tree-item file">└── 📄 OrderSummary.jsx       # ملخص الطلب</div>
+        </div>
+
+        <h2>💳 الخطوة 1: صفحة الدفع الرئيسية</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/checkout/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
+import { useCart } from '@/context/CartContext';
+import CheckoutForm from '@/components/checkout/CheckoutForm';
+import OrderSummary from '@/components/checkout/OrderSummary';
+import Container from '@/components/ui/Container';
+import { useToast } from '@/components/ui/Toast';
+
+export default function CheckoutPage() {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
+  const { isSignedIn, userId } = useAuth();
+  const { items, getTotals, clearCart } = useCart();
+  const { addToast } = useToast();
+  const totals = getTotals();
+
+  const handleSubmit = async (formData) =&gt; {
+    if (items.length === 0) {
+      addToast('السلة فارغة', 'error');
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // إرسال الطلب
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items,
+          shipping: formData,
+          totals,
+          userId: userId || null,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create order');
+      }
+
+      const order = await response.json();
+
+      // تفريغ السلة
+      clearCart();
+
+      // الانتقال لصفحة التأكيد
+      router.push(`/checkout/confirmation?orderId=${order.id}`);
+    } catch (error) {
+      console.error('Error creating order:', error);
+      addToast('حدث خطأ أثناء إتمام الطلب', 'error');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  if (items.length === 0) {
+    return (
+      &lt;Container className="py-16"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;h2 className="text-2xl font-bold text-white mb-4"&gt;
+            السلة فارغة
+          &lt;/h2&gt;
+          &lt;p className="text-gray-400 mb-6"&gt;
+            أضف بعض المنتجات أولاً قبل إتمام الشراء
+          &lt;/p&gt;
+          &lt;button
+            onClick={() =&gt; router.push('/products')}
+            className="px-6 py-3 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 transition-colors"
+          &gt;
+            تصفح المنتجات
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/Container&gt;
+    );
+  }
+
+  return (
+    &lt;Container className="py-8"&gt;
+      {/* Header */}
+      &lt;div className="mb-8"&gt;
+        &lt;h1 className="text-3xl font-bold text-white"&gt;إتمام الشراء&lt;/h1&gt;
+        &lt;p className="text-gray-400 mt-2"&gt;
+          أكمل معلوماتك لإتمام الطلب
+        &lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;div className="grid lg:grid-cols-3 gap-8"&gt;
+        {/* Checkout Form */}
+        &lt;div className="lg:col-span-2"&gt;
+          &lt;CheckoutForm
+            onSubmit={handleSubmit}
+            isProcessing={isProcessing}
+            isSignedIn={isSignedIn}
+          /&gt;
+        &lt;/div&gt;
+
+        {/* Order Summary */}
+        &lt;div className="lg:col-span-1"&gt;
+          &lt;OrderSummary items={items} totals={totals} /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/Container&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📝 الخطوة 2: نموذج الدفع</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/checkout/CheckoutForm.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import ShippingForm from './ShippingForm';
+import PaymentMethods from './PaymentMethods';
+import Button from '@/components/ui/Button';
+import { CreditCard, Truck, Loader2 } from 'lucide-react';
+
+export default function CheckoutForm({ onSubmit, isProcessing, isSignedIn }) {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    // معلومات الشحن
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: 'SA',
+    // معلومات الدفع
+    paymentMethod: 'credit_card',
+    cardNumber: '',
+    cardExpiry: '',
+    cardCvv: '',
+    cardName: '',
+  });
+  const [errors, setErrors] = useState({});
+
+  const updateFormData = (newData) =&gt; {
+    setFormData((prev) =&gt; ({ ...prev, ...newData }));
+    // مسح الخطأ عند التحديث
+    Object.keys(newData).forEach((key) =&gt; {
+      if (errors[key]) {
+        setErrors((prev) =&gt; ({ ...prev, [key]: '' }));
+      }
+    });
+  };
+
+  const validateStep = (currentStep) =&gt; {
+    const newErrors = {};
+
+    if (currentStep === 1) {
+      if (!formData.firstName.trim()) newErrors.firstName = 'الاسم مطلوب';
+      if (!formData.lastName.trim()) newErrors.lastName = 'الاسم العائلة مطلوب';
+      if (!formData.email.trim()) newErrors.email = 'البريد الإلكتروني مطلوب';
+      if (!formData.phone.trim()) newErrors.phone = 'رقم الهاتف مطلوب';
+      if (!formData.address.trim()) newErrors.address = 'العنوان مطلوب';
+      if (!formData.city.trim()) newErrors.city = 'المدينة مطلوبة';
+      if (!formData.zipCode.trim()) newErrors.zipCode = 'الرمز البريدي مطلوب';
+    }
+
+    if (currentStep === 2) {
+      if (formData.paymentMethod === 'credit_card') {
+        if (!formData.cardNumber.trim()) newErrors.cardNumber = 'رقم البطاقة مطلوب';
+        if (!formData.cardExpiry.trim()) newErrors.cardExpiry = 'تاريخ الانتهاء مطلوب';
+        if (!formData.cardCvv.trim()) newErrors.cardCvv = 'رمز CVV مطلوب';
+        if (!formData.cardName.trim()) newErrors.cardName = 'اسم حامل البطاقة مطلوب';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNext = () =&gt; {
+    if (validateStep(step)) {
+      setStep(2);
+    }
+  };
+
+  const handleBack = () =&gt; {
+    setStep(1);
+  };
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    if (validateStep(step)) {
+      onSubmit(formData);
+    }
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      {/* Progress Steps */}
+      &lt;div className="flex items-center justify-center mb-8"&gt;
+        &lt;div className="flex items-center"&gt;
+          {/* Step 1 */}
+          &lt;div className={`flex items-center gap-2 ${step &gt;= 1 ? 'text-indigo-400' : 'text-gray-500'}`}&gt;
+            &lt;div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+              step &gt;= 1 ? 'bg-indigo-500 text-white' : 'bg-gray-700 text-gray-400'
+            }`}&gt;
+              &lt;Truck className="w-5 h-5" /&gt;
+            &lt;/div&gt;
+            &lt;span className="font-medium hidden sm:block"&gt;الشحن&lt;/span&gt;
+          &lt;/div&gt;
+
+          {/* Connector */}
+          &lt;div className={`w-16 h-1 mx-4 ${step &gt;= 2 ? 'bg-indigo-500' : 'bg-gray-700'}`} /&gt;
+
+          {/* Step 2 */}
+          &lt;div className={`flex items-center gap-2 ${step &gt;= 2 ? 'text-indigo-400' : 'text-gray-500'}`}&gt;
+            &lt;div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+              step &gt;= 2 ? 'bg-indigo-500 text-white' : 'bg-gray-700 text-gray-400'
+            }`}&gt;
+              &lt;CreditCard className="w-5 h-5" /&gt;
+            &lt;/div&gt;
+            &lt;span className="font-medium hidden sm:block"&gt;الدفع&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      {/* Form Steps */}
+      &lt;div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-6"&gt;
+        {step === 1 && (
+          &lt;ShippingForm
+            data={formData}
+            onChange={updateFormData}
+            errors={errors}
+          /&gt;
+        )}
+
+        {step === 2 && (
+          &lt;PaymentMethods
+            data={formData}
+            onChange={updateFormData}
+            errors={errors}
+          /&gt;
+        )}
+      &lt;/div&gt;
+
+      {/* Navigation Buttons */}
+      &lt;div className="flex justify-between mt-6"&gt;
+        {step === 2 ? (
+          &lt;Button
+            type="button"
+            variant="secondary"
+            onClick={handleBack}
+            disabled={isProcessing}
+          &gt;
+            السابق
+          &lt;/Button&gt;
+        ) : (
+          &lt;div /&gt;
+        )}
+
+        {step === 1 ? (
+          &lt;Button
+            type="button"
+            onClick={handleNext}
+          &gt;
+            التالي
+          &lt;/Button&gt;
+        ) : (
+          &lt;Button
+            type="submit"
+            disabled={isProcessing}
+            className="min-w-[200px]"
+          &gt;
+            {isProcessing ? (
+              &lt;&gt;
+                &lt;Loader2 className="w-5 h-5 ml-2 animate-spin" /&gt;
+                جاري المعالجة...
+              &lt;/&gt;
+            ) : (
+              'تأكيد الطلب'
+            )}
+          &lt;/Button&gt;
+        )}
+      &lt;/div&gt;
+    &lt;/form&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📦 الخطوة 3: نموذج الشحن</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/checkout/ShippingForm.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Input from '@/components/ui/Input';
+
+export default function ShippingForm({ data, onChange, errors }) {
+  return (
+    &lt;div className="space-y-6"&gt;
+      &lt;h2 className="text-xl font-bold text-white mb-6"&gt;
+        معلومات الشحن
+      &lt;/h2&gt;
+
+      {/* Name Row */}
+      &lt;div className="grid grid-cols-1 sm:grid-cols-2 gap-4"&gt;
+        &lt;Input
+          label="الاسم الأول"
+          value={data.firstName}
+          onChange={(e) =&gt; onChange({ firstName: e.target.value })}
+          error={errors.firstName}
+          placeholder="أحمد"
+        /&gt;
+        &lt;Input
+          label="الاسم الأخير"
+          value={data.lastName}
+          onChange={(e) =&gt; onChange({ lastName: e.target.value })}
+          error={errors.lastName}
+          placeholder="محمد"
+        /&gt;
+      &lt;/div&gt;
+
+      {/* Contact Row */}
+      &lt;div className="grid grid-cols-1 sm:grid-cols-2 gap-4"&gt;
+        &lt;Input
+          label="البريد الإلكتروني"
+          type="email"
+          value={data.email}
+          onChange={(e) =&gt; onChange({ email: e.target.value })}
+          error={errors.email}
+          placeholder="ahmed@example.com"
+        /&gt;
+        &lt;Input
+          label="رقم الهاتف"
+          type="tel"
+          value={data.phone}
+          onChange={(e) =&gt; onChange({ phone: e.target.value })}
+          error={errors.phone}
+          placeholder="+966 55 123 4567"
+        /&gt;
+      &lt;/div&gt;
+
+      {/* Address */}
+      &lt;Input
+        label="العنوان"
+        value={data.address}
+        onChange={(e) =&gt; onChange({ address: e.target.value })}
+        error={errors.address}
+        placeholder="حي المعهد، شارع الملك فهد"
+      /&gt;
+
+      {/* City, State, Zip */}
+      &lt;div className="grid grid-cols-1 sm:grid-cols-3 gap-4"&gt;
+        &lt;Input
+          label="المدينة"
+          value={data.city}
+          onChange={(e) =&gt; onChange({ city: e.target.value })}
+          error={errors.city}
+          placeholder="الرياض"
+        /&gt;
+        &lt;Input
+          label="المنطقة"
+          value={data.state}
+          onChange={(e) =&gt; onChange({ state: e.target.value })}
+          placeholder="منطقة الرياض"
+        /&gt;
+        &lt;Input
+          label="الرمز البريدي"
+          value={data.zipCode}
+          onChange={(e) =&gt; onChange({ zipCode: e.target.value })}
+          error={errors.zipCode}
+          placeholder="12345"
+        /&gt;
+      &lt;/div&gt;
+
+      {/* Country */}
+      &lt;div&gt;
+        &lt;label className="block text-sm font-medium text-gray-200 mb-2"&gt;
+          الدولة
+        &lt;/label&gt;
+        &lt;select
+          value={data.country}
+          onChange={(e) =&gt; onChange({ country: e.target.value })}
+          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300"
+        &gt;
+          &lt;option value="SA"&gt;المملكة العربية السعودية&lt;/option&gt;
+          &lt;option value="AE"&gt;الإمارات العربية المتحدة&lt;/option&gt;
+          &lt;option value="EG"&gt;مصر&lt;/option&gt;
+          &lt;option value="KW"&gt;الكويت&lt;/option&gt;
+          &lt;option value="BH"&gt;البحرين&lt;/option&gt;
+          &lt;option value="QA"&gt;قطر&lt;/option&gt;
+          &lt;option value="OM"&gt;عُمان&lt;/option&gt;
+          &lt;option value="JO"&gt;الأردن&lt;/option&gt;
+        &lt;/select&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>💳 الخطوة 4: طرق الدفع</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/checkout/PaymentMethods.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import { CreditCard, Wallet, Banknote } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import Input from '@/components/ui/Input';
+
+const paymentMethods = [
+  {
+    id: 'credit_card',
+    label: 'بطاقة ائتمان',
+    icon: CreditCard,
+    description: 'Visa, MasterCard, Mada',
+  },
+  {
+    id: 'apple_pay',
+    label: 'Apple Pay',
+    icon: Wallet,
+    description: 'ادفع بسهولة مع Apple Pay',
+  },
+  {
+    id: 'cod',
+    label: 'الدفع عند الاستلام',
+    icon: Banknote,
+    description: 'ادفع نقداً عند الاستلام',
+  },
+];
+
+export default function PaymentMethods({ data, onChange, errors }) {
+  return (
+    &lt;div className="space-y-6"&gt;
+      &lt;h2 className="text-xl font-bold text-white mb-6"&gt;
+        طريقة الدفع
+      &lt;/h2&gt;
+
+      {/* Payment Options */}
+      &lt;div className="space-y-3"&gt;
+        {paymentMethods.map((method) =&gt; (
+          &lt;button
+            key={method.id}
+            type="button"
+            onClick={() =&gt; onChange({ paymentMethod: method.id })}
+            className={cn(
+              "w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-200",
+              data.paymentMethod === method.id
+                ? "bg-indigo-500/20 border-indigo-500"
+                : "bg-white/5 border-white/10 hover:bg-white/10"
+            )}
+          &gt;
+            &lt;div className={cn(
+              "w-12 h-12 rounded-lg flex items-center justify-center",
+              data.paymentMethod === method.id
+                ? "bg-indigo-500/30"
+                : "bg-white/10"
+            )}&gt;
+              &lt;method.icon className={cn(
+                "w-6 h-6",
+                data.paymentMethod === method.id
+                  ? "text-indigo-400"
+                  : "text-gray-400"
+              )} /&gt;
+            &lt;/div&gt;
+            &lt;div className="text-left flex-1"&gt;
+              &lt;p className={cn(
+                "font-medium",
+                data.paymentMethod === method.id
+                  ? "text-white"
+                  : "text-gray-300"
+              )}&gt;
+                {method.label}
+              &lt;/p&gt;
+              &lt;p className="text-gray-400 text-sm"&gt;{method.description}&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div className={cn(
+              "w-5 h-5 rounded-full border-2 flex items-center justify-center",
+              data.paymentMethod === method.id
+                ? "border-indigo-500 bg-indigo-500"
+                : "border-gray-500"
+            )}&gt;
+              {data.paymentMethod === method.id && (
+                &lt;div className="w-2 h-2 bg-white rounded-full" /&gt;
+              )}
+            &lt;/div&gt;
+          &lt;/button&gt;
+        ))}
+      &lt;/div&gt;
+
+      {/* Credit Card Form */}
+      {data.paymentMethod === 'credit_card' && (
+        &lt;div className="mt-6 p-4 bg-white/5 rounded-xl border border-white/10 space-y-4"&gt;
+          &lt;Input
+            label="رقم البطاقة"
+            value={data.cardNumber}
+            onChange={(e) =&gt; onChange({ cardNumber: e.target.value })}
+            error={errors.cardNumber}
+            placeholder="1234 5678 9012 3456"
+            maxLength={19}
+          /&gt;
+
+          &lt;div className="grid grid-cols-2 gap-4"&gt;
+            &lt;Input
+              label="تاريخ الانتهاء"
+              value={data.cardExpiry}
+              onChange={(e) =&gt; onChange({ cardExpiry: e.target.value })}
+              error={errors.cardExpiry}
+              placeholder="MM/YY"
+              maxLength={5}
+            /&gt;
+            &lt;Input
+              label="رمز CVV"
+              value={data.cardCvv}
+              onChange={(e) =&gt; onChange({ cardCvv: e.target.value })}
+              error={errors.cardCvv}
+              placeholder="123"
+              maxLength={4}
+              type="password"
+            /&gt;
+          &lt;/div&gt;
+
+          &lt;Input
+            label="الاسم على البطاقة"
+            value={data.cardName}
+            onChange={(e) =&gt; onChange({ cardName: e.target.value })}
+            error={errors.cardName}
+            placeholder="AHMED MOHAMMED"
+          /&gt;
+        &lt;/div&gt;
+      )}
+
+      {/* Security Note */}
+      &lt;div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl"&gt;
+        &lt;p className="text-green-400 text-sm text-center"&gt;
+          🔒 جميع المعاملات مشفرة وآمنة. لا نخزّن بيانات بطاقتك.
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📋 الخطوة 5: ملخص الطلب</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/checkout/OrderSummary.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Image from 'next/image';
+import Card from '@/components/ui/Card';
+
+export default function OrderSummary({ items, totals }) {
+  return (
+    &lt;Card variant="glass" className="sticky top-24"&gt;
+      &lt;h2 className="text-xl font-bold text-white mb-6"&gt;
+        ملخص الطلب
+      &lt;/h2&gt;
+
+      {/* Items */}
+      &lt;div className="space-y-4 mb-6 max-h-64 overflow-y-auto"&gt;
+        {items.map((item) =&gt; (
+          &lt;div key={`${item.id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-3"&gt;
+            &lt;div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0"&gt;
+              &lt;Image
+                src={item.image}
+                alt={item.name}
+                fill
+                className="object-cover"
+              /&gt;
+              &lt;div className="absolute top-0 right-0 w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center"&gt;
+                &lt;span className="text-white text-xs"&gt;{item.quantity}&lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div className="flex-1 min-w-0"&gt;
+              &lt;p className="text-white text-sm font-medium truncate"&gt;
+                {item.name}
+              &lt;/p&gt;
+              &lt;p className="text-gray-400 text-xs"&gt;
+                {item.selectedSize && `مقاس: ${item.selectedSize}`}
+                {item.selectedSize && item.selectedColor && ' | '}
+                {item.selectedColor && `لون: ${item.selectedColor}`}
+              &lt;/p&gt;
+              &lt;p className="text-white text-sm mt-1"&gt;
+                ${(item.price * item.quantity).toFixed(2)}
+              &lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+
+      {/* Totals */}
+      &lt;div className="border-t border-white/10 pt-4 space-y-3"&gt;
+        &lt;div className="flex justify-between text-gray-300 text-sm"&gt;
+          &lt;span&gt;المجموع الفرعي ({totals.itemCount} منتج)&lt;/span&gt;
+          &lt;span&gt;${totals.subtotal}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div className="flex justify-between text-gray-300 text-sm"&gt;
+          &lt;span&gt;الشحن&lt;/span&gt;
+          &lt;span&gt;
+            {totals.shipping === '0.00' ? (
+              &lt;span className="text-green-400"&gt;مجاني&lt;/span&gt;
+            ) : (
+              `$${totals.shipping}`
+            )}
+          &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div className="flex justify-between text-gray-300 text-sm"&gt;
+          &lt;span&gt;الضرائب (10%)&lt;/span&gt;
+          &lt;span&gt;${totals.tax}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div className="border-t border-white/10 pt-3"&gt;
+          &lt;div className="flex justify-between text-white font-bold text-lg"&gt;
+            &lt;span&gt;الإجمالي&lt;/span&gt;
+            &lt;span&gt;${totals.total}&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/Card&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>✅ الخطوة 6: صفحة تأكيد الطلب</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/checkout/confirmation/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { CheckCircle, Package, Truck, CreditCard, ArrowLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Container from '@/components/ui/Container';
+
+export default function OrderConfirmationPage() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('orderId');
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    if (orderId) {
+      fetchOrder();
+    }
+  }, [orderId]);
+
+  const fetchOrder = async () =&gt; {
+    try {
+      const response = await fetch(`/api/orders/${orderId}`);
+      const data = await response.json();
+      setOrder(data);
+    } catch (error) {
+      console.error('Error fetching order:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      &lt;Container className="py-16"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" /&gt;
+          &lt;p className="mt-4 text-gray-400"&gt;جاري تحميل تفاصيل الطلب...&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/Container&gt;
+    );
+  }
+
+  if (!order) {
+    return (
+      &lt;Container className="py-16"&gt;
+        &lt;div className="text-center"&gt;
+          &lt;h2 className="text-2xl font-bold text-white mb-4"&gt;
+            الطلب غير موجود
+          &lt;/h2&gt;
+          &lt;Link href="/"&gt;
+            &lt;Button&gt;العودة للرئيسية&lt;/Button&gt;
+          &lt;/Link&gt;
+        &lt;/div&gt;
+      &lt;/Container&gt;
+    );
+  }
+
+  return (
+    &lt;Container className="py-16"&gt;
+      &lt;div className="max-w-2xl mx-auto text-center"&gt;
+        {/* Success Animation */}
+        &lt;motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 15 }}
+          className="mb-8"
+        &gt;
+          &lt;div className="w-24 h-24 mx-auto rounded-full bg-green-500/20 flex items-center justify-center"&gt;
+            &lt;CheckCircle className="w-12 h-12 text-green-400" /&gt;
+          &lt;/div&gt;
+        &lt;/motion.div&gt;
+
+        {/* Title */}
+        &lt;motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        &gt;
+          &lt;h1 className="text-3xl font-bold text-white mb-4"&gt;
+            تم تأكيد طلبك!
+          &lt;/h1&gt;
+          &lt;p className="text-gray-400 mb-2"&gt;
+            شكراً لك! تم استلام طلبك بنجاح.
+          &lt;/p&gt;
+          &lt;p className="text-indigo-400 font-mono"&gt;
+            رقم الطلب: #{order.id}
+          &lt;/p&gt;
+        &lt;/motion.div&gt;
+
+        {/* Order Details */}
+        &lt;motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-8"
+        &gt;
+          &lt;Card variant="glass"&gt;
+            {/* Status Timeline */}
+            &lt;div className="flex items-center justify-between mb-8"&gt;
+              &lt;div className="flex flex-col items-center"&gt;
+                &lt;div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center mb-2"&gt;
+                  &lt;Package className="w-5 h-5 text-white" /&gt;
+                &lt;/div&gt;
+                &lt;span className="text-green-400 text-sm"&gt;تم الاستلام&lt;/span&gt;
+              &lt;/div&gt;
+              &lt;div className="flex-1 h-1 bg-gray-700 mx-4" /&gt;
+              &lt;div className="flex flex-col items-center"&gt;
+                &lt;div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mb-2"&gt;
+                  &lt;Truck className="w-5 h-5 text-gray-400" /&gt;
+                &lt;/div&gt;
+                &lt;span className="text-gray-400 text-sm"&gt;قيد الشحن&lt;/span&gt;
+              &lt;/div&gt;
+              &lt;div className="flex-1 h-1 bg-gray-700 mx-4" /&gt;
+              &lt;div className="flex flex-col items-center"&gt;
+                &lt;div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mb-2"&gt;
+                  &lt;CheckCircle className="w-5 h-5 text-gray-400" /&gt;
+                &lt;/div&gt;
+                &lt;span className="text-gray-400 text-sm"&gt;تم التسليم&lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            {/* Order Info */}
+            &lt;div className="text-left space-y-2"&gt;
+              &lt;p className="text-gray-300"&gt;
+                &lt;span className="text-gray-400"&gt;التاريخ:&lt;/span&gt;{' '}
+                {new Date(order.createdAt).toLocaleDateString('ar-SA')}
+              &lt;/p&gt;
+              &lt;p className="text-gray-300"&gt;
+                &lt;span className="text-gray-400"&gt;الإجمالي:&lt;/span&gt;{' '}
+                ${order.total.toFixed(2)}
+              &lt;/p&gt;
+              &lt;p className="text-gray-300"&gt;
+                &lt;span className="text-gray-400"&gt;طريقة الدفع:&lt;/span&gt;{' '}
+                {order.paymentMethod === 'credit_card' && 'بطاقة ائتمان'}
+                {order.paymentMethod === 'apple_pay' && 'Apple Pay'}
+                {order.paymentMethod === 'cod' && 'الدفع عند الاستلام'}
+              &lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/Card&gt;
+        &lt;/motion.div&gt;
+
+        {/* Actions */}
+        &lt;motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
+        &gt;
+          &lt;Link href="/products"&gt;
+            &lt;Button variant="secondary" className="group"&gt;
+              &lt;ArrowLeft className="w-5 h-5 ml-2 group-hover:-translate-x-1 transition-transform" /&gt;
+              متابعة التسوق
+            &lt;/Button&gt;
+          &lt;/Link&gt;
+          &lt;Link href="/orders"&gt;
+            &lt;Button&gt;تتبع طلباتي&lt;/Button&gt;
+          &lt;/Link&gt;
+        &lt;/motion.div&gt;
+
+        {/* Email Notice */}
+        &lt;p className="mt-8 text-gray-400 text-sm"&gt;
+          سيتم إرسال تفاصيل الطلب إلى بريدك الإلكتروني.
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/Container&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔗 الخطوة 7: API Route للطلبات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/api/orders/route.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+
+// POST: إنشاء طلب جديد
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const { items, shipping, totals, userId } = body;
+
+    // إنشاء الطلب
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .insert([
+        {
+          user_id: userId,
+          status: 'pending',
+          shipping_address: shipping,
+          payment_method: shipping.paymentMethod,
+          subtotal: parseFloat(totals.subtotal),
+          shipping_cost: parseFloat(totals.shipping),
+          tax: parseFloat(totals.tax),
+          total: parseFloat(totals.total),
+        },
+      ])
+      .select()
+      .single();
+
+    if (orderError) throw orderError;
+
+    // إضافة عناصر الطلب
+    const orderItems = items.map((item) =&gt; ({
+      order_id: order.id,
+      product_id: item.id,
+      quantity: item.quantity,
+      price: item.price,
+      selected_size: item.selectedSize,
+      selected_color: item.selectedColor,
+    }));
+
+    const { error: itemsError } = await supabase
+      .from('order_items')
+      .insert(orderItems);
+
+    if (itemsError) throw itemsError;
+
+    return NextResponse.json(order, { status: 201 });
+  } catch (error) {
+    console.error('Error creating order:', error);
+    return NextResponse.json(
+      { error: 'Failed to create order' },
+      { status: 500 }
+    );
+  }
+}
+
+// GET: جلب الطلبات
+export async function GET(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    let query = supabase
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (userId) {
+      query = query.eq('user_id', userId);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch orders' },
+      { status: 500 }
+    );
+  }
+}</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 تحسينات إضافية</div>
+          <div class="callout-content">
+            <ul>
+              <li>أضف Stripe أو PayPal للدفع الفعلي</li>
+              <li>أرسل إيميل تأكيد بعد إتمام الطلب</li>
+              <li>أضف نظام كوبونات الخصم</li>
+              <li>أضف حقل ملاحظات للطلب</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده بنينا:</p>
+        <ul>
+          <li>✅ صفحة الدفع الرئيسية</li>
+          <li>✅ نموذج الشحن مع التحقق</li>
+          <li>✅ طرق الدفع المتعددة</li>
+          <li>✅ ملخص الطلب</li>
+          <li>✅ صفحة تأكيد الطلب</li>
+          <li>✅ API Route لإنشاء الطلبات</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 مبروك!</div>
+          <div class="callout-content">
+            <p>خلّصنا الوحدة الرابعة! عندك الآن نظام سلة مشتريات ودفع كامل. في الدروس الجاية هنبني واجهة Admin ونحسّن الأداء.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="13-cart-system.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">نظام السلة</span>
+        </a>
+        <a href="../index.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">الدروس التالية →</span>
+          <span class="nav-btn-title">الوحدة الخامسة: Admin</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

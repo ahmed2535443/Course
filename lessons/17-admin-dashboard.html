@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 17 - لوحة تحكم Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 17</span>
+        </div>
+        <h1>لوحة تحكم Admin</h1>
+        <div class="meta">
+          <span>⏱️ 70 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 5: Admin</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>بناء تخطيط لوحة التحكم (Dashboard Layout)</li>
+          <li>إنشاء بطاقات الإحصائيات (Statistics Cards)</li>
+          <li>عرض الطلبات الأخيرة في جدول</li>
+          <li>جلب البيانات من Supabase</li>
+          <li>إنشاء روابط التنقل في الـ Sidebar</li>
+        </ul>
+
+        <h2>📁 هيكل ملفات Admin Dashboard</h2>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/(admin)/</div>
+          <div class="file-tree-item file">├── 📄 layout.js               # تخطيط Admin</div>
+          <div class="file-tree-item file">├── 📄 page.js                 # الصفحة الرئيسية</div>
+          <div class="file-tree-item file">├── 📁 products/</div>
+          <div class="file-tree-item file">│   └── 📄 page.js             # إدارة المنتجات</div>
+          <div class="file-tree-item file">├── 📁 orders/</div>
+          <div class="file-tree-item file">│   └── 📄 page.js             # إدارة الطلبات</div>
+          <div class="file-tree-item file">└── 📁 settings/</div>
+          <div class="file-tree-item file">    └── 📄 page.js             # الإعدادات</div>
+          <div class="file-tree-item folder">📁 components/admin/</div>
+          <div class="file-tree-item file">├── 📄 Sidebar.jsx            # الشريط الجانبي</div>
+          <div class="file-tree-item file">├── 📄 AdminHeader.jsx        # رأس الصفحة</div>
+          <div class="file-tree-item file">├── 📄 StatsCard.jsx          # بطاقة الإحصائيات</div>
+          <div class="file-tree-item file">└── 📄 RecentOrders.jsx       # الطلبات الأخيرة</div>
+        </div>
+
+        <h2>🔒 الخطوة 1: حماية مسارات Admin</h2>
+
+        <p>أولاً محتاجين نحمي مسارات Admin حتى لا يصل إليها أي شخص غير مصرح له. نستخدم Clerk middleware للتحقق من صلاحيات المستخدم:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">middleware.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+
+// تحديد المسارات المحمية
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/products(.*)',
+  '/categories(.*)',
+  '/api(.*)',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+]);
+
+// مسارات Admin (تحتاج صلاحيات admin)
+const isAdminRoute = createRouteMatcher([
+  '/admin(.*)',
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  // إذا المسار عام، اسمح بالدخول
+  if (isPublicRoute(req)) {
+    return;
+  }
+
+  // إذا المسار خاص بـ admin
+  if (isAdminRoute(req)) {
+    const { userId } = await auth();
+    
+    // التحقق من تسجيل الدخول
+    if (!userId) {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: '/sign-in',
+        },
+      });
+    }
+
+    // التحقق من صلاحيات admin
+    // يمكنك استخدام Clerk metadata أو قاعدة بيانات Supabase
+    const user = await auth.getUser(userId);
+    if (!user?.publicMetadata?.isAdmin) {
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: '/',
+        },
+      });
+    }
+  }
+
+  // لبقية المسارات، تحقق من تسجيل الدخول
+  const { userId } = await auth();
+  if (!userId) {
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: '/sign-in',
+      },
+    });
+  }
+});
+
+export const config = {
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+  ],
+};</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ مهمة جداً</div>
+          <div class="callout-content">
+            تأكد من حماية مسارات Admin في كل مكان. لا تعتمد فقط على إخفاء القوائم - يجب التحقق من الصلاحيات على مستوى الـ API والـ Middleware.
+          </div>
+        </div>
+
+        <h2>📐 الخطوة 2: تخطيط Admin Dashboard</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(admin)/layout.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useAuth } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Sidebar from '@/components/admin/Sidebar';
+import AdminHeader from '@/components/admin/AdminHeader';
+import { Loader2 } from 'lucide-react';
+
+export default function AdminLayout({ children }) {
+  const { isLoaded, isSignedIn, userId } = useAuth();
+  const router = useRouter();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isLoaded) {
+      checkAdminStatus();
+    }
+  }, [isLoaded, userId]);
+
+  const checkAdminStatus = async () => {
+    try {
+      if (!isSignedIn) {
+        router.push('/sign-in');
+        return;
+      }
+
+      // التحقق من صلاحيات admin
+      const response = await fetch('/api/admin/check', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        setIsAdmin(true);
+      } else {
+        router.push('/');
+      }
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      router.push('/');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isLoaded || loading) {
+    return (
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-indigo-500 animate-spin mx-auto mb-4" />
+          <p className="text-gray-400">جاري التحقق من الصلاحيات...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-950 flex">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <AdminHeader />
+
+        {/* Page Content */}
+        <main className="flex-1 p-6 overflow-auto">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}</code></pre>
+        </div>
+
+        <h2>📊 الخطوة 3: بطاقات الإحصائيات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/admin/StatsCard.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/cn';
+
+const colorMap = {
+  indigo: {
+    bg: 'bg-indigo-500/20',
+    text: 'text-indigo-400',
+    border: 'border-indigo-500/30',
+  },
+  green: {
+    bg: 'bg-green-500/20',
+    text: 'text-green-400',
+    border: 'border-green-500/30',
+  },
+  yellow: {
+    bg: 'bg-yellow-500/20',
+    text: 'text-yellow-400',
+    border: 'border-yellow-500/30',
+  },
+  red: {
+    bg: 'bg-red-500/20',
+    text: 'text-red-400',
+    border: 'border-red-500/30',
+  },
+  purple: {
+    bg: 'bg-purple-500/20',
+    text: 'text-purple-400',
+    border: 'border-purple-500/30',
+  },
+};
+
+export default function StatsCard({
+  title,
+  value,
+  change,
+  changeType = 'increase',
+  icon: Icon,
+  color = 'indigo',
+  loading = false,
+}) {
+  const colors = colorMap[color] || colorMap.indigo;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn(
+        "bg-white/5 backdrop-blur-lg rounded-2xl border p-6",
+        colors.border
+      )}
+    >
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-gray-400 text-sm mb-1">{title}</p>
+          {loading ? (
+            <div className="w-24 h-8 bg-gray-800 rounded animate-pulse" />
+          ) : (
+            <p className="text-3xl font-bold text-white">{value}</p>
+          )}
+          {!loading && change !== undefined && (
+            <p className={cn(
+              "text-sm mt-2",
+              changeType === 'increase' ? 'text-green-400' : 'text-red-400'
+            )}>
+              {changeType === 'increase' ? '↑' : '↓'} {change}%
+              <span className="text-gray-500 mr-2">من الشهر الماضي</span>
+            </p>
+          )}
+        </div>
+        <div className={cn(
+          "w-14 h-14 rounded-xl flex items-center justify-center",
+          colors.bg
+        )}>
+          {loading ? (
+            <div className="w-8 h-8 bg-gray-700 rounded animate-pulse" />
+          ) : (
+            <Icon className={cn("w-7 h-7", colors.text)} />
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}</code></pre>
+        </div>
+
+        <h2>📋 الخطوة 4: الصفحة الرئيسية للـ Dashboard</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(admin)/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useEffect, useState } from 'react';
+import {
+  Package,
+  ShoppingCart,
+  DollarSign,
+  Users,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+} from 'lucide-react';
+import StatsCard from '@/components/admin/StatsCard';
+import RecentOrders from '@/components/admin/RecentOrders';
+import Card from '@/components/ui/Card';
+
+export default function AdminDashboard() {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/admin/stats');
+      const data = await response.json();
+      setStats(data);
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const statsCards = [
+    {
+      title: 'إجمالي المنتجات',
+      value: stats?.totalProducts || 0,
+      change: 12,
+      changeType: 'increase',
+      icon: Package,
+      color: 'indigo',
+    },
+    {
+      title: 'إجمالي الطلبات',
+      value: stats?.totalOrders || 0,
+      change: 8,
+      changeType: 'increase',
+      icon: ShoppingCart,
+      color: 'green',
+    },
+    {
+      title: 'الإيرادات',
+      value: `$${(stats?.totalRevenue || 0).toLocaleString()}`,
+      change: 15,
+      changeType: 'increase',
+      icon: DollarSign,
+      color: 'yellow',
+    },
+    {
+      title: 'عدد المستخدمين',
+      value: stats?.totalUsers || 0,
+      change: 5,
+      changeType: 'increase',
+      icon: Users,
+      color: 'purple',
+    },
+  ];
+
+  return (
+    <div className="space-y-8">
+      {/* Page Header */}
+      <div>
+        <h1 className="text-3xl font-bold text-white">لوحة التحكم</h1>
+        <p className="text-gray-400 mt-2">
+          مرحباً بك في لوحة تحكم المتجر
+        </p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {statsCards.map((card, index) => (
+          <StatsCard
+            key={index}
+            {...card}
+            loading={loading}
+          />
+        ))}
+      </div>
+
+      {/* Charts and Recent Orders */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Sales Chart Placeholder */}
+        <div className="lg:col-span-2">
+          <Card variant="glass">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-white">المبيعات</h2>
+              <select className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="7">آخر 7 أيام</option>
+                <option value="30">آخر 30 يوم</option>
+                <option value="90">آخر 3 أشهر</option>
+              </select>
+            </div>
+            
+            {/* Chart Placeholder */}
+            <div className="h-64 flex items-center justify-center bg-white/5 rounded-xl">
+              <div className="text-center">
+                <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-2" />
+                <p className="text-gray-500">رسم بياني للمبيعات</p>
+                <p className="text-gray-600 text-sm">
+                  يمكنك إضافة مكتبة Recharts أو Chart.js
+                </p>
+              </div>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="grid grid-cols-3 gap-4 mt-6">
+              <div className="text-center p-4 bg-white/5 rounded-xl">
+                <p className="text-gray-400 text-sm">اليوم</p>
+                <p className="text-white font-bold text-lg">$1,234</p>
+                <p className="text-green-400 text-sm flex items-center justify-center gap-1">
+                  <ArrowUpRight className="w-4 h-4" />
+                  +12%
+                </p>
+              </div>
+              <div className="text-center p-4 bg-white/5 rounded-xl">
+                <p className="text-gray-400 text-sm">هذا الأسبوع</p>
+                <p className="text-white font-bold text-lg">$8,456</p>
+                <p className="text-green-400 text-sm flex items-center justify-center gap-1">
+                  <ArrowUpRight className="w-4 h-4" />
+                  +8%
+                </p>
+              </div>
+              <div className="text-center p-4 bg-white/5 rounded-xl">
+                <p className="text-gray-400 text-sm">هذا الشهر</p>
+                <p className="text-white font-bold text-lg">$32,891</p>
+                <p className="text-red-400 text-sm flex items-center justify-center gap-1">
+                  <ArrowDownRight className="w-4 h-4" />
+                  -3%
+                </p>
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        {/* Recent Orders */}
+        <div className="lg:col-span-1">
+          <RecentOrders loading={loading} />
+        </div>
+      </div>
+
+      {/* Top Products */}
+      <Card variant="glass">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-white">المنتجات الأكثر مبيعاً</h2>
+          <a href="/admin/products" className="text-indigo-400 hover:text-indigo-300 text-sm">
+            عرض الكل
+          </a>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/10">
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">المنتج</th>
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">المبيعات</th>
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">الإيراد</th>
+                <th className="text-left py-3 px-4 text-gray-400 font-medium">الحالة</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { name: 'سماعة AirPods Pro', sales: 156, revenue: '$23,400', status: 'active' },
+                { name: 'ساعة Apple Watch', sales: 98, revenue: '$19,600', status: 'active' },
+                { name: 'كيبورد ميكانيكي', sales: 87, revenue: '$8,700', status: 'active' },
+                { name: 'ماوس لاسلكي', sales: 65, revenue: '$3,250', status: 'low' },
+              ].map((product, index) => (
+                <tr key={index} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                  <td className="py-4 px-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-gray-800 flex items-center justify-center">
+                        <Package className="w-5 h-5 text-gray-400" />
+                      </div>
+                      <span className="text-white">{product.name}</span>
+                    </div>
+                  </td>
+                  <td className="py-4 px-4 text-gray-300">{product.sales}</td>
+                  <td className="py-4 px-4 text-white font-medium">{product.revenue}</td>
+                  <td className="py-4 px-4">
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      product.status === 'active' 
+                        ? 'bg-green-500/20 text-green-400' 
+                        : 'bg-yellow-500/20 text-yellow-400'
+                    }`}>
+                      {product.status === 'active' ? 'متوفر' : 'مخزون منخفض'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}</code></pre>
+        </div>
+
+        <h2>📑 الخطوة 5: الطلبات الأخيرة</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/admin/RecentOrders.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import Link from 'next/link';
+import { Eye, Clock, CheckCircle, Truck, Package } from 'lucide-react';
+import Card from '@/components/ui/Card';
+
+const statusConfig = {
+  pending: {
+    label: 'قيد الانتظار',
+    color: 'text-yellow-400',
+    bgColor: 'bg-yellow-500/20',
+    icon: Clock,
+  },
+  confirmed: {
+    label: 'تم التأكيد',
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-500/20',
+    icon: CheckCircle,
+  },
+  processing: {
+    label: 'قيد المعالجة',
+    color: 'text-indigo-400',
+    bgColor: 'bg-indigo-500/20',
+    icon: Package,
+  },
+  shipped: {
+    label: 'تم الشحن',
+    color: 'text-purple-400',
+    bgColor: 'bg-purple-500/20',
+    icon: Truck,
+  },
+  delivered: {
+    label: 'تم التسليم',
+    color: 'text-green-400',
+    bgColor: 'bg-green-500/20',
+    icon: CheckCircle,
+  },
+};
+
+export default function RecentOrders({ loading = false }) {
+  const orders = [
+    {
+      id: 'ORD-001',
+      customer: 'أحمد محمد',
+      total: 299.99,
+      status: 'pending',
+      date: '2024-01-15',
+    },
+    {
+      id: 'ORD-002',
+      customer: 'سارة علي',
+      total: 149.50,
+      status: 'confirmed',
+      date: '2024-01-15',
+    },
+    {
+      id: 'ORD-003',
+      customer: 'محمد خالد',
+      total: 599.00,
+      status: 'shipped',
+      date: '2024-01-14',
+    },
+    {
+      id: 'ORD-004',
+      customer: 'نورة سعيد',
+      total: 89.99,
+      status: 'delivered',
+      date: '2024-01-14',
+    },
+    {
+      id: 'ORD-005',
+      customer: 'عبدالله أحمد',
+      total: 1250.00,
+      status: 'processing',
+      date: '2024-01-13',
+    },
+  ];
+
+  return (
+    <Card variant="glass">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-white">الطلبات الأخيرة</h2>
+        <Link href="/admin/orders" className="text-indigo-400 hover:text-indigo-300 text-sm">
+          عرض الكل
+        </Link>
+      </div>
+
+      <div className="space-y-4">
+        {loading ? (
+          // Loading Skeleton
+          [...Array(5)].map((_, i) => (
+            <div key={i} className="flex items-center gap-4 animate-pulse">
+              <div className="w-10 h-10 rounded-lg bg-gray-800" />
+              <div className="flex-1">
+                <div className="w-24 h-4 bg-gray-800 rounded mb-2" />
+                <div className="w-16 h-3 bg-gray-800 rounded" />
+              </div>
+              <div className="w-16 h-6 bg-gray-800 rounded" />
+            </div>
+          ))
+        ) : (
+          orders.map((order) => {
+            const statusInfo = statusConfig[order.status];
+            const StatusIcon = statusInfo.icon;
+
+            return (
+              <div
+                key={order.id}
+                className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors"
+              >
+                <div className={`w-10 h-10 rounded-lg ${statusInfo.bgColor} flex items-center justify-center`}>
+                  <StatusIcon className={`w-5 h-5 ${statusInfo.color}`} />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-medium truncate">{order.customer}</p>
+                  <p className="text-gray-400 text-sm">{order.id}</p>
+                </div>
+
+                <div className="text-left">
+                  <p className="text-white font-medium">${order.total.toFixed(2)}</p>
+                  <span className={`text-xs ${statusInfo.color}`}>
+                    {statusInfo.label}
+                  </span>
+                </div>
+
+                <Link
+                  href={`/admin/orders/${order.id}`}
+                  className="p-2 text-gray-400 hover:text-white transition-colors"
+                >
+                  <Eye className="w-5 h-5" />
+                </Link>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </Card>
+  );
+}</code></pre>
+        </div>
+
+        <h2>🧭 الخطوة 6: الشريط الجانبي (Sidebar)</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/admin/Sidebar.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Users,
+  Settings,
+  LogOut,
+  ChevronLeft,
+  Store,
+} from 'lucide-react';
+import { cn } from '@/lib/cn';
+
+const menuItems = [
+  {
+    label: 'لوحة التحكم',
+    href: '/admin',
+    icon: LayoutDashboard,
+  },
+  {
+    label: 'المنتجات',
+    href: '/admin/products',
+    icon: Package,
+  },
+  {
+    label: 'الطلبات',
+    href: '/admin/orders',
+    icon: ShoppingCart,
+  },
+  {
+    label: 'المستخدمين',
+    href: '/admin/users',
+    icon: Users,
+  },
+  {
+    label: 'الإعدادات',
+    href: '/admin/settings',
+    icon: Settings,
+  },
+];
+
+export default function Sidebar() {
+  const pathname = usePathname();
+
+  return (
+    <aside className="w-64 bg-gray-900 border-r border-white/10 flex flex-col">
+      {/* Logo */}
+      <div className="p-6 border-b border-white/10">
+        <Link href="/admin" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+            <Store className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <p className="text-white font-bold">Market</p>
+            <p className="text-gray-400 text-xs">Admin Panel</p>
+          </div>
+        </Link>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2">
+        {menuItems.map((item) => {
+          const isActive = pathname === item.href || 
+            (item.href !== '/admin' && pathname.startsWith(item.href));
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200",
+                isActive
+                  ? "bg-indigo-500/20 text-indigo-400"
+                  : "text-gray-400 hover:bg-white/5 hover:text-white"
+              )}
+            >
+              <item.icon className="w-5 h-5" />
+              <span className="flex-1">{item.label}</span>
+              {isActive && (
+                <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Footer */}
+      <div className="p-4 border-t border-white/10">
+        <Link
+          href="/"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-white/5 hover:text-white transition-all"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          <span>العودة للمتجر</span>
+        </Link>
+        <button
+          onClick={() => {
+            // Clerk signOut
+          }}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all w-full mt-2"
+        >
+          <LogOut className="w-5 h-5" />
+          <span>تسجيل الخروج</span>
+        </button>
+      </div>
+    </aside>
+  );
+}</code></pre>
+        </div>
+
+        <h2>👔 الخطوة 7: رأس صفحة Admin</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/admin/AdminHeader.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useAuth } from '@clerk/nextjs';
+import { Search, Bell, Moon, Sun } from 'lucide-react';
+import { useState } from 'react';
+
+export default function AdminHeader() {
+  const { user } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  return (
+    <header className="h-16 bg-gray-900/50 backdrop-blur-lg border-b border-white/10 flex items-center justify-between px-6">
+      {/* Search */}
+      <div className="relative flex-1 max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <input
+          type="text"
+          placeholder="بحث..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+        />
+      </div>
+
+      {/* Actions */}
+      <div className="flex items-center gap-4">
+        {/* Notifications */}
+        <button className="relative p-2 text-gray-400 hover:text-white transition-colors">
+          <Bell className="w-5 h-5" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+        </button>
+
+        {/* Theme Toggle */}
+        <button
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="p-2 text-gray-400 hover:text-white transition-colors"
+        >
+          {isDarkMode ? (
+            <Sun className="w-5 h-5" />
+          ) : (
+            <Moon className="w-5 h-5" />
+          )}
+        </button>
+
+        {/* User Info */}
+        <div className="flex items-center gap-3 pl-4 border-l border-white/10">
+          <div className="text-left">
+            <p className="text-white text-sm font-medium">
+              {user?.firstName || 'Admin'}
+            </p>
+            <p className="text-gray-400 text-xs">مدير المتجر</p>
+          </div>
+          <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center">
+            <span className="text-white font-bold">
+              {user?.firstName?.charAt(0) || 'A'}
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔌 الخطوة 8: API Route للإحصائيات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/api/admin/stats/route.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+
+export async function GET() {
+  try {
+    // جلب عدد المنتجات
+    const { count: totalProducts } = await supabase
+      .from('products')
+      .select('*', { count: 'exact', head: true });
+
+    // جلب عدد الطلبات
+    const { count: totalOrders } = await supabase
+      .from('orders')
+      .select('*', { count: 'exact', head: true });
+
+    // جلب إجمالي الإيرادات
+    const { data: revenueData } = await supabase
+      .from('orders')
+      .select('total')
+      .eq('payment_status', 'paid');
+
+    const totalRevenue = revenueData?.reduce((sum, order) => sum + order.total, 0) || 0;
+
+    // جلب عدد المستخدمين (من Clerk أو Supabase)
+    const { count: totalUsers } = await supabase
+      .from('users')
+      .select('*', { count: 'exact', head: true });
+
+    // حساب الإحصائيات الشهرية
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const { data: monthlyOrders } = await supabase
+      .from('orders')
+      .select('total')
+      .gte('created_at', startOfMonth.toISOString())
+      .eq('payment_status', 'paid');
+
+    const monthlyRevenue = monthlyOrders?.reduce((sum, order) => sum + order.total, 0) || 0;
+
+    return NextResponse.json({
+      totalProducts: totalProducts || 0,
+      totalOrders: totalOrders || 0,
+      totalRevenue: Math.round(totalRevenue),
+      totalUsers: totalUsers || 0,
+      monthlyRevenue: Math.round(monthlyRevenue),
+      averageOrderValue: totalOrders > 0 
+        ? Math.round(totalRevenue / totalOrders) 
+        : 0,
+    });
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch stats' },
+      { status: 500 }
+    );
+  }
+}</code></pre>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 تحسينات إضافية</div>
+          <div class="callout-content">
+            <ul>
+              <li>أضف رسم بياني للمبيعات باستخدام Recharts</li>
+              <li>أضف فلتر التاريخ للإحصائيات</li>
+              <li>أضف تصدير التقارير كملفات CSV</li>
+              <li>أضف إشعارات فورية للطلبات الجديدة</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده بنينا لوحة تحكم Admin كاملة:</p>
+        <ul>
+          <li>✅ تخطيط Admin مع حماية المسارات</li>
+          <li>✅ بطاقات الإحصائيات</li>
+          <li>✅ الصفحة الرئيسية مع الطلبات الأخيرة</li>
+          <li>✅ الشريط الجانبي للتنقل</li>
+          <li>✅ رأس صفحة Admin</li>
+          <li>✅ API Route لجلب الإحصائيات</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 النقطة القادمة</div>
+          <div class="callout-content">
+            في الدرس الجاي هنبني صفحة إدارة المنتجات في الـ Admin.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="16-wishlist.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">نظام المفضلة</span>
+        </a>
+        <a href="18-admin-products.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">إدارة المنتجات</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

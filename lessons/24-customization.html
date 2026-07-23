@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 24 - تخصيص القالب</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 24</span>
+        </div>
+        <h1>تخصيص القالب</h1>
+        <div class="meta">
+          <span>⏱️ 25 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 7: النشر والبيع</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>تغيير الألوان والثيم الخاص بالمتجر</li>
+          <li>تعديل التصنيفات والمحتوى</li>
+          <li>تغيير اسم الموقع والشعارات</li>
+          <li>إضافة ميزات جديدة</li>
+          <li>إنشاء مكونات مخصصة</li>
+        </ul>
+
+        <h2>🎨 تغيير الألوان والثيم</h2>
+        <p>القالب يستخدم Tailwind CSS مع متغيرات CSS قابلة للتخصيص. يمكنك تغيير الألوان بسهولة من خلال ملف <code>tailwind.config.js</code>.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">tailwind.config.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}'
+  ],
+  theme: {
+    extend: {
+      colors: {
+        // تغيير الألوان الرئيسية
+        primary: {
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          200: '#c7d2fe',
+          300: '#a5b4fc',
+          400: '#818cf8',
+          500: '#6366f1', // اللون الرئيسي
+          600: '#4f46e5',
+          700: '#4338ca',
+          800: '#3730a3',
+          900: '#312e81'
+        },
+        secondary: {
+          50: '#fdf4ff',
+          100: '#fae8ff',
+          200: '#f5d0fe',
+          300: '#f0abfc',
+          400: '#e879f9',
+          500: '#a855f7', // اللون الثانوي
+          600: '#9333ea',
+          700: '#7e22ce',
+          800: '#6b21a8',
+          900: '#581c87'
+        },
+        accent: '#ec4899',
+        success: '#10b981',
+        warning: '#f59e0b',
+        danger: '#ef4444'
+      },
+      fontFamily: {
+        sans: ['Inter', 'Cairo', 'sans-serif']
+      },
+      backgroundImage: {
+        'gradient': 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+        'gradient-accent': 'linear-gradient(135deg, #ec4899 0%, #a855f7 100%)'
+      }
+    }
+  },
+  plugins: []
+};</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة</div>
+          <div class="callout-content">
+            يمكنك استخدام أداة مثل <a href="https://coolors.co" target="_blank">Coolors</a> أو <a href="https://www.happyhues.co" target="_blank">Happy Hues</a> لاختيار ألوان متناسقة.
+          </div>
+        </div>
+
+        <h3>تغيير متغيرات CSS</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/globals.css</span>
+            <span class="code-block-lang">css</span>
+          </div>
+          <pre><code>:root {
+  /* الألوان الرئيسية */
+  --primary: #6366f1;
+  --primary-dark: #4f46e5;
+  --primary-light: #818cf8;
+  
+  /* الألوان الثانوية */
+  --secondary: #a855f7;
+  --accent: #ec4899;
+  
+  /* ألوان الحالة */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  
+  /* الألوان الأساسية */
+  --dark: #0f172a;
+  --dark-light: #1e293b;
+  --gray: #64748b;
+  --gray-light: #94a3b8;
+  --gray-lighter: #cbd5e1;
+  --gray-lightest: #f1f5f9;
+  --white: #ffffff;
+  
+  /* التدرجات */
+  --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  --gradient-accent: linear-gradient(135deg, var(--accent) 0%, var(--secondary) 100%);
+  
+  /* الظلال */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  /* الأحجام */
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+/* الوضع الداكن (اختياري) */
+.dark {
+  --primary: #818cf8;
+  --primary-dark: #6366f1;
+  --primary-light: #a5b4fc;
+  --secondary: #c084fc;
+  --accent: #f472b6;
+  --dark: #0f172a;
+  --dark-light: #1e293b;
+}</code></pre>
+        </div>
+
+        <h2>📁 تعديل التصنيفات</h2>
+        <p>التصنيفات (Categories) مخزنة في قاعدة البيانات Supabase. يمكنك تعديلها من خلال:</p>
+
+        <h3>1. من خلال لوحة تحكم Admin</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(admin)/admin/categories/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
+
+export default function CategoriesPage() {
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState('');
+  
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+  
+  const addCategory = async () => {
+    const { data, error } = await supabase
+      .from('categories')
+      .insert({ name: newCategory, slug: newCategory.toLowerCase().replace(/\s+/g, '-') })
+      .select();
+    
+    if (!error) {
+      setCategories([...categories, data[0]]);
+      setNewCategory('');
+    }
+  };
+  
+  return (
+    &lt;div className="p-6"&gt;
+      &lt;h1 className="text-2xl font-bold mb-6"&gt;إدارة التصنيفات&lt;/h1&gt;
+      
+      &lt;div className="flex gap-4 mb-6"&gt;
+        &lt;input
+          type="text"
+          value={newCategory}
+          onChange={(e) =&gt; setNewCategory(e.target.value)}
+          placeholder="اسم التصنيف الجديد"
+          className="input flex-1"
+        /&gt;
+        &lt;button onClick={addCategory} className="btn-primary"&gt;
+          إضافة
+        &lt;/button&gt;
+      &lt;/div&gt;
+      
+      &lt;div className="grid grid-cols-1 md:grid-cols-3 gap-4"&gt;
+        {categories.map(category =&gt; (
+          &lt;div key={category.id} className="card p-4"&gt;
+            &lt;h3 className="font-semibold"&gt;{category.name}&lt;/h3&gt;
+            &lt;p className="text-sm text-gray-500"&gt;{category.slug}&lt;/p&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>2. تعديل التصنيفات الافتراضية</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">data/categories.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>// يمكنك تعديل هذه الملف لتغيير التصنيفات الافتراضية
+export const defaultCategories = [
+  {
+    id: 1,
+    name: 'إلكترونيات',
+    nameEn: 'Electronics',
+    slug: 'electronics',
+    icon: '📱',
+    description: 'أحدث الأجهزة الإلكترونية والإكسسوارات'
+  },
+  {
+    id: 2,
+    name: 'ملابس',
+    nameEn: 'Clothing',
+    slug: 'clothing',
+    icon: '👕',
+    description: 'أناقة وراحة لكل المناسبات'
+  },
+  {
+    id: 3,
+    name: 'أثاث منزلي',
+    nameEn: 'Home Furniture',
+    slug: 'home-furniture',
+    icon: '🏠',
+    description: 'تجهيز منزلك بأفضل الأسعار'
+  },
+  {
+    id: 4,
+    name: 'رياضة',
+    nameEn: 'Sports',
+    slug: 'sports',
+    icon: '⚽',
+    description: 'معدات رياضية احترافية'
+  },
+  {
+    id: 5,
+    name: 'كتب',
+    nameEn: 'Books',
+    slug: 'books',
+    icon: '📚',
+    description: 'أفضل الكتب والمراجع'
+  }
+];</code></pre>
+        </div>
+
+        <h2>🏷️ تغيير اسم الموقع والشعارات</h2>
+        <p>يمكنك تغيير اسم الموقع والشعارات من خلال:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/layout.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>export const metadata = {
+  title: {
+    default: 'اسم متجرك - وصف قصير',
+    template: '%s | اسم متجرك'
+  },
+  description: 'وصف المتجر của bạn',
+  openGraph: {
+    title: 'اسم متجرك',
+    description: 'وصف المتجر',
+    images: ['/logo.png'],
+    siteName: 'اسم متجرك'
+  }
+};</code></pre>
+        </div>
+
+        <h3>تغيير الشعار في Header</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/layout/Header.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Image from 'next/image';
+import Link from 'next/link';
+
+export default function Header() {
+  return (
+    &lt;header className="header"&gt;
+      &lt;div className="header-inner"&gt;
+        &lt;Link href="/" className="logo"&gt;
+          {/* استخدم شعارك الخاص */}
+          &lt;Image
+            src="/logo.png"
+            alt="شعار المتجر"
+            width={150}
+            height={40}
+            className="h-10 w-auto"
+            priority
+          /&gt;
+          {/* أو استخدم النص */}
+          {/* &lt;div className="logo-icon"&gt;🛒&lt;/div&gt; */}
+          {/* &lt;span className="logo-text"&gt;اسم متجرك&lt;/span&gt; */}
+        &lt;/Link&gt;
+        &lt;nav className="nav-links"&gt;
+          &lt;Link href="/products"&gt;المنتجات&lt;/Link&gt;
+          &lt;Link href="/categories"&gt;التصنيفات&lt;/Link&gt;
+          &lt;Link href="/about"&gt;عن المتجر&lt;/Link&gt;
+          &lt;Link href="/contact"&gt;تواصل معنا&lt;/Link&gt;
+        &lt;/nav&gt;
+      &lt;/div&gt;
+    &lt;/header&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>➕ إضافة ميزات جديدة</h2>
+        <p>يمكنك إضافة ميزات جديدة بسهولة. إليك بعض الأمثلة:</p>
+
+        <h3>1. إضافة صفحة "عن المتجر"</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/about/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>export default function AboutPage() {
+  return (
+    &lt;div className="container mx-auto px-4 py-12"&gt;
+      &lt;h1 className="text-4xl font-bold mb-8"&gt;عن المتجر&lt;/h1&gt;
+      
+      &lt;div className="grid grid-cols-1 md:grid-cols-2 gap-12"&gt;
+        &lt;div&gt;
+          &lt;h2 className="text-2xl font-semibold mb-4"&gt;قصتنا&lt;/h2&gt;
+          &lt;p className="text-gray-600 mb-4"&gt;
+            متجرنا تأسس عام 2024 بهدف تقديم أفضل المنتجات
+            بأسعار منافسة وخدمة عملاء ممتازة.
+          &lt;/p&gt;
+          &lt;p className="text-gray-600"&gt;
+            نؤمن بالجودة والخدمة الممتازة، ونسعى دائماً
+            لإرضاء عملائنا.
+          &lt;/p&gt;
+        &lt;/div&gt;
+        
+        &lt;div&gt;
+          &lt;h2 className="text-2xl font-semibold mb-4"&gt;رؤيتنا&lt;/h2&gt;
+          &lt;ul className="space-y-3"&gt;
+            &lt;li className="flex items-center gap-3"&gt;
+              &lt;span className="text-green-500"&gt;✓&lt;/span&gt;
+              منتجات أصلية 100%
+            &lt;/li&gt;
+            &lt;li className="flex items-center gap-3"&gt;
+              &lt;span className="text-green-500"&gt;✓&lt;/span&gt;
+              شحن سريع وآمن
+            &lt;/li&gt;
+            &lt;li className="flex items-center gap-3"&gt;
+              &lt;span className="text-green-500"&gt;✓&lt;/span&gt;
+              ضمان على جميع المنتجات
+            &lt;/li&gt;
+            &lt;li className="flex items-center gap-3"&gt;
+              &lt;span className="text-green-500"&gt;✓&lt;/span&gt;
+              خدمة عملاء 24/7
+            &lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>2. إضافة نظام تقييم المنتجات</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/ProductRating.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { Star } from 'lucide-react';
+
+export default function ProductRating({ productId, initialRating = 0 }) {
+  const [rating, setRating] = useState(initialRating);
+  const [hover, setHover] = useState(0);
+  
+  return (
+    &lt;div className="flex items-center gap-2"&gt;
+      {[...Array(5)].map((_, index) =&gt; {
+        const ratingValue = index + 1;
+        return (
+          &lt;button
+            key={index}
+            className="focus:outline-none"
+            onClick={() =&gt; setRating(ratingValue)}
+            onMouseEnter={() =&gt; setHover(ratingValue)}
+            onMouseLeave={() =&gt; setHover(0)}
+          &gt;
+            &lt;Star
+              className={`w-6 h-6 ${
+                ratingValue &lt;= (hover || rating)
+                  ? 'text-yellow-400 fill-current'
+                  : 'text-gray-300'
+              }`}
+            /&gt;
+          &lt;/button&gt;
+        );
+      })}
+      &lt;span className="text-sm text-gray-500 ml-2"&gt;
+        ({rating}/5)
+      &lt;/span&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🧩 إنشاء مكونات مخصصة</h2>
+        <p>يمكنك إنشاء مكونات جديدة وإضافتها للمشروع:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/ui/Badge.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>export default function Badge({ 
+  children, 
+  variant = 'default',
+  className = '' 
+}) {
+  const variants = {
+    default: 'bg-gray-100 text-gray-800',
+    primary: 'bg-primary-100 text-primary-800',
+    success: 'bg-green-100 text-green-800',
+    warning: 'bg-yellow-100 text-yellow-800',
+    danger: 'bg-red-100 text-red-800'
+  };
+  
+  return (
+    &lt;span
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${variants[variant]} ${className}`}
+    &gt;
+      {children}
+    &lt;/span&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/ui/Alert.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import { AlertCircle, CheckCircle, Info, AlertTriangle } from 'lucide-react';
+
+export default function Alert({ 
+  type = 'info', 
+  title, 
+  children,
+  className = '' 
+}) {
+  const icons = {
+    info: Info,
+    success: CheckCircle,
+    warning: AlertTriangle,
+    error: AlertCircle
+  };
+  
+  const styles = {
+    info: 'bg-blue-50 border-blue-200 text-blue-800',
+    success: 'bg-green-50 border-green-200 text-green-800',
+    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+    error: 'bg-red-50 border-red-200 text-red-800'
+  };
+  
+  const Icon = icons[type];
+  
+  return (
+    &lt;div className={`rounded-lg border p-4 ${styles[type]} ${className}`}&gt;
+      &lt;div className="flex items-start gap-3"&gt;
+        &lt;Icon className="w-5 h-5 mt-0.5" /&gt;
+        &lt;div&gt;
+          {title && &lt;h4 className="font-semibold mb-1"&gt;{title}&lt;/h4&gt;}
+          &lt;div className="text-sm"&gt;{children}&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">✅ نجاح</div>
+          <div class="callout-content">
+            بعد إنشاء المكون الجديد، يمكنك استخدامه في أي مكان في المشروع مثل أي مكون آخر.
+          </div>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده اتعلمنا:</p>
+        <ul>
+          <li>✅ تغيير الألوان والثيم</li>
+          <li>✅ تعديل التصنيفات</li>
+          <li>✅ تغيير اسم الموقع والشعارات</li>
+          <li>✅ إضافة ميزات جديدة</li>
+          <li>✅ إنشاء مكونات مخصصة</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة أخيرة</div>
+          <div class="callout-content">
+            قبل بيع القالب، تأكد من تخصيص جميع العناصر التي ذكرناها لتتناسب مع العلامة التجارية للمتجر. جعل القالب مرناً وقابل للتخصيص سيزيد من قيمته.
+          </div>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 الدرس الجاي</div>
+          <div class="callout-content">
+            في الدرس الأخير هنتعلم عن <strong>دليل البيع والربح</strong> - كيف تبيع القالب وتوصل لعملاء جدد.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="23-deployment.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">نشر المشروع على Vercel</span>
+        </a>
+        <a href="25-selling-guide.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">دليل البيع والربح</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

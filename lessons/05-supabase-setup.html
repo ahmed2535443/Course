@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 05 - إعداد Supabase وقاعدة البيانات</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 05</span>
+        </div>
+        <h1>إعداد Supabase وقاعدة البيانات</h1>
+        <div class="meta">
+          <span>⏱️ 25 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 2: قاعدة البيانات والمصادقة</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>إنشاء مشروع Supabase جديد</li>
+          <li>فهم هيكل قاعدة البيانات</li>
+          <li>إنشاء جدول المنتجات (Products)</li>
+          <li>إعداد Storage لرفع الصور</li>
+          <li>فهم وتطبيق RLS Policies</li>
+        </ul>
+
+        <h2>📦什么是 Supabase؟</h2>
+        <p><strong>Supabase</strong> هو بديل مفتوح المصدر لـ Firebase. بيقدم قاعدة بيانات PostgreSQL وتخزين سحابي ومصادقة و Realtime subscriptions.</p>
+
+        <h3>مميزات Supabase:</h3>
+        <ul>
+          <li><strong>PostgreSQL</strong> - قاعدة بيانات قوية وموثوقة</li>
+          <li><strong>Realtime</strong> - تحديثات مباشرة</li>
+          <li><strong>Storage</strong> - تخزين الصور والملفات</li>
+          <li><strong>Auth</strong> - نظام مصادقة جاهز</li>
+          <li><strong>Dashboard</strong> - لوحة تحكم سهلة</li>
+          <li><strong>Free Tier</strong> - خطة مجانية سخية</li>
+        </ul>
+
+        <h2>🚀 الخطوة 1: إنشاء مشروع Supabase</h2>
+        
+        <h3>1.1 التسجيل في Supabase</h3>
+        <ol>
+          <li>ادخل على <strong>https://supabase.com</strong></li>
+          <li>اضغط "Start your project"</li>
+          <li>سجّل الدخول باستخدام GitHub أو Email</li>
+        </ol>
+
+        <h3>1.2 إنشاء مشروع جديد</h3>
+        <ol>
+          <li>من Dashboard، اضغط "New Project"</li>
+          <li>اختار Organization (أو أنشأ واحد جديد)</li>
+          <li>أدخل تفاصيل المشروع:
+            <ul>
+              <li><strong>Name:</strong> market</li>
+              <li><strong>Database Password:</strong> كلمة مرور قوية</li>
+              <li><strong>Region:</strong> اختار أقرب منطقة (مثلاً EU West)</li>
+            </ul>
+          </li>
+          <li>اضغط "Create new project"</li>
+        </ol>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ تنبيه مهم</div>
+          <div class="callout-content">
+            احتفظ بكلمة المرور في مكان آمن! مش هتقدر تتغير بعدين. كمان، استخدم كلمة مرور قوية تحتوي على أرقام وحروف وأحرف خاصة.
+          </div>
+        </div>
+
+        <h2>🗄️ الخطوة 2: إنشاء جدول المنتجات (Products)</h2>
+        <p>بعد إنشاء المشروع، هنحتاج نإنشاء جداول قاعدة البيانات.</p>
+
+        <h3>2.1 فتح SQL Editor</h3>
+        <ol>
+          <li>من Dashboard، اختار "SQL Editor" من القائمة الجانبية</li>
+          <li>اضغط "New query"</li>
+        </ol>
+
+        <h3>2.2 إنشاء جدول المنتجات</h3>
+        <p>انسخ والصق الكود التالي في SQL Editor واضغط "Run":</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">SQL - إنشاء جدول المنتجات</span>
+            <span class="code-block-lang">sql</span>
+          </div>
+          <pre><code>-- إنشاء جدول المنتجات
+CREATE TABLE products (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  price DECIMAL(10, 2) NOT NULL,
+  image_url TEXT,
+  category TEXT,
+  stock INTEGER DEFAULT 0,
+  featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- إنشاء فهرس على الفئة
+CREATE INDEX idx_products_category ON products(category);
+
+-- إنشاء فهرس على المنتجات المميزة
+CREATE INDEX idx_products_featured ON products(featured);</code></pre>
+        </div>
+
+        <h3>2.3 شرح الحقول</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الحقل</th>
+                <th>النوع</th>
+                <th>الوصف</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>id</code></td>
+                <td>UUID</td>
+                <td>المعرّف الفريد للمنتج (يُنشأ تلقائياً)</td>
+              </tr>
+              <tr>
+                <td><code>name</code></td>
+                <td>TEXT</td>
+                <td>اسم المنتج (إلزامي)</td>
+              </tr>
+              <tr>
+                <td><code>description</code></td>
+                <td>TEXT</td>
+                <td>وصف المنتج</td>
+              </tr>
+              <tr>
+                <td><code>price</code></td>
+                <td>DECIMAL</td>
+                <td>سعر المنتج (إلزامي)</td>
+              </tr>
+              <tr>
+                <td><code>image_url</code></td>
+                <td>TEXT</td>
+                <td>رابط صورة المنتج</td>
+              </tr>
+              <tr>
+                <td><code>category</code></td>
+                <td>TEXT</td>
+                <td>فئة المنتج</td>
+              </tr>
+              <tr>
+                <td><code>stock</code></td>
+                <td>INTEGER</td>
+                <td>المخزون المتوفر</td>
+              </tr>
+              <tr>
+                <td><code>featured</code></td>
+                <td>BOOLEAN</td>
+                <td>هل المنتج مميز؟</td>
+              </tr>
+              <tr>
+                <td><code>created_at</code></td>
+                <td>TIMESTAMP</td>
+                <td>تاريخ الإنشاء</td>
+              </tr>
+              <tr>
+                <td><code>updated_at</code></td>
+                <td>TIMESTAMP</td>
+                <td>تاريخ آخر تحديث</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>2.4 إنشاء جدول الطلبات (Orders)</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">SQL - إنشاء جدول الطلبات</span>
+            <span class="code-block-lang">sql</span>
+          </div>
+          <pre><code>-- إنشاء جدول الطلبات
+CREATE TABLE orders (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  total DECIMAL(10, 2) NOT NULL,
+  status TEXT DEFAULT 'pending',
+  shipping_address JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- إنشاء جدول عناصر الطلب
+CREATE TABLE order_items (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID REFERENCES products(id),
+  quantity INTEGER NOT NULL,
+  price DECIMAL(10, 2) NOT NULL
+);
+
+-- إنشاء فهرس
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+CREATE INDEX idx_order_items_order_id ON order_items(order_id);</code></pre>
+        </div>
+
+        <h2>📁 الخطوة 3: إعداد Storage لرفع الصور</h2>
+        <p>Supabase بيوفر Storage سحابي لرفع وتخزين الصور.</p>
+
+        <h3>3.1 إنشاء Bucket جديد</h3>
+        <ol>
+          <li>من Dashboard، اختار "Storage" من القائمة الجانبية</li>
+          <li>اضغط "New bucket"</li>
+          <li>أدخل التفاصيل:
+            <ul>
+              <li><strong>Name:</strong> products</li>
+              <li><strong>Public:</strong>فعّل (عشان الصور تظهر للكل)</li>
+            </ul>
+          </li>
+          <li>اض唾 "Create bucket"</li>
+        </ol>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ملاحظة</div>
+          <div class="callout-content">
+            الـ Public bucket يعني أي حد يقدر يوصل للصور بالـ URL مباشرة. ده مناسب لصور المنتجات اللي محتاجينها تكون متاحة للجميع.
+          </div>
+        </div>
+
+        <h2>🔐 الخطوة 4: RLS Policies</h2>
+        <p><strong>Row Level Security (RLS)</strong> هي ميزة في PostgreSQL بتسمحلك تتحكم في مين يقدر يقرأ أو يكتب البيانات.</p>
+
+        <h3>4.1 تفعيل RLS على جدول المنتجات</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">SQL - تفعيل RLS</span>
+            <span class="code-block-lang">sql</span>
+          </div>
+          <pre><code>-- تفعيل Row Level Security
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+
+-- سياسة للقراءة: أي حد يقدر يقرأ المنتجات
+CREATE POLICY "Products are viewable by everyone" 
+ON products FOR SELECT 
+USING (true);
+
+-- سياسة للإدراج: فقط المستخدمين المسجلين
+CREATE POLICY "Users can insert products" 
+ON products FOR INSERT 
+WITH CHECK (auth.role() = 'authenticated');
+
+-- سياسة للتحديث: فقط المستخدمين المسجلين
+CREATE POLICY "Users can update products" 
+ON products FOR UPDATE 
+USING (auth.role() = 'authenticated');
+
+-- سياسة للحذف: فقط المستخدمين المسجلين
+CREATE POLICY "Users can delete products" 
+ON products FOR DELETE 
+USING (auth.role() = 'authenticated');</code></pre>
+        </div>
+
+        <h3>4.2 شرح السياسات</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>السياسة</th>
+                <th>العملية</th>
+                <th>الشرط</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Products are viewable by everyone</td>
+                <td>SELECT</td>
+                <td>true (الكل يقدر يقرأ)</td>
+              </tr>
+              <tr>
+                <td>Users can insert products</td>
+                <td>INSERT</td>
+                <td>auth.role() = 'authenticated'</td>
+              </tr>
+              <tr>
+                <td>Users can update products</td>
+                <td>UPDATE</td>
+                <td>auth.role() = 'authenticated'</td>
+              </tr>
+              <tr>
+                <td>Users can delete products</td>
+                <td>DELETE</td>
+                <td>auth.role() = 'authenticated'</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>4.3 RLS للطلبات</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">SQL - RLS للطلبات</span>
+            <span class="code-block-lang">sql</span>
+          </div>
+          <pre><code>-- تفعيل RLS على جدول الطلبات
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+
+-- المستخدم يقدر يشوف طلباته فقط
+CREATE POLICY "Users can view their own orders" 
+ON orders FOR SELECT 
+USING (auth.uid()::text = user_id);
+
+-- المستخدم يقدر ينشئ طلبات
+CREATE POLICY "Users can create orders" 
+ON orders FOR INSERT 
+WITH CHECK (auth.uid()::text = user_id);
+
+-- تفعيل RLS على جدول عناصر الطلب
+ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
+
+-- المستخدم يقدر يشوف عناصر طلباته
+CREATE POLICY "Users can view their order items" 
+ON order_items FOR SELECT 
+USING (
+  order_id IN (
+    SELECT id FROM orders 
+    WHERE user_id = auth.uid()::text
+  )
+);</code></pre>
+        </div>
+
+        <h2>🔗 الخطوة 5: الاتصال بـ Next.js</h2>
+        <p>الآن محتاجين نوصل مشروع Next.js بـ Supabase.</p>
+
+        <h3>5.1 تثبيت Supabase Client</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Terminal</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code>npm install @supabase/supabase-js @supabase/ssr</code></pre>
+        </div>
+
+        <h3>5.2 إنشاء ملف البيئة</h3>
+        <p>أنشئ ملف <code>.env.local</code> في جذر المشروع:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">.env.local</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code>NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 أين أجد هذه المفاتيح؟</div>
+          <div class="callout-content">
+            من Supabase Dashboard → Settings → API. هتلاقي:
+            <ul>
+              <li><strong>Project URL:</strong> رابط المشروع</li>
+              <li><strong>anon public key:</strong> المفتاح العام</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>5.3 إنشاء Supabase Client</h3>
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 lib/</div>
+          <div class="file-tree-item file">└── 📄 supabase.js            # Supabase Client</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">lib/supabase.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);</code></pre>
+        </div>
+
+        <h3>5.4 اختبار الاتصال</h3>
+        <p>أنشئ صفحة اختبار للتأكد من الاتصال:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/test-supabase/page.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { supabase } from '@/lib/supabase';
+
+export default async function TestSupabase() {
+  // جلب المنتجات من قاعدة البيانات
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*');
+
+  if (error) {
+    return &lt;div&gt;خطأ: {error.message}&lt;/div&gt;;
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;اختبار Supabase&lt;/h1&gt;
+      &lt;p&gt;عدد المنتجات: {products?.length || 0}&lt;/p&gt;
+      &lt;pre&gt;{JSON.stringify(products, null, 2)}&lt;/pre&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📊 إضافة بيانات تجريبية</h2>
+        <p>หลังจาก إنشاء الجداول، محتاجين نضيف بعض المنتجات التجريبية:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">SQL - بيانات تجريبية</span>
+            <span class="code-block-lang">sql</span>
+          </div>
+          <pre><code>-- إضافة منتجات تجريبية
+INSERT INTO products (name, description, price, category, stock, featured) VALUES
+('لابتوب HP', 'لابتوب HP بمعالج Core i7 وذاكرة 16GB', 2500.00, 'إلكترونيات', 10, true),
+('سماعات AirPods', 'سماعات لاسلكية Apple AirPods Pro', 250.00, 'إلكترونيات', 25, true),
+('كتاب البرمجة', 'كتاب شامل عن تطوير الويب', 45.00, 'كتب', 50, false),
+('حقيبة ظهر', 'حقيبة ظهر مريحة للابتوب', 89.99, 'أزياء', 30, true),
+('ساعة ذكية', 'ساعة ذكية مع ميزات صحية', 199.99, 'إلكترونيات', 15, false);</code></pre>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده عملنا:</p>
+        <ul>
+          <li>✅ إنشاء مشروع Supabase</li>
+          <li>✅ إنشاء جداول المنتجات والطلبات</li>
+          <li>✅ إعداد Storage لرفع الصور</li>
+          <li>✅ تطبيق RLS Policies للحماية</li>
+          <li>✅ الاتصال بـ Next.js</li>
+          <li>✅ إضافة بيانات تجريبية</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 الدرس الجاي</div>
+          <div class="callout-content">
+            في الدرس الجاي هنتعلم <strong>إعداد Clerk Authentication</strong> - هنشتغل على نظام تسجيل الدخول والمستخدمين.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="04-tailwind-setup.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">إعداد Tailwind CSS 4</span>
+        </a>
+        <a href="06-clerk-auth.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">إعداد Clerk Authentication</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

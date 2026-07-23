@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 12 - تفاصيل المنتج</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 12</span>
+        </div>
+        <h1>تفاصيل المنتج</h1>
+        <div class="meta">
+          <span>⏱️ 40 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 3: واجهة المستخدم</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>عرض صور المنتج بتأثيرات احترافية</li>
+          <li>بناء محدد الكمية (Quantity Selector)</li>
+          <li>إنشاء زر أضف للسلة مع تأثيرات</li>
+          <li>عرض معلومات المنتج (التقييم، المخزون، الوصف)</li>
+          <li>إضافة شعارات الثقة</li>
+          <li>بناء التنقل بالفتات (Breadcrumb)</li>
+        </ul>
+
+        <h2>📁 هيكل ملفات تفاصيل المنتج</h2>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/(shop)/products/[id]/</div>
+          <div class="file-tree-item file">└── 📄 page.js                 # صفحة تفاصيل المنتج</div>
+          <div class="file-tree-item folder">📁 components/products/</div>
+          <div class="file-tree-item file">├── 📄 ProductGallery.jsx     # معرض الصور</div>
+          <div class="file-tree-item file">├── 📄 ProductInfo.jsx        # معلومات المنتج</div>
+          <div class="file-tree-item file">├── 📄 QuantitySelector.jsx   # محدد الكمية</div>
+          <div class="file-tree-item file">├── 📄 AddToCartButton.jsx    # زر أضف للسلة</div>
+          <div class="file-tree-item file">└── 📄 ProductReviews.jsx     # المراجعات</div>
+        </div>
+
+        <h2>📄 الخطوة 1: صفحة تفاصيل المنتج</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/products/[id]/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import { notFound } from 'next/navigation';
+import ProductGallery from '@/components/products/ProductGallery';
+import ProductInfo from '@/components/products/ProductInfo';
+import ProductReviews from '@/components/products/ProductReviews';
+import Container from '@/components/ui/Container';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+
+export async function generateMetadata({ params }) {
+  const product = await getProduct(params.id);
+  
+  if (!product) {
+    return { title: 'المنتج غير موجود' };
+  }
+
+  return {
+    title: `${product.name} - Market`,
+    description: product.description,
+  };
+}
+
+async function getProduct(id) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
+    cache: 'no-store',
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json();
+}
+
+export default async function ProductPage({ params }) {
+  const product = await getProduct(params.id);
+
+  if (!product) {
+    notFound();
+  }
+
+  const breadcrumbItems = [
+    { label: 'الرئيسية', href: '/' },
+    { label: 'المنتجات', href: '/products' },
+    { label: product.category, href: `/products?category=${product.categorySlug}` },
+    { label: product.name },
+  ];
+
+  return (
+    &lt;Container className="py-8"&gt;
+      {/* Breadcrumb */}
+      &lt;Breadcrumb items={breadcrumbItems} /&gt;
+
+      {/* Product Content */}
+      &lt;div className="grid lg:grid-cols-2 gap-12 mt-8"&gt;
+        {/* Gallery */}
+        &lt;ProductGallery
+          images={product.images}
+          name={product.name}
+        /&gt;
+
+        {/* Info */}
+        &lt;ProductInfo product={product} /&gt;
+      &lt;/div&gt;
+
+      {/* Reviews */}
+      &lt;div className="mt-16"&gt;
+        &lt;ProductReviews
+          productId={product.id}
+          reviews={product.reviews}
+          rating={product.rating}
+          reviewCount={product.reviewCount}
+        /&gt;
+      &lt;/div&gt;
+    &lt;/Container&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🖼️ الخطوة 2: معرض الصور</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/ProductGallery.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/cn';
+
+export default function ProductGallery({ images, name }) {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const handlePrevious = () =&gt; {
+    setSelectedIndex((prev) =&gt;
+      prev === 0 ? images.length - 1 : prev - 1
+    );
+  };
+
+  const handleNext = () =&gt; {
+    setSelectedIndex((prev) =&gt;
+      prev === images.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  return (
+    &lt;div className="space-y-4"&gt;
+      {/* Main Image */}
+      &lt;div className="relative aspect-square rounded-3xl overflow-hidden bg-white/5 backdrop-blur-lg border border-white/10"&gt;
+        &lt;AnimatePresence mode="wait"&gt;
+          &lt;motion.img
+            key={selectedIndex}
+            src={images[selectedIndex]}
+            alt={`${name} - صورة ${selectedIndex + 1}`}
+            className="w-full h-full object-cover"
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+          /&gt;
+        &lt;/AnimatePresence&gt;
+
+        {/* Navigation Arrows */}
+        {images.length &gt; 1 && (
+          &lt;&gt;
+            &lt;button
+              onClick={handlePrevious}
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+            &gt;
+              &lt;ChevronRight className="w-6 h-6" /&gt;
+            &lt;/button&gt;
+            &lt;button
+              onClick={handleNext}
+              className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+            &gt;
+              &lt;ChevronLeft className="w-6 h-6" /&gt;
+            &lt;/button&gt;
+          &lt;/&gt;
+        )}
+
+        {/* Zoom Button */}
+        &lt;button
+          onClick={() =&gt; setIsZoomed(true)}
+          className="absolute top-4 left-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+        &gt;
+          &lt;ZoomIn className="w-5 h-5" /&gt;
+        &lt;/button&gt;
+
+        {/* Image Counter */}
+        &lt;div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/50 text-white text-sm"&gt;
+          {selectedIndex + 1} / {images.length}
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      {/* Thumbnails */}
+      {images.length &gt; 1 && (
+        &lt;div className="flex gap-3 overflow-x-auto pb-2"&gt;
+          {images.map((image, index) =&gt; (
+            &lt;button
+              key={index}
+              onClick={() =&gt; setSelectedIndex(index)}
+              className={cn(
+                "flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all",
+                selectedIndex === index
+                  ? "border-indigo-500 ring-2 ring-indigo-500/50"
+                  : "border-transparent opacity-60 hover:opacity-100"
+              )}
+            &gt;
+              &lt;img
+                src={image}
+                alt={`${name} - مصغرة ${index + 1}`}
+                className="w-full h-full object-cover"
+              /&gt;
+            &lt;/button&gt;
+          ))}
+        &lt;/div&gt;
+      )}
+
+      {/* Zoom Modal */}
+      &lt;AnimatePresence&gt;
+        {isZoomed && (
+          &lt;motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+            onClick={() =&gt; setIsZoomed(false)}
+          &gt;
+            &lt;motion.img
+              src={images[selectedIndex]}
+              alt={name}
+              className="max-w-full max-h-full object-contain"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+            /&gt;
+            &lt;button
+              onClick={() =&gt; setIsZoomed(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+            &gt;
+              ✕
+            &lt;/button&gt;
+          &lt;/motion.div&gt;
+        )}
+      &lt;/AnimatePresence&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📋 الخطوة 3: معلومات المنتج</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/ProductInfo.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { Star, Truck, Shield, CreditCard, Package } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import QuantitySelector from './QuantitySelector';
+import AddToCartButton from './AddToCartButton';
+import Badge from '@/components/ui/Badge';
+import { useCart } from '@/context/CartContext';
+
+export default function ProductInfo({ product }) {
+  const [quantity, setQuantity] = useState(1);
+  const { addItem } = useCart();
+
+  const handleAddToCart = () =&gt; {
+    addItem(product, quantity);
+  };
+
+  const stockStatus = getStockStatus(product.stock);
+
+  return (
+    &lt;div className="space-y-6"&gt;
+      {/* Category &amp; SKU */}
+      &lt;div className="flex items-center gap-3"&gt;
+        &lt;Badge variant="primary"&gt;{product.category}&lt;/Badge&gt;
+        &lt;span className="text-gray-400 text-sm"&gt;SKU: {product.sku}&lt;/span&gt;
+      &lt;/div&gt;
+
+      {/* Name */}
+      &lt;h1 className="text-3xl font-bold text-white"&gt;
+        {product.name}
+      &lt;/h1&gt;
+
+      {/* Rating */}
+      &lt;div className="flex items-center gap-4"&gt;
+        &lt;div className="flex items-center gap-1"&gt;
+          {[...Array(5)].map((_, i) =&gt; (
+            &lt;Star
+              key={i}
+              className={cn(
+                "w-5 h-5",
+                i &lt; Math.floor(product.rating)
+                  ? "text-yellow-400 fill-yellow-400"
+                  : "text-gray-600"
+              )}
+            /&gt;
+          ))}
+        &lt;/div&gt;
+        &lt;span className="text-white font-medium"&gt;{product.rating}&lt;/span&gt;
+        &lt;span className="text-gray-400"&gt;({product.reviewCount} تقييم)&lt;/span&gt;
+      &lt;/div&gt;
+
+      {/* Price */}
+      &lt;div className="flex items-baseline gap-4"&gt;
+        &lt;span className="text-4xl font-bold text-white"&gt;
+          ${product.price}
+        &lt;/span&gt;
+        {product.originalPrice && (
+          &lt;&gt;
+            &lt;span className="text-xl text-gray-400 line-through"&gt;
+              ${product.originalPrice}
+            &lt;/span&gt;
+            &lt;Badge variant="success"&gt;
+              وفر ${product.originalPrice - product.price}
+            &lt;/Badge&gt;
+          &lt;/&gt;
+        )}
+      &lt;/div&gt;
+
+      {/* Description */}
+      &lt;div className="text-gray-300 leading-relaxed"&gt;
+        {product.description}
+      &lt;/div&gt;
+
+      {/* Stock Status */}
+      &lt;div className="flex items-center gap-2"&gt;
+        &lt;div className={cn(
+          "w-3 h-3 rounded-full",
+          stockStatus.color
+        )} /&gt;
+        &lt;span className={cn("text-sm font-medium", stockStatus.textColor)}&gt;
+          {stockStatus.text}
+        &lt;/span&gt;
+      &lt;/div&gt;
+
+      {/* Quantity &amp; Add to Cart */}
+      &lt;div className="flex flex-col sm:flex-row gap-4"&gt;
+        &lt;QuantitySelector
+          value={quantity}
+          onChange={setQuantity}
+          max={product.stock}
+        /&gt;
+        &lt;AddToCartButton
+          onClick={handleAddToCart}
+          disabled={product.stock === 0}
+        /&gt;
+      &lt;/div&gt;
+
+      {/* Trust Badges */}
+      &lt;div className="grid grid-cols-2 gap-4 pt-6 border-t border-white/10"&gt;
+        &lt;div className="flex items-center gap-3"&gt;
+          &lt;div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center"&gt;
+            &lt;Truck className="w-5 h-5 text-green-400" /&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+            &lt;p className="text-white text-sm font-medium"&gt;شحن مجاني&lt;/p&gt;
+            &lt;p className="text-gray-400 text-xs"&gt;للطلبات فوق $50&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div className="flex items-center gap-3"&gt;
+          &lt;div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"&gt;
+            &lt;Shield className="w-5 h-5 text-blue-400" /&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+            &lt;p className="text-white text-sm font-medium"&gt;ضمان&lt;/p&gt;
+            &lt;p className="text-gray-400 text-xs"&gt;30 يوم ضمان&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div className="flex items-center gap-3"&gt;
+          &lt;div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center"&gt;
+            &lt;CreditCard className="w-5 h-5 text-purple-400" /&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+            &lt;p className="text-white text-sm font-medium"&gt;دفع آمن&lt;/p&gt;
+            &lt;p className="text-gray-400 text-xs"&gt;حماية لبياناتك&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div className="flex items-center gap-3"&gt;
+          &lt;div className="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center"&gt;
+            &lt;Package className="w-5 h-5 text-yellow-400" /&gt;
+          &lt;/div&gt;
+          &lt;div&gt;
+            &lt;p className="text-white text-sm font-medium"&gt;إرجاع سهل&lt;/p&gt;
+            &lt;p className="text-gray-400 text-xs"&gt;خلال 14 يوم&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+function getStockStatus(stock) {
+  if (stock === 0) {
+    return {
+      text: 'نفذ من المخزون',
+      color: 'bg-red-500',
+      textColor: 'text-red-400',
+    };
+  }
+  if (stock &lt;= 5) {
+    return {
+      text: `متبقي ${stock} فقط!`,
+      color: 'bg-yellow-500',
+      textColor: 'text-yellow-400',
+    };
+  }
+  return {
+    text: 'متوفر في المخزون',
+    color: 'bg-green-500',
+    textColor: 'text-green-400',
+  };
+}</code></pre>
+        </div>
+
+        <h2>🔢 الخطوة 4: محدد الكمية</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/QuantitySelector.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { Minus, Plus } from 'lucide-react';
+import { cn } from '@/lib/cn';
+
+export default function QuantitySelector({ value, onChange, max = 10 }) {
+  const handleDecrease = () =&gt; {
+    if (value &gt; 1) {
+      onChange(value - 1);
+    }
+  };
+
+  const handleIncrease = () =&gt; {
+    if (value &lt; max) {
+      onChange(value + 1);
+    }
+  };
+
+  return (
+    &lt;div className="flex items-center gap-2"&gt;
+      &lt;span className="text-white text-sm ml-2"&gt;الكمية:&lt;/span&gt;
+      &lt;div className="flex items-center bg-white/5 rounded-xl border border-white/10"&gt;
+        {/* Decrease Button */}
+        &lt;button
+          onClick={handleDecrease}
+          disabled={value &lt;= 1}
+          className={cn(
+            "w-12 h-12 flex items-center justify-center transition-colors",
+            value &lt;= 1
+              ? "text-gray-600 cursor-not-allowed"
+              : "text-white hover:bg-white/10"
+          )}
+        &gt;
+          &lt;Minus className="w-5 h-5" /&gt;
+        &lt;/button&gt;
+
+        {/* Value Display */}
+        &lt;input
+          type="number"
+          value={value}
+          onChange={(e) =&gt; {
+            const newValue = parseInt(e.target.value) || 1;
+            if (newValue &gt;= 1 && newValue &lt;= max) {
+              onChange(newValue);
+            }
+          }}
+          className="w-16 h-12 bg-transparent text-white text-center font-medium border-x border-white/10 focus:outline-none"
+          min="1"
+          max={max}
+        /&gt;
+
+        {/* Increase Button */}
+        &lt;button
+          onClick={handleIncrease}
+          disabled={value &gt;= max}
+          className={cn(
+            "w-12 h-12 flex items-center justify-center transition-colors",
+            value &gt;= max
+              ? "text-gray-600 cursor-not-allowed"
+              : "text-white hover:bg-white/10"
+          )}
+        &gt;
+          &lt;Plus className="w-5 h-5" /&gt;
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🛒 الخطوة 5: زر أضف للسلة</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/AddToCartButton.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { ShoppingCart, Check, Loader2 } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import Button from '@/components/ui/Button';
+import { useToast } from '@/components/ui/Toast';
+
+export default function AddToCartButton({ onClick, disabled }) {
+  const [state, setState] = useState('idle'); // idle, loading, success
+  const { addToast } = useToast();
+
+  const handleClick = async () =&gt; {
+    if (disabled || state !== 'idle') return;
+
+    setState('loading');
+
+    try {
+      await onClick();
+      setState('success');
+      addToast('تمت الإضافة للسلة بنجاح!', 'success');
+      
+      // إعادة الحالة بعد ثانيتين
+      setTimeout(() =&gt; setState('idle'), 2000);
+    } catch (error) {
+      setState('idle');
+      addToast('حدث خطأ، حاول مرة أخرى', 'error');
+    }
+  };
+
+  return (
+    &lt;Button
+      onClick={handleClick}
+      disabled={disabled || state === 'loading'}
+      size="lg"
+      className={cn(
+        "flex-1 transition-all duration-300",
+        state === 'success' && "bg-green-500 hover:bg-green-500"
+      )}
+    &gt;
+      {state === 'loading' ? (
+        &lt;&gt;
+          &lt;Loader2 className="w-5 h-5 ml-2 animate-spin" /&gt;
+          جاري الإضافة...
+        &lt;/&gt;
+      ) : state === 'success' ? (
+        &lt;&gt;
+          &lt;Check className="w-5 h-5 ml-2" /&gt;
+          تمت الإضافة!
+        &lt;/&gt;
+      ) : (
+        &lt;&gt;
+          &lt;ShoppingCart className="w-5 h-5 ml-2" /&gt;
+          أضف للسلة
+        &lt;/&gt;
+      )}
+    &lt;/Button&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>💬 الخطوة 6: المراجعات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/ProductReviews.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { Star, ThumbsUp, MessageSquare } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import Card from '@/components/ui/Card';
+
+export default function ProductReviews({ productId, reviews, rating, reviewCount }) {
+  const [activeTab, setActiveTab] = useState('all');
+
+  // حساب توزيع التقييمات
+  const ratingDistribution = calculateDistribution(reviews);
+
+  return (
+    &lt;div&gt;
+      {/* Header */}
+      &lt;div className="flex items-center justify-between mb-8"&gt;
+        &lt;h2 className="text-2xl font-bold text-white"&gt;
+          مراجعات العملاء
+        &lt;/h2&gt;
+        &lt;span className="text-gray-400"&gt;
+          ({reviewCount} مراجعة)
+        &lt;/span&gt;
+      &lt;/div&gt;
+
+      {/* Rating Summary */}
+      &lt;div className="grid md:grid-cols-2 gap-8 mb-8"&gt;
+        {/* Overall Rating */}
+        &lt;Card variant="glass"&gt;
+          &lt;div className="text-center"&gt;
+            &lt;p className="text-6xl font-bold text-white mb-2"&gt;{rating}&lt;/p&gt;
+            &lt;div className="flex items-center justify-center gap-1 mb-2"&gt;
+              {[...Array(5)].map((_, i) =&gt; (
+                &lt;Star
+                  key={i}
+                  className={cn(
+                    "w-6 h-6",
+                    i &lt; Math.floor(rating)
+                      ? "text-yellow-400 fill-yellow-400"
+                      : "text-gray-600"
+                  )}
+                /&gt;
+              ))}
+            &lt;/div&gt;
+            &lt;p className="text-gray-400"&gt;من 5 نجوم&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/Card&gt;
+
+        {/* Distribution */}
+        &lt;Card variant="glass"&gt;
+          &lt;div className="space-y-3"&gt;
+            {[5, 4, 3, 2, 1].map((stars) =&gt; (
+              &lt;div key={stars} className="flex items-center gap-3"&gt;
+                &lt;span className="text-white text-sm w-4"&gt;{stars}&lt;/span&gt;
+                &lt;Star className="w-4 h-4 text-yellow-400 fill-yellow-400" /&gt;
+                &lt;div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden"&gt;
+                  &lt;div
+                    className="h-full bg-yellow-400 rounded-full"
+                    style={{
+                      width: `${ratingDistribution[stars]}%`,
+                    }}
+                  /&gt;
+                &lt;/div&gt;
+                &lt;span className="text-gray-400 text-sm w-8"&gt;
+                  {ratingDistribution[stars]}%
+                &lt;/span&gt;
+              &lt;/div&gt;
+            ))}
+          &lt;/div&gt;
+        &lt;/Card&gt;
+      &lt;/div&gt;
+
+      {/* Reviews List */}
+      &lt;div className="space-y-4"&gt;
+        {reviews.map((review) =&gt; (
+          &lt;Card key={review.id} variant="glass"&gt;
+            {/* Review Header */}
+            &lt;div className="flex items-start justify-between mb-4"&gt;
+              &lt;div className="flex items-center gap-3"&gt;
+                &lt;div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center"&gt;
+                  &lt;span className="text-white font-medium"&gt;
+                    {review.user.name[0]}
+                  &lt;/span&gt;
+                &lt;/div&gt;
+                &lt;div&gt;
+                  &lt;p className="text-white font-medium"&gt;{review.user.name}&lt;/p&gt;
+                  &lt;p className="text-gray-400 text-sm"&gt;{review.date}&lt;/p&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+
+              {/* Rating */}
+              &lt;div className="flex items-center gap-1"&gt;
+                {[...Array(5)].map((_, i) =&gt; (
+                  &lt;Star
+                    key={i}
+                    className={cn(
+                      "w-4 h-4",
+                      i &lt; review.rating
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-600"
+                    )}
+                  /&gt;
+                ))}
+              &lt;/div&gt;
+            &lt;/div&gt;
+
+            {/* Review Title */}
+            &lt;h4 className="text-white font-semibold mb-2"&gt;
+              {review.title}
+            &lt;/h4&gt;
+
+            {/* Review Content */}
+            &lt;p className="text-gray-300 mb-4"&gt;{review.content}&lt;/p&gt;
+
+            {/* Review Actions */}
+            &lt;div className="flex items-center gap-4"&gt;
+              &lt;button className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"&gt;
+                &lt;ThumbsUp className="w-4 h-4" /&gt;
+                &lt;span className="text-sm"&gt;{review.helpfulCount} مفيد&lt;/span&gt;
+              &lt;/button&gt;
+              &lt;button className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"&gt;
+                &lt;MessageSquare className="w-4 h-4" /&gt;
+                &lt;span className="text-sm"&gt;رد&lt;/span&gt;
+              &lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/Card&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+function calculateDistribution(reviews) {
+  const total = reviews.length;
+  const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+
+  reviews.forEach((review) =&gt; {
+    distribution[review.rating]++;
+  });
+
+  // تحويل إلى نسب مئوية
+  Object.keys(distribution).forEach((key) =&gt; {
+    distribution[key] = Math.round((distribution[key] / total) * 100) || 0;
+  });
+
+  return distribution;
+}</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة حول المراجعات</div>
+          <div class="callout-content">
+            <p>يمكنك تحسين المراجعات بإضافة:</p>
+            <ul>
+              <li>صورة المستخدم من Clerk أو Gravatar</li>
+              <li>علامة "عميل مشتري" للتحقق</li>
+              <li>فلتر حسب التقييم</li>
+              <li>إمكانية التصويت للمراجعة</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده بنينا:</p>
+        <ul>
+          <li>✅ معرض صور مع تأثيرات احترافية</li>
+          <li>✅ محدد الكمية</li>
+          <li>✅ زر أضف للسلة مع حالات التحميل</li>
+          <li>✅ معلومات المنتج الكاملة</li>
+          <li>✅ شعارات الثقة</li>
+          <li>✅ نظام المراجعات</li>
+          <li>✅ التنقل بالفتات (Breadcrumb)</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 다음 درس</div>
+          <div class="callout-content">
+            في الدرس الجاي هنبني <strong>نظام سلة المشتريات</strong> الكامل.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="11-products-page.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">صفحة المنتجات</span>
+        </a>
+        <a href="13-cart-system.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">نظام السلة</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 07 - نظام Admin وحماية المسارات</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 07</span>
+        </div>
+        <h1>نظام Admin وحماية المسارات</h1>
+        <div class="meta">
+          <span>⏱️ 20 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 2: قاعدة البيانات والمصادقة</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>إعداد Middleware لحماية المسارات</li>
+          <li>حماية صفحات Admin</li>
+          <li>التحقق من صلاحيات المستخدم</li>
+          <li>التعامل مع المسارات العامة والمحمية</li>
+          <li>إعادة التوجيه (Redirect) بشكل صحيح</li>
+        </ul>
+
+        <h2>🛡️什么是 Middleware؟</h2>
+        <p><strong>Middleware</strong> في Next.js هو كود بيشتغل قبل ما الطلب يوصل للصفحة. ممكن نستخدمه للتحقق من المصادقة وحماية المسارات.</p>
+
+        <h3>استخدامات Middleware:</h3>
+        <ul>
+          <li>حماية المسارات المحمية</li>
+          <li>إعادة التوجيه بناءً على الحالة</li>
+          <li>إضافة headers إضافية</li>
+          <li>التحقق من الصلاحيات</li>
+          <li>إعادة كتابة الروابط (Rewriting)</li>
+        </ul>
+
+        <h2>🔧 الخطوة 1: إعداد Middleware</h2>
+        <p>أنشئ ملف <code>middleware.js</code> في جذر المشروع:</p>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 market/</div>
+          <div class="file-tree-item file">├── 📄 middleware.js           # Middleware الرئيسي</div>
+          <div class="file-tree-item file">├── 📁 app/</div>
+          <div class="file-tree-item file">├── 📁 components/</div>
+          <div class="file-tree-item file">└── 📁 lib/</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">middleware.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+
+// تعريف المسارات العامة (ممكن أي حد يوصلها)
+const publicPaths = createRouteMatcher([
+  '/',
+  '/products(.*)',
+  '/about',
+  '/contact',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/api(.*)',
+]);
+
+// تعريف مسارات Admin
+const adminPaths = createRouteMatcher([
+  '/admin(.*)',
+  '/admin/dashboard(.*)',
+  '/admin/products(.*)',
+  '/admin/orders(.*)',
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  // إذا كان المسار عام، اسمح بالوصول
+  if (publicPaths(req)) {
+    return;
+  }
+  
+  // إذا كان المسار Admin، تحقق من الصلاحيات
+  if (adminPaths(req)) {
+    const { userId } = await auth();
+    
+    // إذا لم يكن المستخدم مسجلاً، أعد التوجيه لصفحة تسجيل الدخول
+    if (!userId) {
+      return Response.redirect(new URL('/sign-in', req.url));
+    }
+    
+    // تحقق من أن المستخدم Admin
+    // يمكنك تخزين معلومات المستخدم في database أو JWT
+    // هنا مثال بسيط للتحقق من البريد الإلكتروني
+    const user = await auth.user?.();
+    const isAdmin = user?.emailAddresses?.[0]?.emailAddress === 'admin@example.com';
+    
+    if (!isAdmin) {
+      // إعادة التوجيه للصفحة الرئيسية إذا لم يكن Admin
+      return Response.redirect(new URL('/', req.url));
+    }
+  }
+  
+  // لبقية المسارات، تحقق من المصادقة
+  const { userId } = await auth();
+  
+  if (!userId) {
+    // إعادة التوجيه لصفحة تسجيل الدخول
+    return Response.redirect(new URL('/sign-in', req.url));
+  }
+});
+
+export const config = {
+  matcher: [
+    // تخطي ملفات النثاث والصور
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+  ],
+};</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 شرح الكود</div>
+          <div class="callout-content">
+            <ul>
+              <li><code>createRouteMatcher</code> - دالة بتساعدك تحدد المسارات</li>
+              <li><code>clerkMiddleware</code> - Middleware خاص بـ Clerk للمصادقة</li>
+              <li><code>auth()</code> - بيرجع معلومات المستخدم الحالي</li>
+              <li><code>config.matcher</code> - بيحدد على أي طلبات يشتغل الـ Middleware</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📁 الخطوة 2: هيكل صفحات Admin</h2>
+        <p>أنشئ مجلد <code>(admin)</code> لصفحات لوحة التحكم:</p>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/</div>
+          <div class="file-tree-item file">├── 📁 (admin)/                 # صفحات Admin</div>
+          <div class="file-tree-item file">│   ├── 📄 layout.js           # Layout خاص بـ Admin</div>
+          <div class="file-tree-item file">│   ├── 📄 page.js             # Dashboard</div>
+          <div class="file-tree-item file">│   ├── 📁 products/</div>
+          <div class="file-tree-item file">│   │   └── 📄 page.js         # إدارة المنتجات</div>
+          <div class="file-tree-item file">│   └── 📁 orders/</div>
+          <div class="file-tree-item file">│       └── 📄 page.js         # إدارة الطلبات</div>
+          <div class="file-tree-item file">├── 📁 (shop)/                 # صفحات المتجر</div>
+          <div class="file-tree-item file">├── 📁 (auth)/                 # صفحات Auth</div>
+          <div class="file-tree-item file">├── 📄 layout.js               # Layout رئيسي</div>
+          <div class="file-tree-item file">└── 📄 page.js</div>
+        </div>
+
+        <h2>📐 الخطوة 3: Layout خاص بـ Admin</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(admin)/layout.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>"use client";
+
+import { useAuth, useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import Link from 'next/link';
+
+export default function AdminLayout({ children }) {
+  const { userId } = useAuth();
+  const { user } = useUser();
+  const router = useRouter();
+  
+  // التحقق من أن المستخدم Admin
+  useEffect(() => {
+    if (userId) {
+      // هنا ممكن تتحقق من Database إذا كان المستخدم Admin
+      // للتبسيط، هنستخدم البريد الإلكتروني
+      const isAdmin = user?.emailAddresses?.[0]?.emailAddress === 'admin@example.com';
+      
+      if (!isAdmin) {
+        router.push('/');
+      }
+    }
+  }, [userId, user, router]);
+  
+  // إذا لم يكن المستخدم مسجلاً
+  if (!userId) {
+    return (
+      &lt;div className="flex items-center justify-center min-h-screen"&gt;
+        &lt;p&gt;جاري التحقق من الصلاحيات...&lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+  
+  return (
+    &lt;div className="flex min-h-screen"&gt;
+      {/* الشريط الجانبي */}
+      &lt;aside className="w-64 bg-gray-900 text-white p-4"&gt;
+        &lt;div className="mb-8"&gt;
+          &lt;h2 className="text-xl font-bold"&gt;لوحة التحكم&lt;/h2&gt;
+          &lt;p className="text-sm text-gray-400"&gt;مرحباً {user?.firstName}&lt;/p&gt;
+        &lt;/div&gt;
+        
+        &lt;nav className="space-y-2"&gt;
+          &lt;Link 
+            href="/admin"
+            className="block p-2 rounded hover:bg-gray-800 transition-colors"
+          &gt;
+            📊 Dashboard
+          &lt;/Link&gt;
+          &lt;Link 
+            href="/admin/products"
+            className="block p-2 rounded hover:bg-gray-800 transition-colors"
+          &gt;
+            📦 المنتجات
+          &lt;/Link&gt;
+          &lt;Link 
+            href="/admin/orders"
+            className="block p-2 rounded hover:bg-gray-800 transition-colors"
+          &gt;
+            🛒 الطلبات
+          &lt;/Link&gt;
+        &lt;/nav&gt;
+      &lt;/aside&gt;
+      
+      {/* المحتوى الرئيسي */}
+      &lt;main className="flex-1 p-8"&gt;
+        {children}
+      &lt;/main&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📊 الخطوة 4: صفحة Dashboard</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(admin)/page.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { supabase } from '@/lib/supabase';
+
+export default async function AdminDashboard() {
+  // جلب إحصائيات
+  const { data: products } = await supabase
+    .from('products')
+    .select('id', { count: 'exact' });
+  
+  const { data: orders } = await supabase
+    .from('orders')
+    .select('id', { count: 'exact' });
+  
+  return (
+    &lt;div&gt;
+      &lt;h1 className="text-3xl font-bold mb-8"&gt;Dashboard&lt;/h1&gt;
+      
+      {/* الإحصائيات */}
+      &lt;div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"&gt;
+        &lt;div className="bg-white p-6 rounded-lg shadow"&gt;
+          &lt;h3 className="text-gray-500 text-sm"&gt;المنتجات&lt;/h3&gt;
+          &lt;p className="text-3xl font-bold"&gt;{products?.length || 0}&lt;/p&gt;
+        &lt;/div&gt;
+        
+        &lt;div className="bg-white p-6 rounded-lg shadow"&gt;
+          &lt;h3 className="text-gray-500 text-sm"&gt;الطلبات&lt;/h3&gt;
+          &lt;p className="text-3xl font-bold"&gt;{orders?.length || 0}&lt;/p&gt;
+        &lt;/div&gt;
+        
+        &lt;div className="bg-white p-6 rounded-lg shadow"&gt;
+          &lt;h3 className="text-gray-500 text-sm"&gt;المبيعات&lt;/h3&gt;
+          &lt;p className="text-3xl font-bold"&gt;$0.00&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      
+      {/* آخر الطلبات */}
+      &lt;div className="bg-white rounded-lg shadow p-6"&gt;
+        &lt;h2 className="text-xl font-bold mb-4"&gt;آخر الطلبات&lt;/h2&gt;
+        &lt;p className="text-gray-500"&gt;لا توجد طلبات بعد&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔐 الخطوة 5: حماية API Routes</h2>
+        <p>ممكن نحمي API Routes باستخدام Middleware أو Clerk مباشرة:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/api/admin/products/route.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { auth } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+
+// GET: جلب كل المنتجات (Admin فقط)
+export async function GET() {
+  const { userId } = await auth();
+  
+  if (!userId) {
+    return NextResponse.json(
+      { error: 'غير مصرح' },
+      { status: 401 }
+    );
+  }
+  
+  // هنا ممكن تتحقق من أن المستخدم Admin
+  // ...
+  
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+  
+  return NextResponse.json(data);
+}
+
+// POST: إضافة منتج جديد (Admin فقط)
+export async function POST(request) {
+  const { userId } = await auth();
+  
+  if (!userId) {
+    return NextResponse.json(
+      { error: 'غير مصرح' },
+      { status: 401 }
+    );
+  }
+  
+  const body = await request.json();
+  
+  const { data, error } = await supabase
+    .from('products')
+    .insert([body])
+    .select();
+  
+  if (error) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
+  
+  return NextResponse.json(data[0], { status: 201 });
+}</code></pre>
+        </div>
+
+        <h2>🔄 الخطوة 6: إعادة التوجيه الذكية</h2>
+        <p>ممكن نحسن تجربة المستخدم بإعادة توجيه ذكية:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">middleware.js - إعادة توجيه محسنة</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+
+const publicPaths = createRouteMatcher([
+  '/',
+  '/products(.*)',
+  '/about',
+  '/contact',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+]);
+
+const adminPaths = createRouteMatcher([
+  '/admin(.*)',
+]);
+
+export default clerkMiddleware(async (auth, req) => {
+  const { userId } = await auth();
+  
+  // إذا كان المسار عام، اسمح بالوصول
+  if (publicPaths(req)) {
+    // إذا كان المستخدم مسجلاً وحاول الدخول لصفحة تسجيل الدخول
+    if (userId && (req.nextUrl.pathname === '/sign-in' || req.nextUrl.pathname === '/sign-up')) {
+      return Response.redirect(new URL('/', req.url));
+    }
+    return;
+  }
+  
+  // إذا كان المسار Admin
+  if (adminPaths(req)) {
+    if (!userId) {
+      // حفظ المسار الأصلي للعودة إليه بعد تسجيل الدخول
+      const signInUrl = new URL('/sign-in', req.url);
+      signInUrl.searchParams.set('redirect_url', req.url);
+      return Response.redirect(signInUrl);
+    }
+    
+    // تحقق من الصلاحيات هنا
+    // ...
+  }
+  
+  // لبقية المسارات
+  if (!userId) {
+    return Response.redirect(new URL('/sign-in', req.url));
+  }
+});</code></pre>
+        </div>
+
+        <h2>📋 ملخص أنواع الحماية</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الطريقة</th>
+                <th>الاستخدام</th>
+                <th>مثال</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Middleware</code></td>
+                <td>حماية على مستوى السيرفر</td>
+                <td>حماية كل المسارات بناءً على الشرط</td>
+              </tr>
+              <tr>
+                <td><code>SignedIn / SignedOut</code></td>
+                <td>إظهار/إخفاء المحتوى</td>
+                <td>إظهار زر تسجيل الدخول للضيوف</td>
+              </tr>
+              <tr>
+                <td><code>useAuth()</code></td>
+                <td>التحقق في Client Components</td>
+                <td>إظهار معلومات المستخدم</td>
+              </tr>
+              <tr>
+                <td><code>auth()</code></td>
+                <td>التحقق في Server Components</td>
+                <td>جلب بيانات المستخدم من قاعدة البيانات</td>
+              </tr>
+              <tr>
+                <td><code>API Route Protection</code></td>
+                <td>حماية Endpoints</td>
+                <td>التحقق قبل تنفيذ عملية</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده عملنا:</p>
+        <ul>
+          <li>✅ إعداد Middleware لحماية المسارات</li>
+          <li>✅ تعريف المسارات العامة والمحمية</li>
+          <li>✅ حماية صفحات Admin</li>
+          <li>✅ Layout خاص بـ Admin</li>
+          <li>✅ حماية API Routes</li>
+          <li>✅ إعادة التوجيه الذكية</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 مبروك!</div>
+          <div class="callout-content">
+            كده خلّصنا الوحدة الثانية! عندك الآن قاعدة بيانات مع Supabase ونظام مصادقة مع Clerk وحماية للمسارات. في الوحدة الجاي هنبني واجهة المستخدم.
+          </div>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة أخيرة</div>
+          <div class="callout-content">
+            دايماً اختبر حماية المسارات بشكل شامل. جرّب تسجل الدخول وبدون تسجيل، وجرّب الوصول لصفحات Admin بحساب عادي وحساب Admin.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="06-clerk-auth.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">إعداد Clerk Authentication</span>
+        </a>
+        <a href="../index.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">الدروس التالية →</span>
+          <span class="nav-btn-title">الوحدة الثالثة: واجهة المستخدم</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

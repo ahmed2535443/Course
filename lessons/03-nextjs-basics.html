@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 03 - أساسيات Next.js 16 و App Router</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 03</span>
+        </div>
+        <h1>أساسيات Next.js 16 و App Router</h1>
+        <div class="meta">
+          <span>⏱️ 30 دقيقة</span>
+          <span>📖 نظري + عملي</span>
+          <span>الوحدة 1: الأساسيات</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>فهم什么是 App Router في Next.js</li>
+          <li>إنشاء صفحات ومخططات (Layouts)</li>
+          <li>التعامل مع المسارات الديناميكية (Dynamic Routes)</li>
+          <li>فهم الفرق بين Client و Server Components</li>
+          <li>فهم نظام التوجيه المبني على الملفات (File-based Routing)</li>
+        </ul>
+
+        <h2>📂什么是 App Router؟</h2>
+        <p>App Router هو نظام التوجيه الجديد في Next.js 13+ اللي بيعتمد على مجلد <code>app</code>. بدل ما نستخدم مجلد <code>pages</code> القديم، بنستخدم <code>app</code> اللي بيقدم مميزات أقوى.</p>
+
+        <h3>المميزات الرئيسية لـ App Router:</h3>
+        <ul>
+          <li><strong>Layouts</strong> - تخطيطات مشتركة بين الصفحات</li>
+          <li><strong>Server Components</strong> - مكونات بتشتغل على السيرفر</li>
+          <li><strong>Streaming</strong> - تحميل تدريجي للمحتوى</li>
+          <li><strong>Async Components</strong> - مكونات asynchronous</li>
+          <li><strong>Error Handling</strong> - معالجة أخطاء متقدمة</li>
+        </ul>
+
+        <h2>📄 إنشاء صفحة جديدة</h2>
+        <p>في App Router، كل ملف <code>page.js</code> في مجلد يمثل صفحة.</p>
+
+        <h3>مثال: إنشاء صفحة "المنتجات"</h3>
+        
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/</div>
+          <div class="file-tree-item file">├── 📁 products/               # مجلد المنتجات</div>
+          <div class="file-tree-item file">│   └── 📄 page.js             # صفحة المنتجات</div>
+          <div class="file-tree-item file">├── 📄 layout.js</div>
+          <div class="file-tree-item file">└── 📄 page.js</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/products/page.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>export default function ProductsPage() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;المنتجات&lt;/h1&gt;
+      &lt;p&gt;هنا هنعرض كل المنتجات المتاحة&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <p>الآن ممكن نزور الصفحة على: <code>http://localhost:3000/products</code></p>
+
+        <h2>📐 المخططات (Layouts)</h2>
+        <p>الـ Layout بيمثل التخطيط المشترك بين صفحات كتير. مثلاً، الـ Header والـ Footer بيكونوا في الـ Layout عشان يظهروا في كل الصفحات.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/layout.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import "./globals.css";
+
+export const metadata = {
+  title: "Market - متجر إلكتروني",
+  description: "متجر إلكتروني كامل",
+};
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html lang="ar"&gt;
+      &lt;body&gt;
+        &lt;header&gt;
+          &lt;nav&gt;
+            &lt;a href="/"&gt;الرئيسية&lt;/a&gt;
+            &lt;a href="/products"&gt;المنتجات&lt;/a&gt;
+            &lt;a href="/about"&gt;من نحن&lt;/a&gt;
+          &lt;/nav&gt;
+        &lt;/header&gt;
+        
+        &lt;main&gt;{children}&lt;/main&gt;
+        
+        &lt;footer&gt;
+          &lt;p&gt;جميع الحقوق محفوظة&lt;/p&gt;
+        &lt;/footer&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة</div>
+          <div class="callout-content">
+            الـ Layout بيتكرر تلقائياً لكل الصفحات اللي تحتيه. لو عندك Layout خاص بمجلد معين، حط ملف <code>layout.js</code> في المجلد ده.
+          </div>
+        </div>
+
+        <h2>🔗 المسارات الديناميكية (Dynamic Routes)</h2>
+        <p>المسارات الديناميكية بتسمحلك تقبل параметriers في الـ URL. في Next.js بنستخدم الأقواس المربعة <code>[param]</code>.</p>
+
+        <h3>مثال: صفحة تفاصيل المنتج</h3>
+        
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/</div>
+          <div class="file-tree-item file">├── 📁 products/</div>
+          <div class="file-tree-item file">│   ├── 📁 [id]/               # مسار ديناميكي</div>
+          <div class="file-tree-item file">│   │   └── 📄 page.js         # صفحة تفاصيل المنتج</div>
+          <div class="file-tree-item file">│   └── 📄 page.js             # صفحة كل المنتجات</div>
+          <div class="file-tree-item file">├── 📄 layout.js</div>
+          <div class="file-tree-item file">└── 📄 page.js</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/products/[id]/page.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>export default function ProductDetails({ params }) {
+  const { id } = params;
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;تفاصيل المنتج رقم {id}&lt;/h1&gt;
+      &lt;p&gt;هنا هنعرض تفاصيل المنتج {id}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>الوصول للبرامترز</h3>
+        <p>في Next.js 15 و 16، الـ params بقت <strong>Promise</strong>:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/products/[id]/page.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>export default async function ProductDetails({ params }) {
+  const { id } = await params;
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;تفاصيل المنتج رقم {id}&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ تنبيه</div>
+          <div class="callout-content">
+            في Next.js 15+، لازم نستخدم <code>await</code> مع الـ params عشان بقت Promise. لو مش عملت كده، هتلاقي أخطاء.
+          </div>
+        </div>
+
+        <h2>🖥️ Client vs Server Components</h2>
+        <p>في Next.js، فيه نوعين من المكونات:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Server Components</th>
+                <th>Client Components</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>بتشتغل على السيرفر</td>
+                <td>بتشتغل على المتصفح (Client)</td>
+              </tr>
+              <tr>
+                <td>مش بتحتاج "use client"</td>
+                <td>محتاجة "use client" في الأول</td>
+              </tr>
+              <tr>
+                <td>أسرع في التحميل</td>
+                <td>ممكن تفاعل مع المستخدم</td>
+              </tr>
+              <tr>
+                <td>ممكن تستخدم async/await</td>
+                <td>ممكن تستخدم useState, useEffect</td>
+              </tr>
+              <tr>
+                <td>الـ Default في Next.js</td>
+                <td>لازم نحددّها صراحة</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>مثال: Server Component</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/products/page.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>// Server Component - الافتراضي
+// ممكن نجلب بيانات من قاعدة البيانات مباشرة
+
+async function getProducts() {
+  const res = await fetch('https://api.example.com/products');
+  return res.json();
+}
+
+export default async function ProductsPage() {
+  const products = await getProducts();
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;المنتجات&lt;/h1&gt;
+      &lt;ul&gt;
+        {products.map(product =&gt; (
+          &lt;li key={product.id}&gt;{product.name}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>مثال: Client Component</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/components/Counter.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>"use client"; // لازم نكتبها في الأول
+
+import { useState } from 'react';
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+  
+  return (
+    &lt;div&gt;
+      &lt;p&gt;العدد: {count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;
+        زيادة
+      &lt;/button&gt;
+      &lt;button onClick={() =&gt; setCount(count - 1)}&gt;
+        نقصان
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 متى نستخدم Client Component؟</div>
+          <div class="callout-content">
+            استخدم Client Component لو محتاج:
+            <ul>
+              <li>useState أو useReducer</li>
+              <li>useEffect</li>
+              <li>أحداث المستخدم (onClick, onChange)</li>
+              <li>Browser APIs (localStorage, window)</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📁 هيكل المجلدات في المشروع</h2>
+        <p>في المشروع ده، هنستخدم <strong>Route Groups</strong> عشان ننظم الصفحات:</p>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/</div>
+          <div class="file-tree-item file">├── 📁 (shop)/                 # صفحات المتجر</div>
+          <div class="file-tree-item file">│   ├── 📁 products/</div>
+          <div class="file-tree-item file">│   │   ├── 📁 [id]/</div>
+          <div class="file-tree-item file">│   │   │   └── 📄 page.js</div>
+          <div class="file-tree-item file">│   │   └── 📄 page.js</div>
+          <div class="file-tree-item file">│   ├── 📄 layout.js</div>
+          <div class="file-tree-item file">│   └── 📄 page.js</div>
+          <div class="file-tree-item file">├── 📁 (admin)/                # صفحات Admin</div>
+          <div class="file-tree-item file">│   ├── 📁 dashboard/</div>
+          <div class="file-tree-item file">│   │   └── 📄 page.js</div>
+          <div class="file-tree-item file">│   ├── 📄 layout.js</div>
+          <div class="file-tree-item file">│   └── 📄 page.js</div>
+          <div class="file-tree-item file">├── 📁 (auth)/                 # صفحات تسجيل الدخول</div>
+          <div class="file-tree-item file">│   ├── 📄 layout.js</div>
+          <div class="file-tree-item file">│   └── 📄 page.js</div>
+          <div class="file-tree-item file">├── 📄 layout.js               # Layout رئيسي</div>
+          <div class="file-tree-item file">└── 📄 page.js                 # الصفحة الرئيسية</div>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 Route Groups</div>
+          <div class="callout-content">
+            الأقواس المدورة <code>(shop)</code> بتوصل إن المجلد ده <strong>Route Group</strong> ومش بتتأثر على الـ URL. يعني <code>(shop)/products</code> هتكون نفس <code>/products</code>.
+          </div>
+        </div>
+
+        <h2>🔍 إنشاء مسار ديناميكي مع query</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/products/[id]/page.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>// استخدام searchParams للحصول على query parameters
+export default async function ProductDetails({ params, searchParams }) {
+  const { id } = await params;
+  const { color, size } = await searchParams;
+  
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;المنتج {id}&lt;/h1&gt;
+      &lt;p&gt;اللون: {color || 'غير محدد'}&lt;/p&gt;
+      &lt;p&gt;المقاس: {size || 'غير محدد'}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده اتعلمنا:</p>
+        <ul>
+          <li>✅ App Router و إزاي يشتغل</li>
+          <li>✅ إنشاء صفحات بملفات page.js</li>
+          <li>✅ استخدام Layouts للتخطيط المشترك</li>
+          <li>✅ المسارات الديناميكية [id]</li>
+          <li>✅ الفرق بين Server و Client Components</li>
+          <li>✅ Route Groups لتنظيم المشروع</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 الدرس الجاي</div>
+          <div class="callout-content">
+            في الدرس الجاي هنتعلم <strong>إعداد Tailwind CSS 4</strong> - هنشتغل على التصميم ونعرف إزاي نستخدم الـ Utility Classes.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="02-environment-setup.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">إعداد بيئة التطوير</span>
+        </a>
+        <a href="04-tailwind-setup.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">إعداد Tailwind CSS 4</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

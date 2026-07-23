@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 10 - الصفحة الرئيسية</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 10</span>
+        </div>
+        <h1>الصفحة الرئيسية</h1>
+        <div class="meta">
+          <span>⏱️ 40 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 3: واجهة المستخدم</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>بناء Hero Section مع تدرج ألوان وعناصر متحركة</li>
+          <li>إنشاء قسم المنتجات المميزة</li>
+          <li>بناء قسم التصنيفات</li>
+          <li>إنشاء قسم شعارات الثقة (Trust Badges)</li>
+          <li>بناء قسم الإحصائيات</li>
+        </ul>
+
+        <h2>📁 هيكل ملفات الصفحة الرئيسية</h2>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/(shop)/</div>
+          <div class="file-tree-item file">└── 📄 page.js                # الصفحة الرئيسية</div>
+          <div class="file-tree-item folder">📁 components/home/</div>
+          <div class="file-tree-item file">├── 📄 Hero.jsx               # القسم الرئيسي</div>
+          <div class="file-tree-item file">├── 📄 FeaturedProducts.jsx   # المنتجات المميزة</div>
+          <div class="file-tree-item file">├── 📄 Categories.jsx         # التصنيفات</div>
+          <div class="file-tree-item file">├── 📄 TrustBadges.jsx        # شعارات الثقة</div>
+          <div class="file-tree-item file">└── 📄 Stats.jsx              # الإحصائيات</div>
+        </div>
+
+        <h2>🏠 الخطوة 1: الصفحة الرئيسية</h2>
+        <p>الآن نجمع كل الأقسام في الصفحة الرئيسية:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Hero from '@/components/home/Hero';
+import FeaturedProducts from '@/components/home/FeaturedProducts';
+import Categories from '@/components/home/Categories';
+import TrustBadges from '@/components/home/TrustBadges';
+import Stats from '@/components/home/Stats';
+
+export default function HomePage() {
+  return (
+    &lt;div&gt;
+      {/* Hero Section */}
+      &lt;Hero /&gt;
+
+      {/* Trust Badges */}
+      &lt;TrustBadges /&gt;
+
+      {/* Featured Products */}
+      &lt;FeaturedProducts /&gt;
+
+      {/* Categories */}
+      &lt;Categories /&gt;
+
+      {/* Stats */}
+      &lt;Stats /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🦸 الخطوة 2: Hero Section</h2>
+        <p>القسم الرئيسي بتأثير تدرج ألوان وعناصر متحركة:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/home/Hero.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { ArrowLeft, ShoppingBag, Star } from 'lucide-react';
+import Button from '@/components/ui/Button';
+
+export default function Hero() {
+  return (
+    &lt;section className="relative min-h-screen flex items-center overflow-hidden"&gt;
+      {/* Background Gradient */}
+      &lt;div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-indigo-900/20 to-purple-900/20" /&gt;
+      
+      {/* Animated Background Elements */}
+      &lt;div className="absolute inset-0 overflow-hidden"&gt;
+        &lt;motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl"
+        /&gt;
+        &lt;motion.div
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [360, 180, 0],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl"
+        /&gt;
+      &lt;/div&gt;
+
+      {/* Content */}
+      &lt;div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"&gt;
+        &lt;div className="grid lg:grid-cols-2 gap-12 items-center"&gt;
+          
+          {/* Text Content */}
+          &lt;motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+          &gt;
+            {/* Badge */}
+            &lt;motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/20 border border-indigo-500/30 mb-6"
+            &gt;
+              &lt;Star className="w-4 h-4 text-yellow-400 fill-yellow-400" /&gt;
+              &lt;span className="text-indigo-300 text-sm font-medium"&gt;عرض خاص - خصم 30%&lt;/span&gt;
+            &lt;/motion.div&gt;
+
+            {/* Title */}
+            &lt;motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
+            &gt;
+              اكتشف
+              &lt;span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400"&gt;
+                {" "}أفضل المنتجات{" "}
+              &lt;/span&gt;
+              بأسعار مذهلة
+            &lt;/motion.h1&gt;
+
+            {/* Description */}
+            &lt;motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="text-lg text-gray-300 mb-8 max-w-lg"
+            &gt;
+              تسوق من مجموعتنا المختارة من المنتجات عالية الجودة. شحن سريع، دفع آمن، ورضا تام.
+            &lt;/motion.p&gt;
+
+            {/* Buttons */}
+            &lt;motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="flex flex-wrap gap-4"
+            &gt;
+              &lt;Link href="/products"&gt;
+                &lt;Button size="lg" className="group"&gt;
+                  &lt;ShoppingBag className="w-5 h-5 ml-2 group-hover:scale-110 transition-transform" /&gt;
+                  تصفّح المنتجات
+                &lt;/Button&gt;
+              &lt;/Link&gt;
+              &lt;Link href="/offers"&gt;
+                &lt;Button variant="secondary" size="lg" className="group"&gt;
+                  العروض الحالية
+                  &lt;ArrowLeft className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" /&gt;
+                &lt;/Button&gt;
+              &lt;/Link&gt;
+            &lt;/motion.div&gt;
+
+            {/* Stats */}
+            &lt;motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1 }}
+              className="flex gap-8 mt-12"
+            &gt;
+              &lt;div&gt;
+                &lt;p className="text-3xl font-bold text-white"&gt;+500&lt;/p&gt;
+                &lt;p className="text-gray-400 text-sm"&gt;منتج&lt;/p&gt;
+              &lt;/div&gt;
+              &lt;div&gt;
+                &lt;p className="text-3xl font-bold text-white"&gt;+10K&lt;/p&gt;
+                &lt;p className="text-gray-400 text-sm"&gt;عميل سعيد&lt;/p&gt;
+              &lt;/div&gt;
+              &lt;div&gt;
+                &lt;p className="text-3xl font-bold text-white"&gt;4.9&lt;/p&gt;
+                &lt;p className="text-gray-400 text-sm"&gt;تقييم&lt;/p&gt;
+              &lt;/div&gt;
+            &lt;/motion.div&gt;
+          &lt;/motion.div&gt;
+
+          {/* Image/Grid */}
+          &lt;motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="relative hidden lg:block"
+          &gt;
+            &lt;div className="relative w-full h-[500px] rounded-3xl overflow-hidden"&gt;
+              {/* Gradient Background */}
+              &lt;div className="absolute inset-0 bg-gradient-to-br from-indigo-500/30 to-purple-500/30 backdrop-blur-3xl" /&gt;
+              
+              {/* Floating Elements */}
+              &lt;motion.div
+                animate={{ y: [0, -20, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="absolute top-10 left-10 w-32 h-32 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 flex items-center justify-center"
+              &gt;
+                &lt;ShoppingBag className="w-12 h-12 text-white" /&gt;
+              &lt;/motion.div&gt;
+              
+              &lt;motion.div
+                animate={{ y: [0, 20, 0] }}
+                transition={{ duration: 4, repeat: Infinity }}
+                className="absolute bottom-20 right-10 w-40 h-40 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 flex items-center justify-center"
+              &gt;
+                &lt;span className="text-4xl"&gt;🎉&lt;/span&gt;
+              &lt;/motion.div&gt;
+            &lt;/div&gt;
+          &lt;/motion.div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 مكتبة Framer Motion</div>
+          <div class="callout-content">
+            <p>Framer Motion توفر حركات سلسة واحترافية. أهم الخصائص:</p>
+            <ul>
+              <li><strong>animate</strong>: القيمة المطلوبة للحركة</li>
+              <li><strong>initial</strong>: القيمة الأولية</li>
+              <li><strong>transition</strong>: سرعة ونوع الحركة</li>
+              <li><strong>whileHover</strong>: الحركة عند المرور</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>⭐ الخطوة 3: المنتجات المميزة</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/home/FeaturedProducts.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import ProductCard from '@/components/products/ProductCard';
+
+export default function FeaturedProducts() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    // جلب المنتجات المميزة
+    fetchFeaturedProducts();
+  }, []);
+
+  const fetchFeaturedProducts = async () =&gt; {
+    try {
+      const response = await fetch('/api/products?featured=true&amp;limit=8');
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error('Error fetching featured products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    &lt;section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"&gt;
+      {/* Header */}
+      &lt;div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-12"&gt;
+        &lt;div&gt;
+          &lt;h2 className="text-3xl font-bold text-white mb-2"&gt;
+            المنتجات المميزة
+          &lt;/h2&gt;
+          &lt;p className="text-gray-400"&gt;
+            اكتشف مجموعتنا المختارة من أفضل المنتجات
+          &lt;/p&gt;
+        &lt;/div&gt;
+        &lt;Link
+          href="/products"
+          className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors"
+        &gt;
+          عرض الكل
+          &lt;ArrowLeft className="w-4 h-4" /&gt;
+        &lt;/Link&gt;
+      &lt;/div&gt;
+
+      {/* Products Grid */}
+      {loading ? (
+        &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"&gt;
+          {[...Array(8)].map((_, i) =&gt; (
+            &lt;div
+              key={i}
+              className="h-80 bg-white/5 rounded-2xl animate-pulse"
+            /&gt;
+          ))}
+        &lt;/div&gt;
+      ) : (
+        &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"&gt;
+          {products.map((product) =&gt; (
+            &lt;ProductCard key={product.id} product={product} /&gt;
+          ))}
+        &lt;/div&gt;
+      )}
+    &lt;/section&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📂 الخطوة 4: قسم التصنيفات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/home/Categories.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { 
+  Smartphone, 
+  Laptop, 
+  Headphones, 
+  Watch, 
+  Camera, 
+  Gamepad2 
+} from 'lucide-react';
+
+const categories = [
+  {
+    id: 1,
+    name: 'الإلكترونيات',
+    icon: Smartphone,
+    href: '/categories/electronics',
+    color: 'from-blue-500 to-cyan-500',
+  },
+  {
+    id: 2,
+    name: 'ال computers',
+    icon: Laptop,
+    href: '/categories/computers',
+    color: 'from-purple-500 to-pink-500',
+  },
+  {
+    id: 3,
+    name: 'السماعات',
+    icon: Headphones,
+    href: '/categories/audio',
+    color: 'from-green-500 to-emerald-500',
+  },
+  {
+    id: 4,
+    name: 'الساعات',
+    icon: Watch,
+    href: '/categories/watches',
+    color: 'from-yellow-500 to-orange-500',
+  },
+  {
+    id: 5,
+    name: 'الكاميرات',
+    icon: Camera,
+    href: '/categories/cameras',
+    color: 'from-red-500 to-rose-500',
+  },
+  {
+    id: 6,
+    name: 'الألعاب',
+    icon: Gamepad2,
+    href: '/categories/gaming',
+    color: 'from-indigo-500 to-violet-500',
+  },
+];
+
+export default function Categories() {
+  return (
+    &lt;section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"&gt;
+      {/* Header */}
+      &lt;div className="text-center mb-12"&gt;
+        &lt;h2 className="text-3xl font-bold text-white mb-2"&gt;
+          تصفّح التصنيفات
+        &lt;/h2&gt;
+        &lt;p className="text-gray-400"&gt;
+          اختر ما يناسبك من مجموعتنا المتنوعة
+        &lt;/p&gt;
+      &lt;/div&gt;
+
+      {/* Categories Grid */}
+      &lt;div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"&gt;
+        {categories.map((category, index) =&gt; (
+          &lt;motion.div
+            key={category.id}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+          &gt;
+            &lt;Link
+              href={category.href}
+              className="block p-6 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:bg-white/10 transition-all duration-300 group"
+            &gt;
+              &lt;div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${category.color} flex items-center justify-center group-hover:scale-110 transition-transform`}&gt;
+                &lt;category.icon className="w-8 h-8 text-white" /&gt;
+              &lt;/div&gt;
+              &lt;h3 className="text-white text-center font-medium"&gt;
+                {category.name}
+              &lt;/h3&gt;
+            &lt;/Link&gt;
+          &lt;/motion.div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🛡️ الخطوة 5: شعارات الثقة</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/home/TrustBadges.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import { Truck, Shield, CreditCard, Headphones } from 'lucide-react';
+
+const badges = [
+  {
+    icon: Truck,
+    title: 'شحن مجاني',
+    description: 'للطلبات فوق $50',
+  },
+  {
+    icon: Shield,
+    title: 'دفع آمن',
+    description: 'حماية كاملة لبياناتك',
+  },
+  {
+    icon: CreditCard,
+    title: 'طرق دفع متعددة',
+    description: 'بطاقة، تحويل، دفع عند الاستلام',
+  },
+  {
+    icon: Headphones,
+    title: 'دعم 24/7',
+    description: 'فريق دعم متواجد دائماً',
+  },
+];
+
+export default function TrustBadges() {
+  return (
+    &lt;section className="py-12 border-y border-white/10"&gt;
+      &lt;div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"&gt;
+        &lt;div className="grid grid-cols-2 lg:grid-cols-4 gap-8"&gt;
+          {badges.map((badge) =&gt; (
+            &lt;div
+              key={badge.title}
+              className="flex items-center gap-4"
+            &gt;
+              &lt;div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center flex-shrink-0"&gt;
+                &lt;badge.icon className="w-6 h-6 text-indigo-400" /&gt;
+              &lt;/div&gt;
+              &lt;div&gt;
+                &lt;h3 className="text-white font-medium text-sm"&gt;
+                  {badge.title}
+                &lt;/h3&gt;
+                &lt;p className="text-gray-400 text-xs"&gt;
+                  {badge.description}
+                &lt;/p&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📊 الخطوة 6: قسم الإحصائيات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/home/Stats.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { motion } from 'framer-motion';
+import { Users, Package, ShoppingBag, Star } from 'lucide-react';
+
+const stats = [
+  {
+    icon: Users,
+    value: '+10,000',
+    label: 'عميل سعيد',
+    color: 'text-blue-400',
+  },
+  {
+    icon: Package,
+    value: '+500',
+    label: 'منتج متوفر',
+    color: 'text-green-400',
+  },
+  {
+    icon: ShoppingBag,
+    value: '+50,000',
+    label: 'طلب تم تنفيذه',
+    color: 'text-purple-400',
+  },
+  {
+    icon: Star,
+    value: '4.9',
+    label: 'متوسط التقييم',
+    color: 'text-yellow-400',
+  },
+];
+
+export default function Stats() {
+  return (
+    &lt;section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"&gt;
+      &lt;div className="relative rounded-3xl overflow-hidden"&gt;
+        {/* Background */}
+        &lt;div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600" /&gt;
+        &lt;div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10" /&gt;
+
+        {/* Content */}
+        &lt;div className="relative p-12 md:p-16"&gt;
+          &lt;div className="text-center mb-12"&gt;
+            &lt;h2 className="text-3xl font-bold text-white mb-2"&gt;
+              أرقام تتحدث عن جودتنا
+            &lt;/h2&gt;
+            &lt;p className="text-white/80"&gt;
+              نفخر بثقة عملائنا ونسعى دائماً لتقديم الأفضل
+            &lt;/p&gt;
+          &lt;/div&gt;
+
+          &lt;div className="grid grid-cols-2 lg:grid-cols-4 gap-8"&gt;
+            {stats.map((stat, index) =&gt; (
+              &lt;motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              &gt;
+                &lt;div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/10 backdrop-blur-lg flex items-center justify-center`}&gt;
+                  &lt;stat.icon className={`w-8 h-8 ${stat.color}`} /&gt;
+                &lt;/div&gt;
+                &lt;p className="text-4xl font-bold text-white mb-2"&gt;
+                  {stat.value}
+                &lt;/p&gt;
+                &lt;p className="text-white/80"&gt;
+                  {stat.label}
+                &lt;/p&gt;
+              &lt;/motion.div&gt;
+            ))}
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🎨 الخطوة 7: مكون ProductCard</h2>
+        <p>نحتاج مكون ProductCard لعرض المنتجات:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/ProductCard.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { Heart, ShoppingCart, Star } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import Button from '@/components/ui/Button';
+import Badge from '@/components/ui/Badge';
+
+export default function ProductCard({ product }) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    &lt;div
+      className="group relative bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden hover:bg-white/10 transition-all duration-300"
+      onMouseEnter={() =&gt; setIsHovered(true)}
+      onMouseLeave={() =&gt; setIsHovered(false)}
+    &gt;
+      {/* Image */}
+      &lt;div className="relative aspect-square overflow-hidden"&gt;
+        &lt;img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        /&gt;
+        
+        {/* Discount Badge */}
+        {product.discount && (
+          &lt;div className="absolute top-4 right-4"&gt;
+            &lt;Badge variant="danger"&gt;
+              -{product.discount}%
+            &lt;/Badge&gt;
+          &lt;/div&gt;
+        )}
+
+        {/* Wishlist Button */}
+        &lt;button
+          className={cn(
+            "absolute top-4 left-4 p-2 rounded-full transition-all duration-300",
+            isHovered
+              ? "bg-white text-red-500 opacity-100"
+              : "bg-black/50 text-white opacity-0"
+          )}
+        &gt;
+          &lt;Heart className="w-5 h-5" /&gt;
+        &lt;/button&gt;
+
+        {/* Quick Add Button */}
+        &lt;div
+          className={cn(
+            "absolute bottom-4 left-4 right-4 transition-all duration-300",
+            isHovered
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-4"
+          )}
+        &gt;
+          &lt;Button className="w-full" size="sm"&gt;
+            &lt;ShoppingCart className="w-4 h-4 ml-2" /&gt;
+            أضف للسلة
+          &lt;/Button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      {/* Content */}
+      &lt;div className="p-4"&gt;
+        {/* Category */}
+        &lt;p className="text-gray-400 text-xs mb-1"&gt;
+          {product.category}
+        &lt;/p&gt;
+
+        {/* Name */}
+        &lt;Link
+          href={`/products/${product.id}`}
+          className="block text-white font-medium mb-2 hover:text-indigo-400 transition-colors line-clamp-1"
+        &gt;
+          {product.name}
+        &lt;/Link&gt;
+
+        {/* Rating */}
+        &lt;div className="flex items-center gap-1 mb-2"&gt;
+          {[...Array(5)].map((_, i) =&gt; (
+            &lt;Star
+              key={i}
+              className={cn(
+                "w-4 h-4",
+                i &lt; product.rating
+                  ? "text-yellow-400 fill-yellow-400"
+                  : "text-gray-600"
+              )}
+            /&gt;
+          ))}
+          &lt;span className="text-gray-400 text-xs mr-2"&gt;
+            ({product.reviewCount})
+          &lt;/span&gt;
+        &lt;/div&gt;
+
+        {/* Price */}
+        &lt;div className="flex items-center gap-2"&gt;
+          &lt;span className="text-xl font-bold text-white"&gt;
+            ${product.price}
+          &lt;/span&gt;
+          {product.originalPrice && (
+            &lt;span className="text-sm text-gray-400 line-through"&gt;
+              ${product.originalPrice}
+            &lt;/span&gt;
+          )}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ ملاحظات الأداء</div>
+          <div class="callout-content">
+            <ul>
+              <li>استخدم <code>next/image</code> بدلاً من <code>&lt;img&gt;</code> لتحسين الأداء</li>
+              <li>أضف <code>loading="lazy"</code> للصور غير المرئية</li>
+              <li>استخدم <code>Suspense</code> لتحميل المكونات بشكل تدريجي</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده بنينا:</p>
+        <ul>
+          <li>✅ Hero Section مع تدرج ألوان وعناصر متحركة</li>
+          <li>✅ قسم المنتجات المميزة</li>
+          <li>✅ قسم التصنيفات</li>
+          <li>✅ شعارات الثقة</li>
+          <li>✅ قسم الإحصائيات</li>
+          <li>✅ مكون ProductCard</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 다음 درس</div>
+          <div class="callout-content">
+            في الدرس الجاي هنبني <strong>صفحة المنتجات</strong> مع بحث وفلتر وتصفح.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="09-layout-system.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">نظام التخطيط</span>
+        </a>
+        <a href="11-products-page.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">صفحة المنتجات</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

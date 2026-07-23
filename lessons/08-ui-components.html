@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 08 - مكونات واجهة المستخدم الأساسية</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 08</span>
+        </div>
+        <h1>مكونات واجهة المستخدم الأساسية</h1>
+        <div class="meta">
+          <span>⏱️ 30 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 3: واجهة المستخدم</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>بناء مكونات UI أساسية قابلة لإعادة الاستخدام</li>
+          <li>فهم نظام الألوان والتنسيقات في Tailwind</li>
+          <li>إنشاء مكونات Button بأشكال مختلفة</li>
+          <li>بناء مكونات Input مع حالات الخطأ</li>
+          <li>إنشاء مكونات Card بتأثير Glass</li>
+          <li>بناء مكونات Badge و Toast</li>
+          <li>استخدام دالة cn() لدمج الفئات</li>
+        </ul>
+
+        <h2>📦 هيكل مجلد المكونات</h2>
+        <p>هنبدأ بإنشاء هيكل المكونات في المشروع:</p>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 components/</div>
+          <div class="file-tree-item file">├── 📁 ui/                     # مكونات أساسية</div>
+          <div class="file-tree-item file">│   ├── 📄 Button.jsx</div>
+          <div class="file-tree-item file">│   ├── 📄 Input.jsx</div>
+          <div class="file-tree-item file">│   ├── 📄 Card.jsx</div>
+          <div class="file-tree-item file">│   ├── 📄 Badge.jsx</div>
+          <div class="file-tree-item file">│   ├── 📄 Toast.jsx</div>
+          <div class="file-tree-item file">│   └── 📄 cn.js</div>
+          <div class="file-tree-item file">├── 📁 layout/</div>
+          <div class="file-tree-item file">└── 📁 products/</div>
+        </div>
+
+        <h2>🔧 الخطوة 1: دالة cn() المساعدة</h2>
+        <p>دالة <code>cn()</code> هي دالة مهمة لدمج فئات Tailwind بشكل ذكي. هنستخدم مكتبة <code>clsx</code> و <code>tailwind-merge</code>:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">lib/cn.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+// دالة لدمج فئات CSS بشكل ذكي
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+
+// أمثلة على الاستخدام:
+// cn("px-4 py-2", isActive && "bg-blue-500")
+// cn("text-red-500", className) // يمكن تجاوز الألوان</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 لماذا نحتاج cn()؟</div>
+          <div class="callout-content">
+            <p>دالة <code>cn()</code> تحل مشكلتين:</p>
+            <ul>
+              <li><strong>دمج الفئات المتشابهة</strong>: مثلاً <code>cn("px-4", "px-8")</code> يعطيك <code>px-8</code> فقط</li>
+              <li><strong>الشروط المنطقية</strong>: تسمح بإضافة فئات بناءً على شروط</li>
+              <li><strong>تخصيص المكونات</strong>: تسمح للمستخدم بتمرير فئات إضافية</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>🎨 الخطوة 2: مكون Button</h2>
+        <p>مكون Button هو من أهم المكونات. هنشئه بعدة أشكال:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/ui/Button.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { cn } from '@/lib/cn';
+import { Loader2 } from 'lucide-react';
+
+// أنواع الـ Button
+const buttonVariants = {
+  primary: "bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-500/25",
+  secondary: "bg-white/10 text-white border border-white/20 hover:bg-white/20 backdrop-blur-sm",
+  ghost: "text-white/80 hover:text-white hover:bg-white/10",
+  danger: "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/25",
+  outline: "border-2 border-indigo-500 text-indigo-500 hover:bg-indigo-500 hover:text-white",
+};
+
+// أحجام الـ Button
+const buttonSizes = {
+  sm: "px-3 py-1.5 text-sm",
+  md: "px-4 py-2 text-base",
+  lg: "px-6 py-3 text-lg",
+  xl: "px-8 py-4 text-xl",
+};
+
+export default function Button({
+  children,
+  variant = "primary",
+  size = "md",
+  isLoading = false,
+  disabled = false,
+  className,
+  ...props
+}) {
+  return (
+    &lt;button
+      className={cn(
+        // الفئات الأساسية
+        "inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-300",
+        "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
+        "disabled:opacity-50 disabled:cursor-not-allowed",
+        // النوع
+        buttonVariants[variant],
+        // الحجم
+        buttonSizes[size],
+        // الفئات الإضافية
+        className
+      )}
+      disabled={disabled || isLoading}
+      {...props}
+    &gt;
+      {isLoading && (
+        &lt;Loader2 className="w-4 h-4 ml-2 animate-spin" /&gt;
+      )}
+      {children}
+    &lt;/button&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>استخدام مكون Button:</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال الاستخدام</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Button from '@/components/ui/Button';
+
+// Button أساسي
+&lt;Button&gt;أضف للسلة&lt;/Button&gt;
+
+// Button بأشكال مختلفة
+&lt;Button variant="secondary"&gt;次要&lt;/Button&gt;
+&lt;Button variant="ghost"&gt;إلغاء&lt;/Button&gt;
+&lt;Button variant="danger"&gt;حذف&lt;/Button&gt;
+
+// Button بحجم معين
+&lt;Button size="sm"&gt;صغير&lt;/Button&gt;
+&lt;Button size="lg"&gt;كبير&lt;/Button&gt;
+
+// Button أثناء التحميل
+&lt;Button isLoading&gt;جاري الحفظ...&lt;/Button&gt;</code></pre>
+        </div>
+
+        <h2>📝 الخطوة 3: مكون Input</h2>
+        <p>مكون Input مع Label وحالات الخطأ:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/ui/Input.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { forwardRef } from 'react';
+import { cn } from '@/lib/cn';
+
+const Input = forwardRef(({
+  label,
+  error,
+  className,
+  type = "text",
+  ...props
+}, ref) =&gt; {
+  return (
+    &lt;div className="w-full"&gt;
+      {/* Label */}
+      {label && (
+        &lt;label className="block text-sm font-medium text-gray-200 mb-2"&gt;
+          {label}
+        &lt;/label&gt;
+      )}
+      
+      {/* Input */}
+      &lt;input
+        ref={ref}
+        type={type}
+        className={cn(
+          "w-full px-4 py-3 rounded-xl bg-white/5 border text-white",
+          "placeholder:text-gray-400",
+          "focus:outline-none focus:ring-2 focus:ring-indigo-500",
+          "transition-all duration-300",
+          // حالة الخطأ
+          error
+            ? "border-red-500 focus:ring-red-500"
+            : "border-white/10 hover:border-white/20",
+          className
+        )}
+        {...props}
+      /&gt;
+      
+      {/* رسالة الخطأ */}
+      {error && (
+        &lt;p className="mt-2 text-sm text-red-400 flex items-center gap-2"&gt;
+          &lt;svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"&gt;
+            &lt;path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /&gt;
+          &lt;/svg&gt;
+          {error}
+        &lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  );
+});
+
+Input.displayName = 'Input';
+
+export default Input;</code></pre>
+        </div>
+
+        <h3>استخدام مكون Input:</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال الاستخدام</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Input from '@/components/ui/Input';
+
+// Input أساسي
+&lt;Input placeholder="أدخل اسمك" /&gt;
+
+// Input مع Label
+&lt;Input label="البريد الإلكتروني" type="email" /&gt;
+
+// Input مع خطأ
+&lt;Input
+  label="كلمة المرور"
+  type="password"
+  error="كلمة المرور يجب أن تكون 8 أحرف على الأقل"
+/&gt;</code></pre>
+        </div>
+
+        <h2>🃏 الخطوة 4: مكون Card</h2>
+        <p>مكون Card بتأثير Glass للعروض والمنتجات:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/ui/Card.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import { cn } from '@/lib/cn';
+
+const cardVariants = {
+  default: "bg-white/5 backdrop-blur-lg border border-white/10",
+  glass: "bg-white/10 backdrop-blur-xl border border-white/20",
+  solid: "bg-gray-800 border border-gray-700",
+  gradient: "bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border border-white/20",
+};
+
+export default function Card({
+  children,
+  variant = "default",
+  hover = true,
+  className,
+  ...props
+}) {
+  return (
+    &lt;div
+      className={cn(
+        // الفئات الأساسية
+        "rounded-2xl p-6 shadow-xl",
+        // النوع
+        cardVariants[variant],
+        // تأثير Hover
+        hover && "hover:scale-105 hover:shadow-2xl transition-all duration-300",
+        // الفئات الإضافية
+        className
+      )}
+      {...props}
+    &gt;
+      {children}
+    &lt;/div&gt;
+  );
+}
+
+// مكون Card.Header
+Card.Header = function CardHeader({ children, className }) {
+  return (
+    &lt;div className={cn("mb-4", className)}&gt;
+      {children}
+    &lt;/div&gt;
+  );
+};
+
+// مكون Card.Content
+Card.Content = function CardContent({ children, className }) {
+  return (
+    &lt;div className={cn("", className)}&gt;
+      {children}
+    &lt;/div&gt;
+  );
+};
+
+// مكون Card.Footer
+Card.Footer = function CardFooter({ children, className }) {
+  return (
+    &lt;div className={cn("mt-4 pt-4 border-t border-white/10", className)}&gt;
+      {children}
+    &lt;/div&gt;
+  );
+};</code></pre>
+        </div>
+
+        <h3>استخدام مكون Card:</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال الاستخدام</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Card from '@/components/ui/Card';
+
+// Card أساسي
+&lt;Card&gt;
+  &lt;h3&gt;عنوان&lt;/h3&gt;
+  &lt;p&gt;محتوى البطاقة&lt;/p&gt;
+&lt;/Card&gt;
+
+// Card بتأثير Glass
+&lt;Card variant="glass"&gt;
+  &lt;Card.Header&gt;
+    &lt;h3&gt;عرض خاص&lt;/h3&gt;
+  &lt;/Card.Header&gt;
+  &lt;Card.Content&gt;
+    &lt;p&gt;خصم 50% على جميع المنتجات&lt;/p&gt;
+  &lt;/Card.Content&gt;
+  &lt;Card.Footer&gt;
+    &lt;Button&gt;تسوق الآن&lt;/Button&gt;
+  &lt;/Card.Footer&gt;
+&lt;/Card&gt;
+
+// Card بدون تأثير Hover
+&lt;Card hover={false}&gt;
+  &lt;p&gt;بدون تأثير عند المرور&lt;/p&gt;
+&lt;/Card&gt;</code></pre>
+        </div>
+
+        <h2>🏷️ الخطوة 5: مكون Badge</h2>
+        <p>مكون Badge للتصنيفات والحالات:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/ui/Badge.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import { cn } from '@/lib/cn';
+
+const badgeVariants = {
+  default: "bg-white/10 text-white",
+  primary: "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30",
+  success: "bg-green-500/20 text-green-300 border border-green-500/30",
+  warning: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
+  danger: "bg-red-500/20 text-red-300 border border-red-500/30",
+  info: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
+};
+
+const badgeSizes = {
+  sm: "px-2 py-0.5 text-xs",
+  md: "px-3 py-1 text-sm",
+  lg: "px-4 py-1.5 text-base",
+};
+
+export default function Badge({
+  children,
+  variant = "default",
+  size = "md",
+  dot = false,
+  className,
+  ...props
+}) {
+  return (
+    &lt;span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full font-medium",
+        badgeVariants[variant],
+        badgeSizes[size],
+        className
+      )}
+      {...props}
+    &gt;
+      {dot && (
+        &lt;span className={cn(
+          "w-1.5 h-1.5 rounded-full",
+          variant === "success" && "bg-green-400",
+          variant === "warning" && "bg-yellow-400",
+          variant === "danger" && "bg-red-400",
+          variant === "info" && "bg-blue-400",
+          variant === "primary" && "bg-indigo-400",
+          variant === "default" && "bg-white"
+        )} /&gt;
+      )}
+      {children}
+    &lt;/span&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>استخدام مكون Badge:</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال الاستخدام</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Badge from '@/components/ui/Badge';
+
+// Badge أساسي
+&lt;Badge&gt;جديد&lt;/Badge&gt;
+
+// Badge بأنواع مختلفة
+&lt;Badge variant="success"&gt;متوفر&lt;/Badge&gt;
+&lt;Badge variant="warning"&gt;على المخزون&lt;/Badge&gt;
+&lt;Badge variant="danger"&gt;نفذ&lt;/Badge&gt;
+
+// Badge مع نقطة
+&lt;Badge variant="success" dot&gt;متاح&lt;/Badge&gt;
+
+// Badge بحجم كبير
+&lt;Badge variant="primary" size="lg"&gt;خصم 50%&lt;/Badge&gt;</code></pre>
+        </div>
+
+        <h2>🔔 الخطوة 6: مكون Toast</h2>
+        <p>مكون Toast للإشعارات:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/ui/Toast.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState, useEffect, createContext, useContext } from 'react';
+import { cn } from '@/lib/cn';
+import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+
+const ToastContext = createContext(null);
+
+// أنواع Toast
+const toastTypes = {
+  success: {
+    icon: CheckCircle,
+    className: "bg-green-500/20 border-green-500/30 text-green-300",
+  },
+  error: {
+    icon: AlertCircle,
+    className: "bg-red-500/20 border-red-500/30 text-red-300",
+  },
+  warning: {
+    icon: AlertTriangle,
+    className: "bg-yellow-500/20 border-yellow-500/30 text-yellow-300",
+  },
+  info: {
+    icon: Info,
+    className: "bg-blue-500/20 border-blue-500/30 text-blue-300",
+  },
+};
+
+// مزود Toast
+export function ToastProvider({ children }) {
+  const [toasts, setToasts] = useState([]);
+
+  const addToast = (message, type = "info", duration = 3000) =&gt; {
+    const id = Date.now();
+    setToasts(prev =&gt; [...prev, { id, message, type }]);
+    
+    setTimeout(() =&gt; {
+      removeToast(id);
+    }, duration);
+  };
+
+  const removeToast = (id) =&gt; {
+    setToasts(prev =&gt; prev.filter(toast =&gt; toast.id !== id));
+  };
+
+  return (
+    &lt;ToastContext.Provider value={{ addToast, removeToast }}&gt;
+      {children}
+      
+      {/* Toast Container */}
+      &lt;div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2"&gt;
+        {toasts.map(toast =&gt; (
+          &lt;Toast
+            key={toast.id}
+            message={toast.message}
+            type={toast.type}
+            onClose={() =&gt; removeToast(toast.id)}
+          /&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/ToastContext.Provider&gt;
+  );
+}
+
+// Hook لاستخدام Toast
+export function useToast() {
+  const context = useContext(ToastContext);
+  if (!context) {
+    throw new Error("useToast must be used within ToastProvider");
+  }
+  return context;
+}
+
+// مكون Toast
+function Toast({ message, type = "info", onClose }) {
+  const { icon: Icon, className } = toastTypes[type];
+
+  return (
+    &lt;div
+      className={cn(
+        "flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-lg shadow-xl animate-slide-in",
+        className
+      )}
+    &gt;
+      &lt;Icon className="w-5 h-5 flex-shrink-0" /&gt;
+      &lt;p className="flex-1 text-sm font-medium"&gt;{message}&lt;/p&gt;
+      &lt;button
+        onClick={onClose}
+        className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+      &gt;
+        &lt;X className="w-4 h-4" /&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>استخدام Toast:</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال الاستخدام</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useToast } from '@/components/ui/Toast';
+import Button from '@/components/ui/Button';
+
+export default function MyComponent() {
+  const { addToast } = useToast();
+
+  const handleSuccess = () =&gt; {
+    addToast("تمت الإضافة بنجاح!", "success");
+  };
+
+  const handleError = () =&gt; {
+    addToast("حدث خطأ، حاول مرة أخرى", "error");
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;Button onClick={handleSuccess}&gt;إضافة ناجحة&lt;/Button&gt;
+      &lt;Button onClick={handleError}&gt;إضافة فاشلة&lt;/Button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ ملاحظة مهمة</div>
+          <div class="callout-content">
+            <p>تأكد من تغليف التطبيق بمزود Toast في الملف الرئيسي:</p>
+            <pre><code>// app/layout.js
+import { ToastProvider } from '@/components/ui/Toast';
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;ToastProvider&gt;
+          {children}
+        &lt;/ToastProvider&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+          </div>
+        </div>
+
+        <h2>📦 الخطوة 7: مكون Container</h2>
+        <p>مكون Container لتخطيط المحتوى:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/ui/Container.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import { cn } from '@/lib/cn';
+
+const containerVariants = {
+  default: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+  narrow: "max-w-4xl mx-auto px-4 sm:px-6 lg:px-8",
+  wide: "max-w-full mx-auto px-4 sm:px-6 lg:px-8",
+  fluid: "w-full px-4 sm:px-6 lg:px-8",
+};
+
+export default function Container({
+  children,
+  variant = "default",
+  as: Component = "div",
+  className,
+  ...props
+}) {
+  return (
+    &lt;Component
+      className={cn(containerVariants[variant], className)}
+      {...props}
+    &gt;
+      {children}
+    &lt;/Component&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📋 ملخص المكونات</h2>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>المكون</th>
+                <th>الاستخدام</th>
+                <th>المميزات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Button</code></td>
+                <td>الأزرار</td>
+                <td>أنواع، أحجام، حالة التحميل</td>
+              </tr>
+              <tr>
+                <td><code>Input</code></td>
+                <td>حقول الإدخال</td>
+                <td>Label، رسائل الخطأ، الأنواع</td>
+              </tr>
+              <tr>
+                <td><code>Card</code></td>
+                <td>البطاقات</td>
+                <td>تأثير Glass، تأثير Hover</td>
+              </tr>
+              <tr>
+                <td><code>Badge</code></td>
+                <td>التصنيفات</td>
+                <td>أنواع، أحجام، نقاط</td>
+              </tr>
+              <tr>
+                <td><code>Toast</code></td>
+                <td>الإشعارات</td>
+                <td>أنواع، تلقائي، يدوي</td>
+              </tr>
+              <tr>
+                <td><code>Container</code></td>
+                <td>التخطيط</td>
+                <td>عرض ثابت أو مرن</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده بنينا:</p>
+        <ul>
+          <li>✅ دالة cn() لدمج فئات Tailwind</li>
+          <li>✅ مكون Button بأشكال وأحجام مختلفة</li>
+          <li>✅ مكون Input مع Label وحالات الخطأ</li>
+          <li>✅ مكون Card بتأثير Glass</li>
+          <li>✅ مكون Badge للتصنيفات</li>
+          <li>✅ مكون Toast للإشعارات</li>
+          <li>✅ مكون Container للتخطيط</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 다음 درس</div>
+          <div class="callout-content">
+            في الدرس الجاي هنبني <strong>نظام التخطيط (Layout System)</strong> - Header و Footer و AdminLayout.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="07-admin-protection.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">نظام Admin وحماية المسارات</span>
+        </a>
+        <a href="09-layout-system.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">نظام التخطيط</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

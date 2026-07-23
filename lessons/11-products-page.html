@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 11 - صفحة المنتجات</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 11</span>
+        </div>
+        <h1>صفحة المنتجات</h1>
+        <div class="meta">
+          <span>⏱️ 45 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 3: واجهة المستخدم</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>بناء شبكة عرض المنتجات (ProductGrid)</li>
+          <li>إنشاء شريط بحث (SearchBar)</li>
+          <li>بناء فلتر التصنيفات (CategoryFilter)</li>
+          <li>إنشاء نظام ترقيم الصفحات (Pagination)</li>
+          <li>إضافة خيارات الترتيب (Sorting)</li>
+        </ul>
+
+        <h2>📁 هيكل ملفات صفحة المنتجات</h2>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/(shop)/products/</div>
+          <div class="file-tree-item file">└── 📄 page.js                 # صفحة المنتجات</div>
+          <div class="file-tree-item folder">📁 components/products/</div>
+          <div class="file-tree-item file">├── 📄 ProductGrid.jsx        # شبكة المنتجات</div>
+          <div class="file-tree-item file">├── 📄 SearchBar.jsx          # شريط البحث</div>
+          <div class="file-tree-item file">├── 📄 CategoryFilter.jsx     # فلتر التصنيفات</div>
+          <div class="file-tree-item file">├── 📄 Pagination.jsx         # ترقيم الصفحات</div>
+          <div class="file-tree-item file">├── 📄 SortingOptions.jsx     # خيارات الترتيب</div>
+          <div class="file-tree-item file">└── 📄 ProductFilters.jsx     # حاوية الفلاتر</div>
+        </div>
+
+        <h2>🛍️ الخطوة 1: صفحة المنتجات الرئيسية</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/products/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import ProductGrid from '@/components/products/ProductGrid';
+import SearchBar from '@/components/products/SearchBar';
+import CategoryFilter from '@/components/products/CategoryFilter';
+import SortingOptions from '@/components/products/SortingOptions';
+import Pagination from '@/components/products/Pagination';
+import Container from '@/components/ui/Container';
+
+export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  // الفلاتر
+  const [filters, setFilters] = useState({
+    search: searchParams.get('search') || '',
+    category: searchParams.get('category') || '',
+    sort: searchParams.get('sort') || 'newest',
+    page: parseInt(searchParams.get('page')) || 1,
+  });
+
+  // جلب المنتجات
+  useEffect(() =&gt; {
+    fetchProducts();
+  }, [filters]);
+
+  const fetchProducts = async () =&gt; {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (filters.search) params.set('search', filters.search);
+      if (filters.category) params.set('category', filters.category);
+      params.set('sort', filters.sort);
+      params.set('page', filters.page.toString());
+      params.set('limit', '12');
+
+      const response = await fetch(`/api/products?${params.toString()}`);
+      const data = await response.json();
+      
+      setProducts(data.products);
+      setTotalPages(data.totalPages);
+      setCurrentPage(data.currentPage);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // تحديث الفلاتر
+  const updateFilters = (newFilters) =&gt; {
+    setFilters(prev =&gt; ({ ...prev, ...newFilters, page: 1 }));
+  };
+
+  return (
+    &lt;Container className="py-8"&gt;
+      {/* Header */}
+      &lt;div className="mb-8"&gt;
+        &lt;h1 className="text-3xl font-bold text-white mb-2"&gt;
+          جميع المنتجات
+        &lt;/h1&gt;
+        &lt;p className="text-gray-400"&gt;
+          اكتشف مجموعتنا الواسعة من المنتجات عالية الجودة
+        &lt;/p&gt;
+      &lt;/div&gt;
+
+      {/* Search &amp; Filters */}
+      &lt;div className="flex flex-col lg:flex-row gap-4 mb-8"&gt;
+        {/* Search */}
+        &lt;div className="flex-1"&gt;
+          &lt;SearchBar
+            value={filters.search}
+            onChange={(search) =&gt; updateFilters({ search })}
+          /&gt;
+        &lt;/div&gt;
+
+        {/* Sorting */}
+        &lt;SortingOptions
+          value={filters.sort}
+          onChange={(sort) =&gt; updateFilters({ sort })}
+        /&gt;
+      &lt;/div&gt;
+
+      &lt;div className="flex flex-col lg:flex-row gap-8"&gt;
+        {/* Sidebar Filters */}
+        &lt;aside className="lg:w-64 flex-shrink-0"&gt;
+          &lt;CategoryFilter
+            selectedCategory={filters.category}
+            onChange={(category) =&gt; updateFilters({ category })}
+          /&gt;
+        &lt;/aside&gt;
+
+        {/* Products Grid */}
+        &lt;div className="flex-1"&gt;
+          &lt;ProductGrid
+            products={products}
+            loading={loading}
+          /&gt;
+
+          {/* Pagination */}
+          {totalPages &gt; 1 && (
+            &lt;div className="mt-8"&gt;
+              &lt;Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) =&gt; updateFilters({ page })}
+              /&gt;
+            &lt;/div&gt;
+          )}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/Container&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔍 الخطوة 2: شريط البحث</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/SearchBar.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState, useEffect } from 'react';
+import { Search, X } from 'lucide-react';
+import { cn } from '@/lib/cn';
+
+export default function SearchBar({ value, onChange }) {
+  const [localValue, setLocalValue] = useState(value);
+
+  // Debounce للبحث
+  useEffect(() =&gt; {
+    const timer = setTimeout(() =&gt; {
+      onChange(localValue);
+    }, 300);
+
+    return () =&gt; clearTimeout(timer);
+  }, [localValue, onChange]);
+
+  return (
+    &lt;div className="relative"&gt;
+      {/* Search Icon */}
+      &lt;Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" /&gt;
+
+      {/* Input */}
+      &lt;input
+        type="text"
+        value={localValue}
+        onChange={(e) =&gt; setLocalValue(e.target.value)}
+        placeholder="ابحث عن منتجات..."
+        className={cn(
+          "w-full pr-12 pl-12 py-3 rounded-xl",
+          "bg-white/5 border border-white/10",
+          "text-white placeholder:text-gray-400",
+          "focus:outline-none focus:ring-2 focus:ring-indigo-500",
+          "transition-all duration-300"
+        )}
+      /&gt;
+
+      {/* Clear Button */}
+      {localValue && (
+        &lt;button
+          onClick={() =&gt; {
+            setLocalValue('');
+            onChange('');
+          }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 p-1 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+        &gt;
+          &lt;X className="w-4 h-4" /&gt;
+        &lt;/button&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ما هو Debounce؟</div>
+          <div class="callout-content">
+            <p>Deounce هو تقنية تؤخر تنفيذ الدالة حتى يتوقف المستخدم عن الكتابة لفترة قصيرة (300ms هنا). هذا يمنع إرسال طلب لكل حرف يكتبه المستخدم.</p>
+          </div>
+        </div>
+
+        <h2>📂 الخطوة 3: فلتر التصنيفات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/CategoryFilter.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState, useEffect } from 'react';
+import { cn } from '@/lib/cn';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+
+export default function CategoryFilter({ selectedCategory, onChange }) {
+  const [categories, setCategories] = useState([]);
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () =&gt; {
+    try {
+      const response = await fetch('/api/categories');
+      const data = await response.json();
+      setCategories(data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    &lt;div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-4"&gt;
+      {/* Header */}
+      &lt;button
+        onClick={() =&gt; setIsExpanded(!isExpanded)}
+        className="w-full flex items-center justify-between mb-4"
+      &gt;
+        &lt;h3 className="text-white font-semibold"&gt;التصنيفات&lt;/h3&gt;
+        {isExpanded ? (
+          &lt;ChevronUp className="w-5 h-5 text-gray-400" /&gt;
+        ) : (
+          &lt;ChevronDown className="w-5 h-5 text-gray-400" /&gt;
+        )}
+      &lt;/button&gt;
+
+      {/* Categories List */}
+      {isExpanded && (
+        &lt;div className="space-y-2"&gt;
+          {/* All Categories */}
+          &lt;button
+            onClick={() =&gt; onChange('')}
+            className={cn(
+              "w-full text-right px-3 py-2 rounded-lg text-sm transition-colors",
+              !selectedCategory
+                ? "bg-indigo-500/20 text-indigo-300"
+                : "text-gray-400 hover:text-white hover:bg-white/5"
+            )}
+          &gt;
+            الكل
+          &lt;/button&gt;
+
+          {loading ? (
+            // Loading Skeleton
+            [...Array(6)].map((_, i) =&gt; (
+              &lt;div
+                key={i}
+                className="h-10 bg-white/5 rounded-lg animate-pulse"
+              /&gt;
+            ))
+          ) : (
+            categories.map((category) =&gt; (
+              &lt;button
+                key={category.id}
+                onClick={() =&gt; onChange(category.slug)}
+                className={cn(
+                  "w-full text-right px-3 py-2 rounded-lg text-sm transition-colors",
+                  selectedCategory === category.slug
+                    ? "bg-indigo-500/20 text-indigo-300"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                )}
+              &gt;
+                &lt;div className="flex items-center justify-between"&gt;
+                  &lt;span&gt;{category.name}&lt;/span&gt;
+                  &lt;span className="text-xs text-gray-500"&gt;
+                    ({category.productCount})
+                  &lt;/span&gt;
+                &lt;/div&gt;
+              &lt;/button&gt;
+            ))
+          )}
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>↕️ الخطوة 4: خيارات الترتيب</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/SortingOptions.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { ArrowUpDown, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/cn';
+
+const sortOptions = [
+  { value: 'newest', label: 'الأحدث' },
+  { value: 'price_asc', label: 'السعر: من الأقل للأعلى' },
+  { value: 'price_desc', label: 'السعر: من الأعلى للأقل' },
+  { value: 'rating', label: 'الأعلى تقييماً' },
+  { value: 'popular', label: 'الأكثر مبيعاً' },
+];
+
+export default function SortingOptions({ value, onChange }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const selectedOption = sortOptions.find(opt =&gt; opt.value === value);
+
+  return (
+    &lt;div className="relative"&gt;
+      {/* Trigger */}
+      &lt;button
+        onClick={() =&gt; setIsOpen(!isOpen)}
+        className={cn(
+          "flex items-center gap-2 px-4 py-3 rounded-xl",
+          "bg-white/5 border border-white/10",
+          "text-white hover:bg-white/10 transition-colors",
+          isOpen && "ring-2 ring-indigo-500"
+        )}
+      &gt;
+        &lt;ArrowUpDown className="w-5 h-5 text-gray-400" /&gt;
+        &lt;span&gt;{selectedOption?.label || 'ترتيب حسب'}&lt;/span&gt;
+        &lt;ChevronDown className={cn(
+          "w-4 h-4 text-gray-400 transition-transform",
+          isOpen && "rotate-180"
+        )} /&gt;
+      &lt;/button&gt;
+
+      {/* Dropdown */}
+      {isOpen && (
+        &lt;&gt;
+          {/* Overlay */}
+          &lt;div
+            className="fixed inset-0 z-10"
+            onClick={() =&gt; setIsOpen(false)}
+          /&gt;
+          
+          {/* Options */}
+          &lt;div className="absolute top-full left-0 mt-2 w-64 bg-gray-800 border border-white/10 rounded-xl shadow-xl z-20 overflow-hidden"&gt;
+            {sortOptions.map((option) =&gt; (
+              &lt;button
+                key={option.value}
+                onClick={() =&gt; {
+                  onChange(option.value);
+                  setIsOpen(false);
+                }}
+                className={cn(
+                  "w-full text-right px-4 py-3 text-sm transition-colors",
+                  value === option.value
+                    ? "bg-indigo-500/20 text-indigo-300"
+                    : "text-gray-300 hover:bg-white/5 hover:text-white"
+                )}
+              &gt;
+                {option.label}
+              &lt;/button&gt;
+            ))}
+          &lt;/div&gt;
+        &lt;/&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📄 الخطوة 5: ترقيم الصفحات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/Pagination.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { ChevronRight, ChevronLeft, MoreHorizontal } from 'lucide-react';
+import { cn } from '@/lib/cn';
+
+export default function Pagination({ currentPage, totalPages, onPageChange }) {
+  // حساب الصفحات المرئية
+  const getPageNumbers = () =&gt; {
+    const pages = [];
+    const showEllipsis = totalPages &gt; 7;
+
+    if (!showEllipsis) {
+      for (let i = 1; i &lt;= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // الصفحة الأولى
+      pages.push(1);
+
+      if (currentPage &gt; 3) {
+        pages.push('...');
+      }
+
+      // الصفحات الوسطى
+      for (
+        let i = Math.max(2, currentPage - 1);
+        i &lt;= Math.min(totalPages - 1, currentPage + 1);
+        i++
+      ) {
+        pages.push(i);
+      }
+
+      if (currentPage &lt; totalPages - 2) {
+        pages.push('...');
+      }
+
+      // الصفحة الأخيرة
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
+  return (
+    &lt;div className="flex items-center justify-center gap-2"&gt;
+      {/* Previous Button */}
+      &lt;button
+        onClick={() =&gt; onPageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className={cn(
+          "p-2 rounded-lg transition-colors",
+          currentPage === 1
+            ? "text-gray-600 cursor-not-allowed"
+            : "text-gray-400 hover:text-white hover:bg-white/10"
+        )}
+      &gt;
+        &lt;ChevronRight className="w-5 h-5" /&gt;
+      &lt;/button&gt;
+
+      {/* Page Numbers */}
+      {getPageNumbers().map((page, index) =&gt; (
+        &lt;button
+          key={index}
+          onClick={() =&gt; typeof page === 'number' && onPageChange(page)}
+          disabled={page === '...'}
+          className={cn(
+            "min-w-[40px] h-10 rounded-lg text-sm font-medium transition-colors",
+            page === currentPage
+              ? "bg-indigo-500 text-white"
+              : page === '...'
+              ? "text-gray-600 cursor-default"
+              : "text-gray-400 hover:text-white hover:bg-white/10"
+          )}
+        &gt;
+          {page === '...' ? (
+            &lt;MoreHorizontal className="w-5 h-5 mx-auto" /&gt;
+          ) : (
+            page
+          )}
+        &lt;/button&gt;
+      ))}
+
+      {/* Next Button */}
+      &lt;button
+        onClick={() =&gt; onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className={cn(
+          "p-2 rounded-lg transition-colors",
+          currentPage === totalPages
+            ? "text-gray-600 cursor-not-allowed"
+            : "text-gray-400 hover:text-white hover:bg-white/10"
+        )}
+      &gt;
+        &lt;ChevronLeft className="w-5 h-5" /&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔲 الخطوة 6: شبكة المنتجات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/ProductGrid.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import ProductCard from './ProductCard';
+
+export default function ProductGrid({ products, loading }) {
+  // حالة التحميل
+  if (loading) {
+    return (
+      &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+        {[...Array(12)].map((_, i) =&gt; (
+          &lt;div
+            key={i}
+            className="bg-white/5 rounded-2xl overflow-hidden animate-pulse"
+          &gt;
+            &lt;div className="aspect-square bg-white/10" /&gt;
+            &lt;div className="p-4 space-y-3"&gt;
+              &lt;div className="h-4 bg-white/10 rounded w-1/3" /&gt;
+              &lt;div className="h-5 bg-white/10 rounded w-2/3" /&gt;
+              &lt;div className="h-4 bg-white/10 rounded w-1/2" /&gt;
+              &lt;div className="h-6 bg-white/10 rounded w-1/4" /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    );
+  }
+
+  // لا توجد منتجات
+  if (!products || products.length === 0) {
+    return (
+      &lt;div className="text-center py-16"&gt;
+        &lt;div className="w-24 h-24 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center"&gt;
+          &lt;span className="text-4xl"&gt;📦&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;h3 className="text-xl font-semibold text-white mb-2"&gt;
+          لا توجد منتجات
+        &lt;/h3&gt;
+        &lt;p className="text-gray-400"&gt;
+          جرّب تغيير معايير البحث أو الفلتر
+        &lt;/p&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  // عرض المنتجات
+  return (
+    &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+      {products.map((product) =&gt; (
+        &lt;ProductCard key={product.id} product={product} /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔗 الخطوة 7: حاوية الفلاتر</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/ProductFilters.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { Filter, X } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import CategoryFilter from './CategoryFilter';
+
+const priceRanges = [
+  { id: 'all', label: 'الكل', min: 0, max: Infinity },
+  { id: '0-50', label: 'أقل من $50', min: 0, max: 50 },
+  { id: '50-100', label: '$50 - $100', min: 50, max: 100 },
+  { id: '100-200', label: '$100 - $200', min: 100, max: 200 },
+  { id: '200+', label: 'أكثر من $200', min: 200, max: Infinity },
+];
+
+export default function ProductFilters({ filters, onFilterChange }) {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const FilterContent = () =&gt; (
+    &lt;div className="space-y-6"&gt;
+      {/* Price Range */}
+      &lt;div&gt;
+        &lt;h3 className="text-white font-semibold mb-4"&gt;نطاق السعر&lt;/h3&gt;
+        &lt;div className="space-y-2"&gt;
+          {priceRanges.map((range) =&gt; (
+            &lt;button
+              key={range.id}
+              onClick={() =&gt; onFilterChange({ priceRange: range.id })}
+              className={cn(
+                "w-full text-right px-3 py-2 rounded-lg text-sm transition-colors",
+                filters.priceRange === range.id
+                  ? "bg-indigo-500/20 text-indigo-300"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+              )}
+            &gt;
+              {range.label}
+            &lt;/button&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      {/* Rating Filter */}
+      &lt;div&gt;
+        &lt;h3 className="text-white font-semibold mb-4"&gt;التقييم&lt;/h3&gt;
+        &lt;div className="space-y-2"&gt;
+          {[5, 4, 3, 2, 1].map((rating) =&gt; (
+            &lt;button
+              key={rating}
+              onClick={() =&gt; onFilterChange({ minRating: rating })}
+              className={cn(
+                "w-full text-right px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2",
+                filters.minRating === rating
+                  ? "bg-indigo-500/20 text-indigo-300"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+              )}
+            &gt;
+              &lt;div className="flex"&gt;
+                {[...Array(5)].map((_, i) =&gt; (
+                  &lt;span
+                    key={i}
+                    className={cn(
+                      "text-lg",
+                      i &lt; rating ? "text-yellow-400" : "text-gray-600"
+                    )}
+                  &gt;
+                    ★
+                  &lt;/span&gt;
+                ))}
+              &lt;/div&gt;
+              &lt;span&gt;وأعلى&lt;/span&gt;
+            &lt;/button&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+
+  return (
+    &lt;&gt;
+      {/* Mobile Filter Button */}
+      &lt;button
+        onClick={() =&gt; setIsMobileOpen(true)}
+        className="lg:hidden fixed bottom-4 left-4 z-30 flex items-center gap-2 px-4 py-3 rounded-full bg-indigo-500 text-white shadow-lg"
+      &gt;
+        &lt;Filter className="w-5 h-5" /&gt;
+        &lt;span&gt;الفلاتر&lt;/span&gt;
+      &lt;/button&gt;
+
+      {/* Desktop Sidebar */}
+      &lt;div className="hidden lg:block"&gt;
+        &lt;FilterContent /&gt;
+      &lt;/div&gt;
+
+      {/* Mobile Sidebar */}
+      {isMobileOpen && (
+        &lt;div className="lg:hidden fixed inset-0 z-40"&gt;
+          &lt;div
+            className="absolute inset-0 bg-black/50"
+            onClick={() =&gt; setIsMobileOpen(false)}
+          /&gt;
+          &lt;div className="absolute right-0 top-0 h-full w-80 bg-gray-900 p-4 overflow-y-auto"&gt;
+            &lt;div className="flex items-center justify-between mb-6"&gt;
+              &lt;h2 className="text-white font-bold text-lg"&gt;الفلاتر&lt;/h2&gt;
+              &lt;button
+                onClick={() =&gt; setIsMobileOpen(false)}
+                className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10"
+              &gt;
+                &lt;X className="w-5 h-5" /&gt;
+              &lt;/button&gt;
+            &lt;/div&gt;
+            &lt;FilterContent /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/&gt;
+  );
+}</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ ملاحظات الأداء</div>
+          <div class="callout-content">
+            <ul>
+              <li>استخدم <code>useSearchParams()</code> لتحديث URL بدلاً من State فقط</li>
+              <li>أضف <code>loading.js</code> في مجلد products لتحميل أفضل</li>
+              <li>استخدم Server Components حيثما أمكن</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده بنينا:</p>
+        <ul>
+          <li>✅ صفحة المنتجات الرئيسية</li>
+          <li>✅ شريط بحث مع Debounce</li>
+          <li>✅ فلتر التصنيفات</li>
+          <li>✅ خيارات الترتيب</li>
+          <li>✅ ترقيم الصفحات</li>
+          <li>✅ شبكة عرض المنتجات</li>
+          <li>✅ فلاتر إضافية (سعر، تقييم)</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 다음 درس</div>
+          <div class="callout-content">
+            في الدرس الجاي هنبني <strong>صفحة تفاصيل المنتج</strong> مع الصور والمراجعات.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="10-homepage.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">الصفحة الرئيسية</span>
+        </a>
+        <a href="12-product-details.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">تفاصيل المنتج</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

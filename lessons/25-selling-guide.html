@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 25 - دليل البيع والربح</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 25</span>
+        </div>
+        <h1>دليل البيع والربح</h1>
+        <div class="meta">
+          <span>⏱️ 15 دقيقة</span>
+          <span>📖 نظري</span>
+          <span>الوحدة 7: النشر والبيع</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>كيفية تجهيز القالب للبيع</li>
+          <li>تحديد استراتيجيات التسعير</li>
+          <li>التسويق للقالب وجذب العملاء</li>
+          <li>تقديم دعم العملاء</li>
+          <li>تحديث القالب باستمرار</li>
+        </ul>
+
+        <h2>📦 تجهيز القالب للبيع</h2>
+        <p>قبل بيع القالب، تأكد من تجهيزه بشكل احترافي:</p>
+
+        <h3>1. تنظيف الكود</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">نظافة الكود</span>
+            <span class="code-block-lang">bash</span>
+          </div>
+          <pre><code># حذف الملفات غير المستخدمة
+rm -rf .next
+rm -rf node_modules/.cache
+rm -rf .vercel
+
+# مراجعة الكود وتنقيف التعليقات غير الضرورية
+npm run lint
+
+# التأكد من عدم وجود أخطاء
+npm run build</code></pre>
+        </div>
+
+        <h3>2. إنشاء ملف README.md</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">README.md</span>
+            <span class="code-block-lang">markdown</span>
+          </div>
+          <pre><code># Market Store - متجر إلكتروني متكامل
+
+متجر إلكتروني متكامل بتصميم عصري وأداء عالي باستخدام Next.js 16, Clerk, Supabase, و Tailwind CSS.
+
+## المميزات
+
+- 🛍️ صفحة منتجات مع بحث وفلتر
+- 🛒 نظام سلة مشتريات كامل
+- ❤️ نظام مفضلة
+- 🔐 تسجيل دخول مع Clerk
+- 📊 لوحة تحكم Admin
+- 📱 تصميم متجاوب
+- ⚡ أداء عالي
+
+## المتطلبات
+
+- Node.js 18+
+- حساب مجاني على Clerk
+- حساب مجاني على Supabase
+
+## التثبيت
+
+1. استنساخ المستودع
+2. تثبيت ال依赖يات: `npm install`
+3. إعداد ملف `.env.local`
+4. تشغيل المشروع: `npm run dev`
+
+## التخصيص
+
+راجع ملف `CUSTOMIZATION.md` لشرح كيفية تخصيص القالب.
+
+## الدعم
+
+لأي استفسار، تواصل معنا عبر البريد الإلكتروني.
+
+## الترخيص
+
+رخصة استخدام شخصي. يُمنَع إعادة البيع أو التوزيع.</code></pre>
+        </div>
+
+        <h3>3. إنشاء ملف LICENSE</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">LICENSE</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>رخصة الاستخدام الشخصي - Market Store
+
+يُمنَع إعادة البيع أو التوزيع
+يُمنَع استخدام المشروع في مواقع أخرى
+يُسمح بالتخصيص للاستخدام الشخصي فقط
+
+للحصول على ترخيص تجاري، تواصل معنا.</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ تحذير مهم</div>
+          <div class="callout-content">
+            تأكد من عدم وجود مفاتيح API أو بيانات حساسة في الكود المصدري قبل رفعه على GitHub أو أي منصة بيع.
+          </div>
+        </div>
+
+        <h2>💰 استراتيجيات التسعير</h2>
+        <p>تحديد السعر المناسب يعتمد على عدة عوامل:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>الاستراتيجية</th>
+                <th>السعر</th>
+                <th>المناسب لـ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>السعر المنخفض</strong></td>
+                <td>$29 - $49</td>
+                <td>جذب عدد كبير من العملاء</td>
+              </tr>
+              <tr>
+                <td><strong>متوسط الأسعار</strong></td>
+                <td>$79 - $129</td>
+                <td>التوازن بين الجودة والكمية</td>
+              </tr>
+              <tr>
+                <td><strong>السعر العالي</strong></td>
+                <td>$199 - $299</td>
+                <td>القالب المتميز مع الدعم</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>نماذج التسعير</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">خطط التسعير</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>الخطة الأساسية - $49
+- القالب الأساسي
+- تحديثات لمدة سنة
+- دعم عبر البريد الإلكتروني
+
+الخطة الاحترافية - $99
+- القالب الأساسي
+- تحديثات مدى الحياة
+- دعم على مدار الساعة
+- ملفات التصميم (Figma)
+
+خطة المؤسسات - $199
+- كل مميزات الخطة الاحترافية
+- تخصيص حسب الطلب
+- تدريب فريق
+- تقرير أداء شهري</code></pre>
+        </div>
+
+        <h2>📢 التسويق للقالب</h2>
+        <p>للوصول لعملاء محتملين، استخدم هذه القنوات:</p>
+
+        <h3>1. منصات بيع القوالب</h3>
+        <ul>
+          <li><strong>ThemeForest</strong> - أكبر منصة لبيع قوالب الويب</li>
+          <li><strong>Creative Market</strong> - منصة مميزة للتصاميم</li>
+          <li><strong>Gumroad</strong> - منصة بسيطة للمنتجات الرقمية</li>
+          <li><strong>ProductHunt</strong> - لإطلاق المنتج الجديد</li>
+        </ul>
+
+        <h3>2. وسائل التواصل الاجتماعي</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">استراتيجية المحتوى</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>تويتر (X):
+- شارك مقاطع فيديو قصيرة للميزات
+- اكتب threads عن كيفية التخصيص
+- شارك تقييمات العملاء
+
+يوتيوب:
+- فيديو تعليمي كامل
+- مقارنة مع القوالب الأخرى
+- نصائح لتحسين المتجر
+
+لينكدإن:
+- مقالات عن تطوير الويب
+- شارك خبرتك في التجارة الإلكترونية</code></pre>
+        </div>
+
+        <h3>3. التسويق بالمحتوى</h3>
+        <div class="callout callout-info">
+          <div class="callout-title">💡 أفكار محتوى</div>
+          <div class="callout-content">
+            <ul>
+              <li>مقال: "كيف تبني متجر إلكتروني في 2024"</li>
+              <li>فيديو: "مراجعة كاملة للقالب"</li>
+              <li>بودكاست: "نصائح للتجارة الإلكترونية"</li>
+              <li>ورشة عمل مجانية عبر الإنترنت</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>🤝 دعم العملاء</h2>
+        <p>دعم العملاء الجيد يزيد من رضاهم ويشجعهم على التوصية بالقالب:</p>
+
+        <h3>قنوات الدعم</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">إعداد نظام الدعم</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>البريد الإلكتروني:
+- رد خلال 24 ساعة
+- استخدام قالب رد جاهز
+- توثيق الأسئلة الشائعة
+
+Discord Server:
+- قناة خاصة بالمشترين
+- مساعدة فورية
+- مشاركة التحديثات
+
+التذاكر (Tickets):
+- نظام تذاكر منظم
+- تتبع المشاكل
+- حلول دائمة</code></pre>
+        </div>
+
+        <h3>قالب الرد على الاستفسارات</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">قالب الرد</span>
+            <span class="code-block-lang">text</span>
+          </div>
+          <pre><code>مرحباً [اسم العميل]،
+
+شكراً لتواصلك معنا.
+
+بخصوص استفسارك عن [الموضوع]،
+
+[الإجابة على الاستفسار]
+
+إذا كان لديك أي أسئلة أخرى، لا تتردد في التواصل معنا.
+
+مع تحياتنا،
+فريق الدعم</code></pre>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">✅ نصيحة ذهبية</div>
+          <div class="callout-content">
+            أنشئ قاعدة بيانات للأسئلة الشائعة (FAQ) لتوفير الوقت في الرد على الاستفسارات المتكررة.
+          </div>
+        </div>
+
+        <h2>🔄 تحديث القالب باستمرار</h2>
+        <p>الحفاظ على القالب محدّثاً يزيد من قيمته ويحافظ على رضا العملاء:</p>
+
+        <h3>جدول التحديثات</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>النوع</th>
+                <th>التكرار</th>
+                <th>المحتوى</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>تحديثات أمان</strong></td>
+                <td>فوراً</td>
+                <td>إصلاح الثغرات الأمنية</td>
+              </tr>
+              <tr>
+                <td><strong>تحديثات صغيرة</strong></td>
+                <td>شهرياً</td>
+                <td>تحسينات وإصلاح أخطاء</td>
+              </tr>
+              <tr>
+                <td><strong>تحديثات كبرى</strong></td>
+                <td>كل 3 أشهر</td>
+                <td>ميزات جديدة وتحسينات كبيرة</td>
+              </tr>
+              <tr>
+                <td><strong>تحديثات الإطار</strong></td>
+                <td>عند الإصدار الجديد</td>
+                <td>ترقية Next.js و المكتبات</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>إنشاء ملف CHANGELOG.md</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">CHANGELOG.md</span>
+            <span class="code-block-lang">markdown</span>
+          </div>
+          <pre><code># Changelog
+
+## [1.2.0] - 2024-03-15
+
+### Added
+- نظام تقييم المنتجات
+- صفحة "عن المتجر"
+- تحسينات الأداء
+
+### Fixed
+- إصلاح مشكلة في السلة
+- تحسين استجابة الموبايل
+
+## [1.1.0] - 2024-02-01
+
+### Added
+- نظام المفضلة
+- بحث متقدم
+- فلتر حسب السعر
+
+### Fixed
+- تحسين سرعة التحميل
+- إصلاح أخطاء في التصنيفات
+
+## [1.0.0] - 2024-01-01
+
+### Added
+- الإصدار الأول من القالب</code></pre>
+        </div>
+
+        <h2>📊 قياس النجاح</h2>
+        <p>تابع هذه المؤشرات لقياس نجاحك:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>المؤشر</th>
+                <th>الهدف</th>
+                <th>الأداة</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>عدد المبيعات</strong></td>
+                <td>100+ مبيعة/شهر</td>
+                <td>Gumroad Dashboard</td>
+              </tr>
+              <tr>
+                <td><strong>التقييمات</strong></td>
+                <td>4.5+ نجوم</td>
+                <td>منصة البيع</td>
+              </tr>
+              <tr>
+                <td><strong>معدل التحويل</strong></td>
+                <td>2-5%</td>
+                <td>Google Analytics</td>
+              </tr>
+              <tr>
+                <td><strong>معدل الرضا</strong></td>
+                <td>90%+</td>
+                <td>استبيانات</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس الأخير اتعلمنا:</p>
+        <ul>
+          <li>✅ تجهيز القالب للبيع</li>
+          <li>✅ استراتيجيات التسعير</li>
+          <li>✅ التسويق للقالب</li>
+          <li>✅ دعم العملاء</li>
+          <li>✅ تحديث القالب باستمرار</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 مبروك!</div>
+          <div class="callout-content">
+            لقد أكملت الكورس بنجاح! الآن لديك كل المعرفة اللازمة لبناء وبيع متجر إلكتروني متكامل. لا تتردد في تطبيق ما تعلمته ومشاركة تجربتك مع المجتمع.
+          </div>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة أخيرة</div>
+          <div class="callout-content">
+            لا تتوقف عن التعلم والتطوير. الويب يتغير باستمرار، وعليك مواكبة أحدث التقنيات والأترندات للحفاظ على تنافسيتك في سوق القوالب الرقمية.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="24-customization.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">تخصيص القالب</span>
+        </a>
+        <a href="../index.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">العودة →</span>
+          <span class="nav-btn-title">الرئيسية</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

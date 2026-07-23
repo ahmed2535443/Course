@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 19 - إدارة الطلبات (Admin Orders)</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 19</span>
+        </div>
+        <h1>إدارة الطلبات (Admin Orders)</h1>
+        <div class="meta">
+          <span>⏱️ 55 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 5: Admin</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>عرض جدول الطلبات في Admin</li>
+          <li>تحديث حالة الطلب</li>
+          <li>تتبع حالة الدفع</li>
+          <li>عرض تفاصيل الطلب</li>
+          <li>فلتر الطلبات حسب الحالة</li>
+        </ul>
+
+        <h2>📁 هيكل ملفات إدارة الطلبات</h2>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/(admin)/orders/</div>
+          <div class="file-tree-item file">├── 📄 page.js                 # جدول الطلبات</div>
+          <div class="file-tree-item file">└── 📁 [id]/</div>
+          <div class="file-tree-item file">    └── 📄 page.js             # تفاصيل الطلب</div>
+          <div class="file-tree-item folder">📁 components/admin/</div>
+          <div class="file-tree-item file">├── 📄 OrdersTable.jsx        # جدول الطلبات</div>
+          <div class="file-tree-item file">├── 📄 OrderStatusBadge.jsx   # شارة حالة الطلب</div>
+          <div class="file-tree-item file">└── 📄 UpdateStatusModal.jsx  # نافذة تحديث الحالة</div>
+        </div>
+
+        <h2>📋 الخطوة 1: صفحة الطلبات الرئيسية</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(admin)/orders/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useEffect, useState } from 'react';
+import {
+  Search,
+  Filter,
+  Download,
+  RefreshCw,
+  ShoppingCart,
+  Clock,
+  CheckCircle,
+  Truck,
+  XCircle,
+} from 'lucide-react';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import OrdersTable from '@/components/admin/OrdersTable';
+import { useToast } from '@/components/ui/Toast';
+
+const statusTabs = [
+  { key: 'all', label: 'الكل', icon: ShoppingCart },
+  { key: 'pending', label: 'قيد الانتظار', icon: Clock },
+  { key: 'confirmed', label: 'تم التأكيد', icon: CheckCircle },
+  { key: 'shipped', label: 'تم الشحن', icon: Truck },
+  { key: 'delivered', label: 'تم التسليم', icon: CheckCircle },
+  { key: 'cancelled', label: 'ملغي', icon: XCircle },
+];
+
+export default function AdminOrdersPage() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/admin/orders');
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      addToast('فشل في جلب الطلبات', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredOrders = orders.filter(order => {
+    const matchesTab = activeTab === 'all' || order.status === activeTab;
+    const matchesSearch = 
+      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.shipping_address?.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.shipping_address?.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.shipping_address?.email?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    let matchesDate = true;
+    if (dateRange.start) {
+      matchesDate = matchesDate && new Date(order.created_at) >= new Date(dateRange.start);
+    }
+    if (dateRange.end) {
+      matchesDate = matchesDate && new Date(order.created_at) <= new Date(dateRange.end);
+    }
+
+    return matchesTab && matchesSearch && matchesDate;
+  });
+
+  const getStatusCount = (status) => {
+    if (status === 'all') return orders.length;
+    return orders.filter(o => o.status === status).length;
+  };
+
+  const handleExport = () => {
+    // تصدير الطلبات كملف CSV
+    const headers = ['رقم الطلب', 'العميل', 'الإجمالي', 'الحالة', 'التاريخ'];
+    const rows = filteredOrders.map(order => [
+      order.id.slice(0, 8),
+      `${order.shipping_address?.firstName} ${order.shipping_address?.lastName}`,
+      order.total.toFixed(2),
+      order.status,
+      new Date(order.created_at).toLocaleDateString('ar-SA'),
+    ]);
+
+    const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `orders-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+
+    addToast('تم تصدير الطلبات بنجاح', 'success');
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white">الطلبات</h1>
+          <p className="text-gray-400 mt-2">
+            إدارة جميع الطلبات في المتجر
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" onClick={fetchOrders}>
+            <RefreshCw className="w-5 h-5 ml-2" />
+            تحديث
+          </Button>
+          <Button variant="secondary" onClick={handleExport}>
+            <Download className="w-5 h-5 ml-2" />
+            تصدير
+          </Button>
+        </div>
+      </div>
+
+      {/* Status Tabs */}
+      <div className="flex flex-wrap gap-2">
+        {statusTabs.map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+              activeTab === tab.key
+                ? 'bg-indigo-500 text-white'
+                : 'bg-white/5 text-gray-400 hover:bg-white/10'
+            }`}
+          >
+            <tab.icon className="w-4 h-4" />
+            <span>{tab.label}</span>
+            <span className={`px-2 py-0.5 rounded-full text-xs ${
+              activeTab === tab.key ? 'bg-white/20' : 'bg-white/10'
+            }`}>
+              {getStatusCount(tab.key)}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <Card variant="glass">
+        <div className="flex flex-col sm:flex-row gap-4">
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="بحث برقم الطلب أو اسم العميل..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          {/* Date Range */}
+          <div className="flex items-center gap-2">
+            <input
+              type="date"
+              value={dateRange.start}
+              onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <span className="text-gray-400">إلى</span>
+            <input
+              type="date"
+              value={dateRange.end}
+              onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+              className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+        </div>
+      </Card>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4">
+          <p className="text-gray-400 text-sm">إجمالي الطلبات</p>
+          <p className="text-2xl font-bold text-white">{orders.length}</p>
+        </div>
+        <div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4">
+          <p className="text-gray-400 text-sm">قيد الانتظار</p>
+          <p className="text-2xl font-bold text-yellow-400">
+            {getStatusCount('pending')}
+          </p>
+        </div>
+        <div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4">
+          <p className="text-gray-400 text-sm">قيد الشحن</p>
+          <p className="text-2xl font-bold text-purple-400">
+            {getStatusCount('shipped')}
+          </p>
+        </div>
+        <div className="bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 p-4">
+          <p className="text-gray-400 text-sm">إجمالي الإيرادات</p>
+          <p className="text-2xl font-bold text-green-400">
+            ${orders.reduce((sum, o) => sum + (o.payment_status === 'paid' ? o.total : 0), 0).toFixed(2)}
+          </p>
+        </div>
+      </div>
+
+      {/* Orders Table */}
+      <OrdersTable
+        orders={filteredOrders}
+        loading={loading}
+        onUpdateStatus={fetchOrders}
+      />
+    </div>
+  );
+}</code></pre>
+        </div>
+
+        <h2>📊 الخطوة 2: جدول الطلبات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/admin/OrdersTable.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { Eye, ChevronDown, MoreVertical, Truck, CheckCircle, XCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import OrderStatusBadge from './OrderStatusBadge';
+import UpdateStatusModal from './UpdateStatusModal';
+
+export default function OrdersTable({ orders, loading, onUpdateStatus }) {
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [openMenu, setOpenMenu] = useState(null);
+
+  const handleStatusUpdate = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(`/api/admin/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        onUpdateStatus();
+        setShowStatusModal(false);
+        setSelectedOrder(null);
+      }
+    } catch (error) {
+      console.error('Error updating order status:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden">
+        <div className="p-6 space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="flex items-center gap-4 animate-pulse">
+              <div className="w-20 h-4 bg-gray-800 rounded" />
+              <div className="w-32 h-4 bg-gray-800 rounded" />
+              <div className="flex-1 h-4 bg-gray-800 rounded" />
+              <div className="w-24 h-4 bg-gray-800 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (orders.length === 0) {
+    return (
+      <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 p-12 text-center">
+        <Truck className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+        <h3 className="text-xl font-bold text-white mb-2">لا توجد طلبات</h3>
+        <p className="text-gray-400">لم يتم استلام أي طلبات بعد</p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/10">
+                <th className="text-left py-4 px-6 text-gray-400 font-medium">رقم الطلب</th>
+                <th className="text-left py-4 px-6 text-gray-400 font-medium">العميل</th>
+                <th className="text-left py-4 px-6 text-gray-400 font-medium">المنتجات</th>
+                <th className="text-left py-4 px-6 text-gray-400 font-medium">الإجمالي</th>
+                <th className="text-left py-4 px-6 text-gray-400 font-medium">حالة الطلب</th>
+                <th className="text-left py-4 px-6 text-gray-400 font-medium">الدفع</th>
+                <th className="text-left py-4 px-6 text-gray-400 font-medium">التاريخ</th>
+                <th className="text-left py-4 px-6 text-gray-400 font-medium">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence>
+                {orders.map((order) => (
+                  <motion.tr
+                    key={order.id}
+                    layout
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                  >
+                    {/* Order ID */}
+                    <td className="py-4 px-6">
+                      <span className="font-mono text-indigo-400">
+                        #{order.id.slice(0, 8).toUpperCase()}
+                      </span>
+                    </td>
+
+                    {/* Customer */}
+                    <td className="py-4 px-6">
+                      <div>
+                        <p className="text-white">
+                          {order.shipping_address?.firstName} {order.shipping_address?.lastName}
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          {order.shipping_address?.email}
+                        </p>
+                      </div>
+                    </td>
+
+                    {/* Items Count */}
+                    <td className="py-4 px-6">
+                      <span className="text-gray-300">
+                        {order.order_items?.length || 0} منتج
+                      </span>
+                    </td>
+
+                    {/* Total */}
+                    <td className="py-4 px-6">
+                      <span className="text-white font-medium">
+                        ${order.total.toFixed(2)}
+                      </span>
+                    </td>
+
+                    {/* Order Status */}
+                    <td className="py-4 px-6">
+                      <OrderStatusBadge status={order.status} />
+                    </td>
+
+                    {/* Payment Status */}
+                    <td className="py-4 px-6">
+                      <span className={`px-3 py-1 rounded-full text-sm ${
+                        order.payment_status === 'paid'
+                          ? 'bg-green-500/20 text-green-400'
+                          : order.payment_status === 'failed'
+                          ? 'bg-red-500/20 text-red-400'
+                          : 'bg-yellow-500/20 text-yellow-400'
+                      }`}>
+                        {order.payment_status === 'paid' ? 'مدفوع' :
+                         order.payment_status === 'failed' ? 'فشل' : 'في الانتظار'}
+                      </span>
+                    </td>
+
+                    {/* Date */}
+                    <td className="py-4 px-6">
+                      <span className="text-gray-400 text-sm">
+                        {new Date(order.created_at).toLocaleDateString('ar-SA')}
+                      </span>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/admin/orders/${order.id}`}
+                          className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+                        >
+                          <Eye className="w-5 h-5" />
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setSelectedOrder(order);
+                            setShowStatusModal(true);
+                          }}
+                          className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/10"
+                        >
+                          <ChevronDown className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="p-4 border-t border-white/10 flex items-center justify-between">
+          <p className="text-gray-400 text-sm">
+            عرض {orders.length} طلب
+          </p>
+          <div className="flex items-center gap-2">
+            <button className="px-3 py-1 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors">
+              السابق
+            </button>
+            <button className="px-3 py-1 bg-indigo-500 text-white rounded-lg">1</button>
+            <button className="px-3 py-1 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors">
+              التالي
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Update Status Modal */}
+      {showStatusModal && selectedOrder && (
+        <UpdateStatusModal
+          order={selectedOrder}
+          onClose={() => {
+            setShowStatusModal(false);
+            setSelectedOrder(null);
+          }}
+          onUpdate={handleStatusUpdate}
+        />
+      )}
+    </>
+  );
+}</code></pre>
+        </div>
+
+        <h2>🏷️ الخطوة 3: شارة حالة الطلب</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/admin/OrderStatusBadge.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { Clock, CheckCircle, Package, Truck, XCircle } from 'lucide-react';
+
+const statusConfig = {
+  pending: {
+    label: 'قيد الانتظار',
+    color: 'text-yellow-400',
+    bgColor: 'bg-yellow-500/20',
+    icon: Clock,
+  },
+  confirmed: {
+    label: 'تم التأكيد',
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-500/20',
+    icon: CheckCircle,
+  },
+  processing: {
+    label: 'قيد المعالجة',
+    color: 'text-indigo-400',
+    bgColor: 'bg-indigo-500/20',
+    icon: Package,
+  },
+  shipped: {
+    label: 'تم الشحن',
+    color: 'text-purple-400',
+    bgColor: 'bg-purple-500/20',
+    icon: Truck,
+  },
+  delivered: {
+    label: 'تم التسليم',
+    color: 'text-green-400',
+    bgColor: 'bg-green-500/20',
+    icon: CheckCircle,
+  },
+  cancelled: {
+    label: 'ملغي',
+    color: 'text-red-400',
+    bgColor: 'bg-red-500/20',
+    icon: XCircle,
+  },
+};
+
+export default function OrderStatusBadge({ status, size = 'md' }) {
+  const config = statusConfig[status] || statusConfig.pending;
+  const Icon = config.icon;
+
+  const sizeClasses = {
+    sm: 'px-2 py-1 text-xs',
+    md: 'px-3 py-1 text-sm',
+    lg: 'px-4 py-2 text-base',
+  };
+
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full ${config.bgColor} ${config.color} ${sizeClasses[size]}`}>
+      <Icon className="w-3.5 h-3.5" />
+      {config.label}
+    </span>
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔄 الخطوة 4: نافذة تحديث الحالة</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/admin/UpdateStatusModal.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+import { X, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Button from '@/components/ui/Button';
+
+const statusOptions = [
+  { value: 'pending', label: 'قيد الانتظار', color: 'text-yellow-400' },
+  { value: 'confirmed', label: 'تم التأكيد', color: 'text-blue-400' },
+  { value: 'processing', label: 'قيد المعالجة', color: 'text-indigo-400' },
+  { value: 'shipped', label: 'تم الشحن', color: 'text-purple-400' },
+  { value: 'delivered', label: 'تم التسليم', color: 'text-green-400' },
+  { value: 'cancelled', label: 'ملغي', color: 'text-red-400' },
+];
+
+export default function UpdateStatusModal({ order, onClose, onUpdate }) {
+  const [selectedStatus, setSelectedStatus] = useState(order.status);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleUpdate = async () => {
+    if (selectedStatus === order.status) {
+      onClose();
+      return;
+    }
+
+    setIsUpdating(true);
+    await onUpdate(order.id, selectedStatus);
+    setIsUpdating(false);
+  };
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          className="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-white/10">
+            <h2 className="text-xl font-bold text-white">تحديث حالة الطلب</h2>
+            <button
+              onClick={onClose}
+              className="p-2 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="p-6">
+            {/* Order Info */}
+            <div className="bg-white/5 rounded-xl p-4 mb-6">
+              <p className="text-gray-400 text-sm mb-1">رقم الطلب</p>
+              <p className="text-indigo-400 font-mono">#{order.id.slice(0, 8).toUpperCase()}</p>
+              <p className="text-gray-400 text-sm mt-3 mb-1">العميل</p>
+              <p className="text-white">
+                {order.shipping_address?.firstName} {order.shipping_address?.lastName}
+              </p>
+              <p className="text-gray-400 text-sm mt-3 mb-1">الإجمالي</p>
+              <p className="text-white font-bold">${order.total.toFixed(2)}</p>
+            </div>
+
+            {/* Status Options */}
+            <div className="space-y-3">
+              {statusOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setSelectedStatus(option.value)}
+                  className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-all ${
+                    selectedStatus === option.value
+                      ? 'bg-indigo-500/20 border-indigo-500'
+                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                  }`}
+                >
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                    selectedStatus === option.value
+                      ? 'border-indigo-500 bg-indigo-500'
+                      : 'border-gray-500'
+                  }`}>
+                    {selectedStatus === option.value && (
+                      <div className="w-2 h-2 bg-white rounded-full" />
+                    )}
+                  </div>
+                  <span className={option.color}>{option.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="flex justify-end gap-3 p-6 border-t border-white/10">
+            <Button variant="secondary" onClick={onClose} disabled={isUpdating}>
+              إلغاء
+            </Button>
+            <Button onClick={handleUpdate} disabled={isUpdating}>
+              {isUpdating ? (
+                <>
+                  <Loader2 className="w-5 h-5 ml-2 animate-spin" />
+                  جاري التحديث...
+                </>
+              ) : (
+                'تحديث الحالة'
+              )}
+            </Button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}</code></pre>
+        </div>
+
+        <h2>📄 الخطوة 5: صفحة تفاصيل الطلب في Admin</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(admin)/orders/[id]/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import {
+  ArrowRight,
+  Package,
+  Truck,
+  CheckCircle,
+  Clock,
+  MapPin,
+  CreditCard,
+  Printer,
+  Download,
+} from 'lucide-react';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
+import UpdateStatusModal from '@/components/admin/UpdateStatusModal';
+
+export default function AdminOrderDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+
+  useEffect(() => {
+    fetchOrder();
+  }, [params.id]);
+
+  const fetchOrder = async () => {
+    try {
+      const response = await fetch(`/api/admin/orders/${params.id}`);
+      if (!response.ok) throw new Error('Order not found');
+      const data = await response.json();
+      setOrder(data);
+    } catch (error) {
+      console.error('Error fetching order:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStatusUpdate = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(`/api/admin/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        fetchOrder();
+        setShowStatusModal(false);
+      }
+    } catch (error) {
+      console.error('Error updating order:', error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!order) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-2xl font-bold text-white mb-4">الطلب غير موجود</h2>
+        <Button onClick={() => router.push('/admin/orders')}>
+          العودة للطلبات
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => router.push('/admin/orders')}
+            className="p-2 text-gray-400 hover:text-white transition-colors"
+          >
+            <ArrowRight className="w-6 h-6" />
+          </button>
+          <div>
+            <h1 className="text-3xl font-bold text-white">
+              طلب #{order.id.slice(0, 8).toUpperCase()}
+            </h1>
+            <p className="text-gray-400 mt-1">
+              {new Date(order.created_at).toLocaleDateString('ar-SA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" onClick={() => window.print()}>
+            <Printer className="w-5 h-5 ml-2" />
+            طباعة
+          </Button>
+          <Button onClick={() => setShowStatusModal(true)}>
+            تحديث الحالة
+          </Button>
+        </div>
+      </div>
+
+      {/* Status Timeline */}
+      <Card variant="glass">
+        <h2 className="text-xl font-bold text-white mb-6">تتبع الطلب</h2>
+        <div className="flex items-center justify-between">
+          {['pending', 'confirmed', 'processing', 'shipped', 'delivered'].map((status, index) => {
+            const statusLabels = {
+              pending: 'قيد الانتظار',
+              confirmed: 'تم التأكيد',
+              processing: 'قيد المعالجة',
+              shipped: 'تم الشحن',
+              delivered: 'تم التسليم',
+            };
+            const isCompleted = ['pending', 'confirmed', 'processing', 'shipped', 'delivered']
+              .indexOf(order.status) >= index;
+
+            return (
+              <div key={status} className="flex items-center">
+                <div className="flex flex-col items-center">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${
+                    isCompleted ? 'bg-indigo-500 text-white' : 'bg-gray-700 text-gray-400'
+                  } ${order.status === status ? 'ring-4 ring-indigo-500/30' : ''}`}>
+                    {isCompleted ? (
+                      <CheckCircle className="w-5 h-5" />
+                    ) : (
+                      <Clock className="w-5 h-5" />
+                    )}
+                  </div>
+                  <span className={`text-xs ${isCompleted ? 'text-indigo-400' : 'text-gray-500'}`}>
+                    {statusLabels[status]}
+                  </span>
+                </div>
+                {index < 4 && (
+                  <div className={`w-12 sm:w-20 h-1 mx-2 ${
+                    isCompleted ? 'bg-indigo-500' : 'bg-gray-700'
+                  }`} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Order Items */}
+        <div className="lg:col-span-2">
+          <Card variant="glass">
+            <h2 className="text-xl font-bold text-white mb-6">المنتجات</h2>
+            <div className="space-y-4">
+              {order.order_items?.map((item) => (
+                <div key={item.id} className="flex items-center gap-4 p-4 bg-white/5 rounded-xl">
+                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-800 flex-shrink-0">
+                    {item.products?.image && (
+                      <img
+                        src={item.products.image}
+                        alt={item.products.name}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-medium">{item.products?.name}</p>
+                    <p className="text-gray-400 text-sm">
+                      {item.selected_size && `مقاس: ${item.selected_size}`}
+                      {item.selected_size && item.selected_color && ' | '}
+                      {item.selected_color && `لون: ${item.selected_color}`}
+                    </p>
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="text-gray-400 text-sm">× {item.quantity}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Order Summary */}
+          <Card variant="glass">
+            <h3 className="text-lg font-bold text-white mb-4">ملخص الطلب</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between text-gray-300">
+                <span>المجموع الفرعي</span>
+                <span>${order.subtotal?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-gray-300">
+                <span>الشحن</span>
+                <span>${order.shipping_cost?.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-gray-300">
+                <span>الضرائب</span>
+                <span>${order.tax?.toFixed(2)}</span>
+              </div>
+              <div className="border-t border-white/10 pt-3">
+                <div className="flex justify-between text-white font-bold text-lg">
+                  <span>الإجمالي</span>
+                  <span>${order.total?.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Shipping Address */}
+          <Card variant="glass">
+            <div className="flex items-center gap-2 mb-4">
+              <MapPin className="w-5 h-5 text-indigo-400" />
+              <h3 className="text-lg font-bold text-white">عنوان الشحن</h3>
+            </div>
+            <div className="text-gray-300 space-y-1 text-sm">
+              <p>{order.shipping_address?.firstName} {order.shipping_address?.lastName}</p>
+              <p>{order.shipping_address?.address}</p>
+              <p>{order.shipping_address?.city}, {order.shipping_address?.state}</p>
+              <p>{order.shipping_address?.phone}</p>
+              <p>{order.shipping_address?.email}</p>
+            </div>
+          </Card>
+
+          {/* Payment Info */}
+          <Card variant="glass">
+            <div className="flex items-center gap-2 mb-4">
+              <CreditCard className="w-5 h-5 text-indigo-400" />
+              <h3 className="text-lg font-bold text-white">الدفع</h3>
+            </div>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-400">الطريقة</span>
+                <span className="text-white">
+                  {order.payment_method === 'credit_card' ? 'بطاقة ائتمان' :
+                   order.payment_method === 'apple_pay' ? 'Apple Pay' : 'الدفع عند الاستلام'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">الحالة</span>
+                <span className={`${
+                  order.payment_status === 'paid' ? 'text-green-400' : 'text-yellow-400'
+                }`}>
+                  {order.payment_status === 'paid' ? 'مدفوع' : 'في الانتظار'}
+                </span>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      {/* Update Status Modal */}
+      {showStatusModal && (
+        <UpdateStatusModal
+          order={order}
+          onClose={() => setShowStatusModal(false)}
+          onUpdate={handleStatusUpdate}
+        />
+      )}
+    </div>
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔌 الخطوة 6: API Routes لإدارة الطلبات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/api/admin/orders/[id]/route.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+
+// GET: جلب تفاصيل طلب محدد
+export async function GET(request, { params }) {
+  try {
+    const { id } = params;
+
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        order_items (
+          *,
+          products (
+            id,
+            name,
+            image,
+            price
+          )
+        )
+      `)
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error fetching order:', error);
+    return NextResponse.json(
+      { error: 'Order not found' },
+      { status: 404 }
+    );
+  }
+}
+
+// PATCH: تحديث حالة الطلب
+export async function PATCH(request, { params }) {
+  try {
+    const { id } = params;
+    const body = await request.json();
+    const { status } = body;
+
+    // التحقق من صلاحية الحالة
+    const validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return NextResponse.json(
+        { error: 'حالة غير صالحة' },
+        { status: 400 }
+      );
+    }
+
+    // تحديث الحالة
+    const { data, error } = await supabase
+      .from('orders')
+      .update({
+        status,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error updating order:', error);
+    return NextResponse.json(
+      { error: 'Failed to update order' },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE: حذف طلب (مع التحقق من الصلاحيات)
+export async function DELETE(request, { params }) {
+  try {
+    const { id } = params;
+
+    // التحقق من أن الطلب يمكن حذفه
+    const { data: order, error: fetchError } = await supabase
+      .from('orders')
+      .select('status')
+      .eq('id', id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    if (order.status === 'delivered') {
+      return NextResponse.json(
+        { error: 'لا يمكن حذف طلب تم تسليمه' },
+        { status: 400 }
+      );
+    }
+
+    // حذف عناصر الطلب أولاً
+    await supabase
+      .from('order_items')
+      .delete()
+      .eq('order_id', id);
+
+    // حذف الطلب
+    const { error } = await supabase
+      .from('orders')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting order:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete order' },
+      { status: 500 }
+    );
+  }
+}</code></pre>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 تحسينات إضافية</div>
+          <div class="callout-content">
+            <ul>
+              <li>أضف إشعارات فورية عند تحديث حالة الطلب</li>
+              <li>أضف نظام ملاحظات للطلب</li>
+              <li>أضف إمكانية إرسال إيميل للمستخدم عند تحديث الحالة</li>
+              <li>أضف تقرير مبيعات شهري</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده بنينا نظام إدارة الطلبات في Admin:</p>
+        <ul>
+          <li>✅ جدول الطلبات مع البحث والفلتر</li>
+          <li>✅ تحديث حالة الطلب</li>
+          <li>✅ تتبع حالة الدفع</li>
+          <li>✅ صفحة تفاصيل الطلب</li>
+          <li>✅ تصدير الطلبات</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 النقطة القادمة</div>
+          <div class="callout-content">
+            في الدرس الجاي هنتكلم عن تحسين تجربة المستخدم مع حالات التحميل.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="18-admin-products.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">إدارة المنتجات</span>
+        </a>
+        <a href="20-loading-states.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">حالات التحميل</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

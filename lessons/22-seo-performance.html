@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 22 - SEO والأداء</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 22</span>
+        </div>
+        <h1>SEO والأداء</h1>
+        <div class="meta">
+          <span>⏱️ 20 دقيقة</span>
+          <span>📖 نظري</span>
+          <span>الوحدة 6: التحسينات والأخطاء</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>فهم كيفية تحسين محركات البحث (SEO) لموقع Next.js</li>
+          <li>إضافة Meta tags و Open Graph tags</li>
+          <li>تحسين أداء الصور مع Next.js Image</li>
+          <li>فهم Code Splitting و Server Components</li>
+          <li>تطبيق أفضل الممارسات لتحسين الأداء</li>
+        </ul>
+
+        <h2>🔍 لماذا SEO مهم للمتجر الإلكتروني؟</h2>
+        <p>محركات البحث هي المصدر الرئيسي للزيارات للمتاجر الإلكترونية. بدون تحسين محركات البحث، ستفقد了很多 من الزوار المحتملين. في هذا الدرس، هنتعلم كيف نحسن موقعنا ليظهر في أول نتائج البحث.</p>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 لماذا Next.js ممتاز لـ SEO؟</div>
+          <div class="callout-content">
+            Next.js يوفر Server Side Rendering (SSR) و Static Site Generation (SSG) اللي بتساعد محركات البحث على فهم محتوى موقعك بشكل أفضل. كمان بيوفر prerendering للصفحات مما يحسن سرعة التحميل.
+          </div>
+        </div>
+
+        <h2>🏷️ إعداد Meta tags</h2>
+        <p>في Next.js، يمكنك استخدام مكتبة <code>next/head</code> لإضافة meta tags لكل صفحة. لكن مع App Router، نستخدم <code>Metadata</code> object بدلاً من ذلك.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/layout.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>export const metadata = {
+  title: {
+    default: 'Market - متجر إلكتروني',
+    template: '%s | Market'
+  },
+  description: 'متجر إلكتروني متكامل بتصميم عصري وأداء عالي',
+  keywords: ['متجر', 'تسوق', 'منتجات', 'إلكتروني'],
+  authors: [{ name: 'Market Team' }],
+  creator: 'Market',
+  metadataBase: new URL('https://market.vercel.app'),
+  openGraph: {
+    type: 'website',
+    locale: 'ar_SA',
+    url: 'https://market.vercel.app',
+    siteName: 'Market',
+    title: 'Market - متجر إلكتروني',
+    description: 'متجر إلكتروني متكامل بتصميم عصري وأداء عالي',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Market - متجر إلكتروني'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Market - متجر إلكتروني',
+    description: 'متجر إلكتروني متكامل بتصميم عصري وأداء عالي',
+    images: ['/og-image.jpg'],
+    creator: '@market'
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1
+    }
+  }
+};</code></pre>
+        </div>
+
+        <h3>تخصيص Meta tags لكل صفحة</h3>
+        <p>يمكنك تخصيص Meta tags لكل صفحة على حدة باستخدام <code>generateMetadata</code>:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/products/[id]/page.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>export async function generateMetadata({ params }) {
+  const product = await getProduct(params.id);
+  
+  return {
+    title: product.name,
+    description: product.description,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: [product.image],
+      type: 'product',
+      price: {
+        amount: product.price,
+        currency: 'SAR'
+      }
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.name,
+      description: product.description,
+      images: [product.image]
+    }
+  };
+}</code></pre>
+        </div>
+
+        <h2>📱 Open Graph tags</h2>
+        <p>Open Graph tags بتستخدم لتحسين مظهر الروابط لما يتم مشاركتها على وسائل التواصل الاجتماعي مثل Facebook و LinkedIn.</p>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ ملاحظة مهمة</div>
+          <div class="callout-content">
+            تأكد من أن صور Open Graph بحجم 1200x630 بكسل للحصول على أفضل عرض. استخدم صيغة JPG أو PNG بحجم أقل من 1MB.
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">next.config.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co'
+      },
+      {
+        protocol: 'https',
+        hostname: '**.supabase.in'
+      }
+    ],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60 * 60 * 24 * 30
+  },
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons']
+  }
+};
+
+module.exports = nextConfig;</code></pre>
+        </div>
+
+        <h2>🖼️ تحسين الصور مع Next.js Image</h2>
+        <p>مكون <code>Image</code> في Next.js بيوفر تحسينات تلقائية للصور مثل:</p>
+        <ul>
+          <li>التحميل الكسول (Lazy Loading)</li>
+          <li>التحجيم التلقائي حسب حجم الشاشة</li>
+          <li>تحويل الصور لصيغة WebP أو AVIF</li>
+          <li>منع Cumulative Layout Shift (CLS)</li>
+        </ul>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/products/ProductCard.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Image from 'next/image';
+
+export default function ProductCard({ product }) {
+  return (
+    &lt;div className="product-card"&gt;
+      &lt;div className="relative aspect-square"&gt;
+        &lt;Image
+          src={product.image}
+          alt={product.name}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover rounded-lg"
+          priority={false}
+          loading="lazy"
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRg..."
+        /&gt;
+      &lt;/div&gt;
+      &lt;div className="p-4"&gt;
+        &lt;h3 className="font-semibold text-lg mb-2"&gt;{product.name}&lt;/h3&gt;
+        &lt;p className="text-primary font-bold"&gt;{product.price} ر.س&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>استخدام priority للصور المهمة</h3>
+        <p>للسماح بتحميل الصور بشكل مبكر (Above the fold)، استخدم <code>priority</code>:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">components/Hero.jsx</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>import Image from 'next/image';
+
+export default function Hero() {
+  return (
+    &lt;section className="relative h-[600px]"&gt;
+      &lt;Image
+        src="/hero-bg.jpg"
+        alt="خلفية الصفحة الرئيسية"
+        fill
+        className="object-cover"
+        priority
+        quality={85}
+      /&gt;
+      &lt;div className="absolute inset-0 bg-black/50" /&gt;
+      &lt;div className="relative z-10 container mx-auto px-4"&gt;
+        &lt;h1 className="text-5xl font-bold text-white mb-4"&gt;
+          اكتشف أحدث المنتجات
+        &lt;/h1&gt;
+        &lt;p className="text-xl text-gray-200 mb-8"&gt;
+          تشكيلة واسعة من المنتجات عالية الجودة
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>✂️ Code Splitting التلقائي</h2>
+        <p>Next.js يقوم بـ Code Splitting تلقائي لكل صفحة. هذا يعني أن المستخدم يحمّل فقط الكود المطلوب للصفحة الحالية.</p>
+
+        <div class="callout callout-success">
+          <div class="callout-title">✅ ميزة Code Splitting</div>
+          <div class="callout-content">
+            مع Next.js، لا حاجة لإعداد Code Splitting يدوياً. كل صفحة في مجلد <code>app</code> تتحول إلى chunk منفصل يُحمّل عند الحاجة.
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Dynamic Import</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>// استيراد ديناميكي لمكون ثقيل
+import dynamic from 'next/dynamic';
+
+const HeavyChart = dynamic(() => import('@/components/HeavyChart'), {
+  loading: () => &lt;p&gt;جاري التحميل...&lt;/p&gt;,
+  ssr: false
+});
+
+// استيراد ديناميكي بمكونات مشروطة
+const AdminDashboard = dynamic(
+  () => import('@/components/AdminDashboard'),
+  { ssr: false }
+);
+
+// استخدام loading state
+const ProductModal = dynamic(
+  () => import('@/components/ProductModal'),
+  {
+    loading: () => &lt;div className="modal-loading"&gt;&lt;Spinner /&gt;&lt;/div&gt;,
+    ssr: false
+  }
+);</code></pre>
+        </div>
+
+        <h2>⚡ أداء Server Components</h2>
+        <p>Server Components في Next.js بتشتغل على السيرفر فقط، مما يحسن الأداء بشكل كبير:</p>
+
+        <h3>1. تقليل حجم JavaScript المرسل للعميل</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Server Component (الافتراضي)</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>// هذا Server Component - لا يُرسل JavaScript للعميل
+import { getProducts } from '@/services/products';
+
+export default async function ProductList() {
+  // يتم تنفيذ هذا الكود على السيرفر فقط
+  const products = await getProducts();
+  
+  return (
+    &lt;div className="grid grid-cols-1 md:grid-cols-3 gap-6"&gt;
+      {products.map(product =&gt; (
+        &lt;ProductCard key={product.id} product={product} /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h3>2. Client Component عند الحاجة فقط</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Client Component</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useState } from 'react';
+
+export default function AddToCartButton({ productId }) {
+  const [loading, setLoading] = useState(false);
+  
+  const handleAddToCart = async () => {
+    setLoading(true);
+    // إضافة للسلة
+    await addToCart(productId);
+    setLoading(false);
+  };
+  
+  return (
+    &lt;button
+      onClick={handleAddToCart}
+      disabled={loading}
+      className="btn-primary"
+    &gt;
+      {loading ? 'جاري الإضافة...' : 'أضف للسلة'}
+    &lt;/button&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📊 قياس الأداء</h2>
+        <p>استخدم أدوات مثل Lighthouse و Web Vitals لقياس أداء موقعك:</p>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>المقياس</th>
+                <th>الهدف</th>
+                <th>الشرح</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>LCP</strong></td>
+                <td>&lt; 2.5 ثانية</td>
+                <td> Largest Contentful Paint - وقت تحميل أكبر عنصر</td>
+              </tr>
+              <tr>
+                <td><strong>FID</strong></td>
+                <td>&lt; 100 مللي ثانية</td>
+                <td>First Input Delay - وقت استجابة أول تفاعل</td>
+              </tr>
+              <tr>
+                <td><strong>CLS</strong></td>
+                <td>&lt; 0.1</td>
+                <td>Cumulative Layout Shift - تغيرات التخطيط</td>
+              </tr>
+              <tr>
+                <td><strong>TTFB</strong></td>
+                <td>&lt; 800 مللي ثانية</td>
+                <td>Time to First Byte - وقت استجابة السيرفر</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>🛠️ أفضل الممارسات</h2>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ تجنب هذه الأخطاء</div>
+          <div class="callout-content">
+            <ul>
+              <li>لا تستخدم <code>"use client"</code> إلا عند الضرورة (عند الحاجة للـ hooks)</li>
+              <li>لا تُصدّر بيانات حساسة من Server Components</li>
+              <li>لا تستخدم <code>useEffect</code> لجلب البيانات في Server Components</li>
+              <li>تأكد من أن الصور بحجم مناسب قبل الرفع</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>1. تحسين قاعدة البيانات</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">services/products.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { cache } from 'react';
+
+// استخدام cache لتجنب الطلبات المتكررة
+export const getProducts = cache(async (filters = {}) => {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  return data;
+});
+
+// استخدام Revalidation
+export const revalidate = 3600; // تحديث كل ساعة</code></pre>
+        </div>
+
+        <h3>2. تحسين التخزين المؤقت</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/api/products/route.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { NextResponse } from 'next/server';
+
+export async function GET(request) {
+  const products = await getProducts();
+  
+  return NextResponse.json(products, {
+    headers: {
+      'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400'
+    }
+  });
+}</code></pre>
+        </div>
+
+        <h3>3. تحسين التحميل الأولي</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/layout.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { Inter } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true
+});
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html lang="ar" dir="ltr" className={inter.className}&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده اتعلمنا:</p>
+        <ul>
+          <li>✅ إعداد Meta tags و Open Graph tags</li>
+          <li>✅ تحسين الصور مع Next.js Image</li>
+          <li>✅ فهم Code Splitting التلقائي</li>
+          <li>✅ أداء Server Components</li>
+          <li>✅ أفضل الممارسات لتحسين SEO والأداء</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 الدرس الجاي</div>
+          <div class="callout-content">
+            في الدرس الجاي هنتعلم عن <strong>نشر المشروع على Vercel</strong> - خطوات النشر وإعداد البيئة الإنتاجية.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="21-error-handling.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">معالجة الأخطاء</span>
+        </a>
+        <a href="23-deployment.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">نشر المشروع على Vercel</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

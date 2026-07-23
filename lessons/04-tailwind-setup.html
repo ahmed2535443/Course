@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 04 - إعداد Tailwind CSS 4</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 04</span>
+        </div>
+        <h1>إعداد Tailwind CSS 4</h1>
+        <div class="meta">
+          <span>⏱️ 15 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 1: الأساسيات</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>فهم什么是 Tailwind CSS</li>
+          <li>تكوين Tailwind CSS مع Next.js</li>
+          <li>استخدام الـ Utility Classes</li>
+          <li>تخصيص الثيم (Theme)</li>
+          <li>التصميم المتجاوب (Responsive Design)</li>
+        </ul>
+
+        <h2>🎨什么是 Tailwind CSS؟</h2>
+        <p><strong>Tailwind CSS</strong> هو إ framework CSS بيشتغل على مبدأ الـ Utility-first. يعني بدل ما تكتب CSS كتير، بتستخدم class names جاهزة في الـ HTML.</p>
+
+        <h3>مثال مقارن:</h3>
+        
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>CSS التقليدي</th>
+                <th>Tailwind CSS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <code>.button { padding: 10px 20px; background: blue; color: white; }</code>
+                </td>
+                <td>
+                  <code>class="px-5 py-2.5 bg-blue-500 text-white"</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>مميزات Tailwind CSS:</h3>
+        <ul>
+          <li><strong>سريع في التطوير</strong> - محتاج أقل كتابة CSS</li>
+          <li><strong>Consistent Design</strong> - تصميم متناسق</li>
+          <li><strong>Responsive سهل</strong> - مع prefixes زي md:, lg:</li>
+          <li><strong>Mobile First</strong> - تصميم يبدأ من الموبايل</li>
+          <li><strong>Dark Mode</strong> - وضع الليلي بسهولة</li>
+        </ul>
+
+        <h2>⚙️ التكوين مع Next.js</h2>
+        <p>Next.js 14+ بيدعم Tailwind CSS 4 بشكل أصلي. لو عملت create-next-app مع Tailwind، فهو متكون تلقائياً.</p>
+
+        <h3>الملفات المهمة:</h3>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 market/</div>
+          <div class="file-tree-item file">├── 📄 postcss.config.mjs     # إعدادات PostCSS</div>
+          <div class="file-tree-item file">├── 📄 tailwind.config.js     # إعدادات Tailwind</div>
+          <div class="file-tree-item file">└── 📁 app/</div>
+          <div class="file-tree-item file">    └── 📄 globals.css        # الأنماط العامة مع Tailwind</div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">postcss.config.mjs</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>/** @type {import('postcss-load-config').Config} */
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;</code></pre>
+        </div>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/globals.css</span>
+            <span class="code-block-lang">css</span>
+          </div>
+          <pre><code>@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}</code></pre>
+        </div>
+
+        <h2>🎯 استخدام Utility Classes</h2>
+        <p>خلّينا نشوف أمثلة عملية على الـ classes اللي ممكن نستخدمها:</p>
+
+        <h3>1. التخطيط (Layout)</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">مثال على التخطيط</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;!-- Flexbox --&gt;
+&lt;div class="flex items-center justify-between"&gt;
+  &lt;span&gt;العنصر 1&lt;/span&gt;
+  &lt;span&gt;العنصر 2&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- Grid --&gt;
+&lt;div class="grid grid-cols-3 gap-4"&gt;
+  &lt;div&gt;عمود 1&lt;/div&gt;
+  &lt;div&gt;عمود 2&lt;/div&gt;
+  &lt;div&gt;عمود 3&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Padding و Margin --&gt;
+&lt;div class="p-4 m-2"&gt;محتوى&lt;/div&gt;
+&lt;div class="px-8 py-4"&gt;محتوى&lt;/div&gt;</code></pre>
+        </div>
+
+        <h3>2. الألوان والخلفيات</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">الألوان</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;!-- ألوان النص --&gt;
+&lt;p class="text-gray-900"&gt;نص أسود&lt;/p&gt;
+&lt;p class="text-blue-600"&gt;نص أزرق&lt;/p&gt;
+&lt;p class="text-white"&gt;نص أبيض&lt;/p&gt;
+
+&lt;!-- ألوان الخلفية --&gt;
+&lt;div class="bg-white"&gt;خلفية بيضاء&lt;/div&gt;
+&lt;div class="bg-blue-500"&gt;خلفية زرقاء&lt;/div&gt;
+&lt;div class="bg-gradient-to-r from-blue-500 to-purple-500"&gt;
+  خلفية متدرجة
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <h3>3. الخطوط والنصوص</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">النصوص</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;h1 class="text-4xl font-bold"&gt;عنوان رئيسي&lt;/h1&gt;
+&lt;p class="text-lg text-gray-600"&gt;نص عادي&lt;/p&gt;
+&lt;p class="text-sm font-medium"&gt;نص صغير&lt;/p&gt;
+
+&lt;!-- محاذاة النص --&gt;
+&lt;p class="text-center"&gt;نص في النص&lt;/p&gt;
+&lt;p class="text-right"&gt;نص لليمين&lt;/p&gt;</code></pre>
+        </div>
+
+        <h3>4. الحدود والظلال</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">الحدود والظلال</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;!-- حدود --&gt;
+&lt;div class="border border-gray-200 rounded-lg"&gt;
+  محتوى بحد
+&lt;/div&gt;
+
+&lt;!-- ظلال --&gt;
+&lt;div class="shadow-lg"&gt;
+  محتوى بظل&lt;/div&gt;
+
+&lt;!-- تأثيرات Hover --&gt;
+&lt;button class="bg-blue-500 hover:bg-blue-700 transition-colors"&gt;
+  زر مع تأثير
+&lt;/button&gt;</code></pre>
+        </div>
+
+        <h2>🎨 تخصيص الثيم (Custom Theme)</h2>
+        <p>ممكن نخصّص ألوان المشروع و Sizes في ملف <code>tailwind.config.js</code>:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">tailwind.config.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          200: '#c7d2fe',
+          300: '#a5b4fc',
+          400: '#818cf8',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
+          800: '#3730a3',
+          900: '#312e81',
+        },
+        secondary: {
+          50: '#faf5ff',
+          100: '#f3e8ff',
+          200: '#e9d5ff',
+          300: '#d8b4fe',
+          400: '#c084fc',
+          500: '#a855f7',
+          600: '#9333ea',
+          700: '#7e22ce',
+          800: '#6b21a8',
+          900: '#581c87',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'Cairo', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+};</code></pre>
+        </div>
+
+        <h3>استخدام الألوان المخصصة:</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">استخدام الألوان المخصصة</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;!-- بعد التخصيص --&gt;
+&lt;div class="bg-primary-500 text-white"&gt;
+  خلفية باللون الأساسي
+&lt;/div&gt;
+
+&lt;div class="bg-secondary-100 border border-secondary-300"&gt;
+  خلفية بلون ثانوي فاتح
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <h2>📱 التصميم المتجاوب (Responsive Design)</h2>
+        <p>Tailwind CSS بيستخدم <strong>Mobile First</strong> approach. يعني بنبدأ بالتصميم للموبايل ونضيف الـ breakpoints للشاشات الأكبر.</p>
+
+        <h3>الـ Breakpoints:</h3>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Prefix</th>
+                <th>الحجم</th>
+                <th>الجهاز</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>sm:</td>
+                <td>640px</td>
+                <td>موبايل كبير</td>
+              </tr>
+              <tr>
+                <td>md:</td>
+                <td>768px</td>
+                <td>تابلت</td>
+              </tr>
+              <tr>
+                <td>lg:</td>
+                <td>1024px</td>
+                <td>لابتوب</td>
+              </tr>
+              <tr>
+                <td>xl:</td>
+                <td>1280px</td>
+                <td>شاشة كبيرة</td>
+              </tr>
+              <tr>
+                <td>2xl:</td>
+                <td>1536px</td>
+                <td>شاشة ضخمة</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>مثال: تصميم متجاوب</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">تصميم متجاوب</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;!-- شبكة متجاوبة --&gt;
+&lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"&gt;
+  &lt;div class="bg-white p-4 rounded-lg shadow"&gt;
+    منتج 1
+  &lt;/div&gt;
+  &lt;div class="bg-white p-4 rounded-lg shadow"&gt;
+    منتج 2
+  &lt;/div&gt;
+  &lt;div class="bg-white p-4 rounded-lg shadow"&gt;
+    منتج 3
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- تخطيط متجاوب --&gt;
+&lt;div class="flex flex-col md:flex-row items-center justify-between"&gt;
+  &lt;h1 class="text-2xl md:text-4xl font-bold mb-4 md:mb-0"&gt;
+    عنوان رئيسي
+  &lt;/h1&gt;
+  &lt;button class="w-full md:w-auto bg-blue-500 text-white px-6 py-3 rounded"&gt;
+    زر
+  &lt;/button&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 نصيحة</div>
+          <div class="callout-content">
+            ابدأ دائماً بالتصميم للموبايل (بدون prefix) ثم أضف الـ prefixes للشاشات الأكبر. ده اسمه Mobile First approach.
+          </div>
+        </div>
+
+        <h2>🌙 Dark Mode</h2>
+        <p>Tailwind CSS بيدعم Dark Mode بسهولة. ممكن نستخدم الـ <code>dark:</code> prefix:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Dark Mode</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;!-- تفعيل Dark Mode في globals.css --&gt;
+&lt;html class="dark"&gt;
+
+&lt;!-- استخدام dark: prefix --&gt;
+&lt;div class="bg-white dark:bg-gray-900 text-black dark:text-white"&gt;
+  محتوى يدعم الوضع الليلي
+&lt;/div&gt;
+
+&lt;!-- في JavaScript --&gt;
+&lt;div className={
+  `p-4 ${
+    isDark 
+      ? 'bg-gray-900 text-white' 
+      : 'bg-white text-black'
+  }`
+}&gt;
+  محتوى ديناميكي
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <h2>🧪 تمارين عملية</h2>
+        
+        <h3>تمرين 1: إنشاء بطاقة منتج</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">بطاقة منتج</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"&gt;
+  &lt;img 
+    src="/product.jpg" 
+    alt="المنتج"
+    class="w-full h-48 object-cover"
+  /&gt;
+  &lt;div class="p-4"&gt;
+    &lt;h3 class="text-lg font-semibold text-gray-900 mb-2"&gt;
+      اسم المنتج
+    &lt;/h3&gt;
+    &lt;p class="text-gray-600 text-sm mb-4"&gt;
+      وصف مختصر للمنتج
+    &lt;/p&gt;
+    &lt;div class="flex items-center justify-between"&gt;
+      &lt;span class="text-xl font-bold text-primary-600"&gt;
+        $99.99
+      &lt;/span&gt;
+      &lt;button class="bg-primary-500 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors"&gt;
+        أضف للسلة
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+        </div>
+
+        <h3>تمرين 2: شريط تنقل متجاوب</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">Navbar</span>
+            <span class="code-block-lang">html</span>
+          </div>
+          <pre><code>&lt;nav class="bg-white shadow-md"&gt;
+  &lt;div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"&gt;
+    &lt;div class="flex justify-between h-16"&gt;
+      &lt;!-- الشعار --&gt;
+      &lt;div class="flex items-center"&gt;
+        &lt;span class="text-2xl font-bold text-primary-600"&gt;
+          Market
+        &lt;/span&gt;
+      &lt;/div&gt;
+      
+      &lt;!-- الروابط (تظهر في الشاشات الكبيرة) --&gt;
+      &lt;div class="hidden md:flex items-center space-x-8"&gt;
+        &lt;a href="/" class="text-gray-900 hover:text-primary-600"&gt;
+          الرئيسية
+        &lt;/a&gt;
+        &lt;a href="/products" class="text-gray-900 hover:text-primary-600"&gt;
+          المنتجات
+        &lt;/a&gt;
+        &lt;a href="/about" class="text-gray-900 hover:text-primary-600"&gt;
+          من نحن
+        &lt;/a&gt;
+      &lt;/div&gt;
+      
+      &lt;!-- زر الموبايل --&gt;
+      &lt;div class="md:hidden flex items-center"&gt;
+        &lt;button class="text-gray-900"&gt;
+          ☰
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;</code></pre>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده اتعلمنا:</p>
+        <ul>
+          <li>✅ Tailwind CSS وإزاي يشتغل</li>
+          <li>✅ استخدام الـ Utility Classes</li>
+          <li>✅ تخصيص الثيم والألوان</li>
+          <li>✅ التصميم المتجاوب مع Responsive Design</li>
+          <li>✅ دعم Dark Mode</li>
+        </ul>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 الدرس الجاي</div>
+          <div class="callout-content">
+            في الدرس الجاي هنتعلم <strong>إعداد Supabase وقاعدة البيانات</strong> - هنشتغل على حفظ البيانات وقاعدة البيانات.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="03-nextjs-basics.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">أساسيات Next.js 16</span>
+        </a>
+        <a href="05-supabase-setup.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">إعداد Supabase</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

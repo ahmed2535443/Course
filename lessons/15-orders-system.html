@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الدرس 15 - نظام الطلبات (Orders System)</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="../index.html" class="logo">
+        <div class="logo-icon">🎓</div>
+        <span class="logo-text">Market Course</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">الدروس</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="container">
+    <div class="lesson-content">
+      
+      <!-- Header -->
+      <div class="lesson-header">
+        <div class="breadcrumb">
+          <a href="../index.html">الرئيسية</a>
+          <span>/</span>
+          <span>الدرس 15</span>
+        </div>
+        <h1>نظام الطلبات (Orders System)</h1>
+        <div class="meta">
+          <span>⏱️ 60 دقيقة</span>
+          <span>📖 عملي</span>
+          <span>الوحدة 4: المميزات</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="lesson-body">
+
+        <h2>🎯 أهداف الدرس</h2>
+        <ul>
+          <li>إنشاء جدول orders في Supabase</li>
+          <li>بناء دالة createOrder لإنشاء الطلبات</li>
+          <li>بناء دالة getUserOrders لجلب طلبات المستخدم</li>
+          <li>تتبع حالة الطلب (Order Status Tracking)</li>
+          <li>إنشاء صفحة تأكيد الطلب</li>
+          <li>إنشاء صفحة سجل الطلبات</li>
+        </ul>
+
+        <h2>📁 هيكل ملفات نظام الطلبات</h2>
+
+        <div class="file-tree">
+          <div class="file-tree-item folder">📁 app/(shop)/</div>
+          <div class="file-tree-item file">├── 📁 orders/</div>
+          <div class="file-tree-item file">│   ├── 📄 page.js             # صفحة سجل الطلبات</div>
+          <div class="file-tree-item file">│   └── 📁 [id]/</div>
+          <div class="file-tree-item file">│       └── 📄 page.js         # تفاصيل طلب محدد</div>
+          <div class="file-tree-item file">├── 📁 checkout/</div>
+          <div class="file-tree-item file">│   └── 📁 confirmation/</div>
+          <div class="file-tree-item file">│       └── 📄 page.js         # صفحة تأكيد الطلب</div>
+          <div class="file-tree-item folder">📁 services/</div>
+          <div class="file-tree-item file">└── 📄 orderService.js        # خدمات الطلبات</div>
+          <div class="file-tree-item folder">📁 app/api/</div>
+          <div class="file-tree-item file">└── 📁 orders/</div>
+          <div class="file-tree-item file">    └── 📄 route.js           # API Routes</div>
+        </div>
+
+        <h2>🗄️ الخطوة 1: جدول Orders في Supabase</h2>
+
+        <p>أولاً محتاجين نعمل جدول في Supabase لتخزين الطلبات. روح على Supabase Dashboard واذهب إلى SQL Editor وأدخل الكود ده:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">supabase/migrations/create_orders.sql</span>
+            <span class="code-block-lang">sql</span>
+          </div>
+          <pre><code>-- جدول الطلبات الرئيسي
+CREATE TABLE orders (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending'
+    CHECK (status IN ('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled')),
+  payment_status TEXT NOT NULL DEFAULT 'pending'
+    CHECK (payment_status IN ('pending', 'paid', 'failed', 'refunded')),
+  payment_method TEXT NOT NULL DEFAULT 'credit_card',
+  shipping_address JSONB NOT NULL,
+  subtotal DECIMAL(10, 2) NOT NULL,
+  shipping_cost DECIMAL(10, 2) DEFAULT 0,
+  tax DECIMAL(10, 2) DEFAULT 0,
+  total DECIMAL(10, 2) NOT NULL,
+  notes TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- جدول عناصر الطلب
+CREATE TABLE order_items (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID NOT NULL REFERENCES products(id),
+  quantity INTEGER NOT NULL CHECK (quantity > 0),
+  price DECIMAL(10, 2) NOT NULL,
+  selected_size TEXT,
+  selected_color TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- الفهارس لتحسين الأداء
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_orders_created_at ON orders(created_at DESC);
+CREATE INDEX idx_order_items_order_id ON order_items(order_id);
+
+-- تفعيل Row Level Security
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
+
+-- سياسة للقراءة: المستخدم يقدر يشوف طلباته بس
+CREATE POLICY "Users can view their own orders"
+  ON orders FOR SELECT
+  USING (auth.uid()::text = user_id);
+
+-- سياسة للإضافة: المستخدم يقدر يضيف طلبات
+CREATE POLICY "Users can create orders"
+  ON orders FOR INSERT
+  WITH CHECK (auth.uid()::text = user_id);
+
+-- سياسة للقراءة: المستخدم يقدر يشوف عناصر طلباته
+CREATE POLICY "Users can view their order items"
+  ON order_items FOR SELECT
+  USING (
+    order_id IN (
+      SELECT id FROM orders WHERE auth.uid()::text = user_id
+    )
+  );
+
+-- سياسة للإضافة: المستخدم يقدر يضيف عناصر لطلباته
+CREATE POLICY "Users can create order items"
+  ON order_items FOR INSERT
+  WITH CHECK (
+    order_id IN (
+      SELECT id FROM orders WHERE auth.uid()::text = user_id
+    )
+  );
+
+-- دالة لتحديث updated_at تلقائياً
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- 트리거 لتحديث updated_at
+CREATE TRIGGER update_orders_updated_at
+  BEFORE UPDATE ON orders
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();</code></pre>
+        </div>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 ملاحظة مهمة</div>
+          <div class="callout-content">
+            الـ UUID في orders هو مرجع المستخدم من Clerk. لاحظ أننا نستخدم <code>auth.uid()::text</code> لتحويله إلى نص. في بعض الحالات ممكن تحتاج تعدل الـ RLS policies حسب إعدادات Clerk بتاعتك.
+          </div>
+        </div>
+
+        <h2>📦 الخطوة 2: خدمات الطلبات (Order Service)</h2>
+
+        <p>بنينا مكون services مخصص لإدارة الطلبات. المكون ده بيشتغل كطبقة وسيطة بين الـ API والـ Supabase:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">services/orderService.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { supabase } from '@/lib/supabase';
+
+/**
+ * إنشاء طلب جديد
+ * @param {Object} orderData - بيانات الطلب
+ * @returns {Object} - الطلب المنشأ
+ */
+export async function createOrder(orderData) {
+  const {
+    userId,
+    items,
+    shippingAddress,
+    paymentMethod,
+    subtotal,
+    shippingCost,
+    tax,
+    total,
+    notes
+  } = orderData;
+
+  // إنشاء الطلب الرئيسي
+  const { data: order, error: orderError } = await supabase
+    .from('orders')
+    .insert([
+      {
+        user_id: userId,
+        status: 'pending',
+        payment_status: paymentMethod === 'cod' ? 'pending' : 'paid',
+        payment_method: paymentMethod,
+        shipping_address: shippingAddress,
+        subtotal: parseFloat(subtotal),
+        shipping_cost: parseFloat(shippingCost),
+        tax: parseFloat(tax),
+        total: parseFloat(total),
+        notes: notes || null,
+      },
+    ])
+    .select()
+    .single();
+
+  if (orderError) {
+    console.error('Error creating order:', orderError);
+    throw new Error('فشل في إنشاء الطلب');
+  }
+
+  // إضافة عناصر الطلب
+  const orderItems = items.map((item) => ({
+    order_id: order.id,
+    product_id: item.productId || item.id,
+    quantity: item.quantity,
+    price: parseFloat(item.price),
+    selected_size: item.selectedSize || null,
+    selected_color: item.selectedColor || null,
+  }));
+
+  const { error: itemsError } = await supabase
+    .from('order_items')
+    .insert(orderItems);
+
+  if (itemsError) {
+    console.error('Error creating order items:', itemsError);
+    throw new Error('فشل في إضافة عناصر الطلب');
+  }
+
+  return order;
+}
+
+/**
+ * جلب طلبات المستخدم
+ * @param {string} userId - معرف المستخدم
+ * @param {Object} options - خيارات إضافية
+ * @returns {Array} - قائمة الطلبات
+ */
+export async function getUserOrders(userId, options = {}) {
+  const { status, limit = 10, offset = 0 } = options;
+
+  let query = supabase
+    .from('orders')
+    .select(`
+      *,
+      order_items (
+        *,
+        products (
+          id,
+          name,
+          image
+        )
+      )
+    `)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .range(offset, offset + limit - 1);
+
+  // تصفية حسب الحالة إذا كانت محددة
+  if (status) {
+    query = query.eq('status', status);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('Error fetching orders:', error);
+    throw new Error('فشل في جلب الطلبات');
+  }
+
+  return data;
+}
+
+/**
+ * جلب تفاصيل طلب محدد
+ * @param {string} orderId - معرف الطلب
+ * @param {string} userId - معرف المستخدم للتحقق من الصلاحية
+ * @returns {Object} - تفاصيل الطلب
+ */
+export async function getOrderById(orderId, userId) {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      order_items (
+        *,
+        products (
+          id,
+          name,
+          image,
+          description
+        )
+      )
+    `)
+    .eq('id', orderId)
+    .eq('user_id', userId)
+    .single();
+
+  if (error) {
+    console.error('Error fetching order:', error);
+    throw new Error('الطلب غير موجود');
+  }
+
+  return data;
+}
+
+/**
+ * تحديث حالة الطلب (للadmin فقط)
+ * @param {string} orderId - معرف الطلب
+ * @param {string} status - الحالة الجديدة
+ * @returns {Object} - الطلب المحدث
+ */
+export async function updateOrderStatus(orderId, status) {
+  const { data, error } = await supabase
+    .from('orders')
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq('id', orderId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating order status:', error);
+    throw new Error('فشل في تحديث حالة الطلب');
+  }
+
+  return data;
+}
+
+/**
+ * إلغاء طلب
+ * @param {string} orderId - معرف الطلب
+ * @param {string} userId - معرف المستخدم
+ * @returns {Object} - الطلب المُلغى
+ */
+export async function cancelOrder(orderId, userId) {
+  // التحقق من أن الطلب يخص المستخدم وأن حالته تسمح بالإلغاء
+  const { data: order, error: fetchError } = await supabase
+    .from('orders')
+    .select('status')
+    .eq('id', orderId)
+    .eq('user_id', userId)
+    .single();
+
+  if (fetchError || !order) {
+    throw new Error('الطلب غير موجود');
+  }
+
+  if (!['pending', 'confirmed'].includes(order.status)) {
+    throw new Error('لا يمكن إلغاء الطلب في هذه الحالة');
+  }
+
+  const { data, error } = await supabase
+    .from('orders')
+    .update({
+      status: 'cancelled',
+      payment_status: 'refunded',
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', orderId)
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error('فشل في إلغاء الطلب');
+  }
+
+  return data;
+}</code></pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <div class="callout-title">⚠️ تحذير</div>
+          <div class="callout-content">
+            تأكد من أن الـ RLS policies في Supabase محدثة بشكل صحيح. في بعض الحالات قد تحتاج تضيف policy للـ admin user لتمكينه من تحديث حالة أي طلب.
+          </div>
+        </div>
+
+        <h2>🌐 الخطوة 3: API Routes للطلبات</h2>
+
+        <p>بنينا API Routes للتعامل مع الطلبات من خلال REST API:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/api/orders/route.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { NextResponse } from 'next/server';
+import { createOrder, getUserOrders } from '@/services/orderService';
+
+// POST: إنشاء طلب جديد
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const {
+      userId,
+      items,
+      shippingAddress,
+      paymentMethod,
+      subtotal,
+      shippingCost,
+      tax,
+      total,
+      notes
+    } = body;
+
+    // التحقق من البيانات المطلوبة
+    if (!userId || !items || items.length === 0 || !shippingAddress) {
+      return NextResponse.json(
+        { error: 'بيانات الطلب غير مكتملة' },
+        { status: 400 }
+      );
+    }
+
+    // التحقق من وجود المنتجات
+    if (items.some(item => !item.productId && !item.id)) {
+      return NextResponse.json(
+        { error: 'جميع العناصر يجب أن تحتوي على معرف المنتج' },
+        { status: 400 }
+      );
+    }
+
+    const order = await createOrder({
+      userId,
+      items,
+      shippingAddress,
+      paymentMethod,
+      subtotal,
+      shippingCost,
+      tax,
+      total,
+      notes
+    });
+
+    return NextResponse.json(order, { status: 201 });
+  } catch (error) {
+    console.error('Error creating order:', error);
+    return NextResponse.json(
+      { error: error.message || 'فشل في إنشاء الطلب' },
+      { status: 500 }
+    );
+  }
+}
+
+// GET: جلب طلبات المستخدم
+export async function GET(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+    const status = searchParams.get('status');
+    const limit = parseInt(searchParams.get('limit')) || 10;
+    const offset = parseInt(searchParams.get('offset')) || 0;
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'معرف المستخدم مطلوب' },
+        { status: 400 }
+      );
+    }
+
+    const orders = await getUserOrders(userId, { status, limit, offset });
+
+    return NextResponse.json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return NextResponse.json(
+      { error: error.message || 'فشل في جلب الطلبات' },
+      { status: 500 }
+    );
+  }
+}</code></pre>
+        </div>
+
+        <h2>📄 الخطوة 4: صفحة تأكيد الطلب</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/checkout/confirmation/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { CheckCircle, Package, Truck, Clock, ArrowLeft, Printer } from 'lucide-react';
+import { motion } from 'framer-motion';
+import Container from '@/components/ui/Container';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+
+export default function OrderConfirmationPage() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('orderId');
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (orderId) {
+      fetchOrder();
+    }
+  }, [orderId]);
+
+  const fetchOrder = async () => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}`);
+      if (!response.ok) {
+        throw new Error('الطلب غير موجود');
+      }
+      const data = await response.json();
+      setOrder(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusSteps = (status) => {
+    const steps = [
+      { key: 'pending', label: 'قيد الانتظار', icon: Clock },
+      { key: 'confirmed', label: 'تم التأكيد', icon: CheckCircle },
+      { key: 'processing', label: 'قيد المعالجة', icon: Package },
+      { key: 'shipped', label: 'تم الشحن', icon: Truck },
+      { key: 'delivered', label: 'تم التسليم', icon: CheckCircle },
+    ];
+
+    const currentIndex = steps.findIndex(step => step.key === status);
+    return steps.map((step, index) => ({
+      ...step,
+      completed: index <= currentIndex,
+      active: step.key === status,
+    }));
+  };
+
+  if (loading) {
+    return (
+      <Container className="py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <p className="mt-4 text-gray-400">جاري تحميل تفاصيل الطلب...</p>
+        </div>
+      </Container>
+    );
+  }
+
+  if (error || !order) {
+    return (
+      <Container className="py-16">
+        <div className="text-center">
+          <div className="w-24 h-24 mx-auto rounded-full bg-red-500/20 flex items-center justify-center mb-6">
+            <span className="text-4xl">❌</span>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-4">
+            {error || 'الطلب غير موجود'}
+          </h2>
+          <Link href="/products">
+            <Button>
+              <ArrowLeft className="w-5 h-5 ml-2" />
+              العودة للتسوق
+            </Button>
+          </Link>
+        </div>
+      </Container>
+    );
+  }
+
+  const statusSteps = getStatusSteps(order.status);
+
+  return (
+    <Container className="py-16">
+      <div className="max-w-3xl mx-auto">
+        {/* Success Header */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 15 }}
+          className="text-center mb-12"
+        >
+          <div className="w-24 h-24 mx-auto rounded-full bg-green-500/20 flex items-center justify-center mb-6">
+            <CheckCircle className="w-12 h-12 text-green-400" />
+          </div>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            تم تأكيد طلبك!
+          </h1>
+          <p className="text-gray-400 mb-2">
+            شكراً لك! تم استلام طلبك بنجاح.
+          </p>
+          <p className="text-indigo-400 font-mono text-lg">
+            رقم الطلب: #{order.id.slice(0, 8).toUpperCase()}
+          </p>
+        </motion.div>
+
+        {/* Order Status Timeline */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card variant="glass" className="mb-8">
+            <h2 className="text-xl font-bold text-white mb-6">تتبع حالة الطلب</h2>
+            
+            <div className="flex items-center justify-between">
+              {statusSteps.map((step, index) => (
+                <div key={step.key} className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
+                      step.completed 
+                        ? 'bg-indigo-500 text-white' 
+                        : 'bg-gray-700 text-gray-400'
+                    } ${step.active ? 'ring-4 ring-indigo-500/30' : ''}`}>
+                      <step.icon className="w-6 h-6" />
+                    </div>
+                    <span className={`text-sm ${
+                      step.completed ? 'text-indigo-400' : 'text-gray-500'
+                    }`}>
+                      {step.label}
+                    </span>
+                  </div>
+                  {index < statusSteps.length - 1 && (
+                    <div className={`w-12 sm:w-20 h-1 mx-2 ${
+                      step.completed ? 'bg-indigo-500' : 'bg-gray-700'
+                    }`} />
+                  )}
+                </div>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Order Details */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <Card variant="glass" className="mb-8">
+            <h2 className="text-xl font-bold text-white mb-6">تفاصيل الطلب</h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <p className="text-gray-400 text-sm mb-1">تاريخ الطلب</p>
+                <p className="text-white">
+                  {new Date(order.created_at).toLocaleDateString('ar-SA', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm mb-1">طريقة الدفع</p>
+                <p className="text-white">
+                  {order.payment_method === 'credit_card' && '💳 بطاقة ائتمان'}
+                  {order.payment_method === 'apple_pay' && ' Apple Pay'}
+                  {order.payment_method === 'cod' && '💵 الدفع عند الاستلام'}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm mb-1">عنوان الشحن</p>
+                <p className="text-white">
+                  {order.shipping_address?.city}, {order.shipping_address?.address}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm mb-1">الإجمالي</p>
+                <p className="text-white text-xl font-bold">
+                  ${order.total.toFixed(2)}
+                </p>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Order Items */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <Card variant="glass" className="mb-8">
+            <h2 className="text-xl font-bold text-white mb-6">المنتجات المطلوبة</h2>
+            
+            <div className="space-y-4">
+              {order.order_items?.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-4 p-4 bg-white/5 rounded-xl"
+                >
+                  <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-800">
+                    {item.products?.image && (
+                      <img
+                        src={item.products.image}
+                        alt={item.products.name}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-medium truncate">
+                      {item.products?.name}
+                    </p>
+                    <p className="text-gray-400 text-sm">
+                      {item.selected_size && `مقاس: ${item.selected_size}`}
+                      {item.selected_size && item.selected_color && ' | '}
+                      {item.selected_color && `لون: ${item.selected_color}`}
+                    </p>
+                  </div>
+                  <div className="text-left">
+                    <p className="text-white font-medium">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </p>
+                    <p className="text-gray-400 text-sm">
+                      الكمية: {item.quantity}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+        >
+          <Link href="/orders">
+            <Button variant="secondary">
+              <Package className="w-5 h-5 ml-2" />
+              تتبع طلباتي
+            </Button>
+          </Link>
+          <Link href="/products">
+            <Button>
+              <ArrowLeft className="w-5 h-5 ml-2" />
+              متابعة التسوق
+            </Button>
+          </Link>
+          <Button
+            variant="secondary"
+            onClick={() => window.print()}
+          >
+            <Printer className="w-5 h-5 ml-2" />
+            طباعة الطلب
+          </Button>
+        </motion.div>
+
+        {/* Email Notice */}
+        <p className="mt-8 text-gray-400 text-sm text-center">
+          سيتم إرسال تفاصيل الطلب إلى بريدك الإلكتروني.
+        </p>
+      </div>
+    </Container>
+  );
+}</code></pre>
+        </div>
+
+        <h2>📋 الخطوة 5: صفحة سجل الطلبات</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/orders/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useEffect, useState } from 'react';
+import { useAuth } from '@clerk/nextjs';
+import Link from 'next/link';
+import { Package, Clock, CheckCircle, Truck, XCircle, Eye } from 'lucide-react';
+import Container from '@/components/ui/Container';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+
+const statusConfig = {
+  pending: {
+    label: 'قيد الانتظار',
+    color: 'text-yellow-400',
+    bgColor: 'bg-yellow-500/20',
+    icon: Clock,
+  },
+  confirmed: {
+    label: 'تم التأكيد',
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-500/20',
+    icon: CheckCircle,
+  },
+  processing: {
+    label: 'قيد المعالجة',
+    color: 'text-indigo-400',
+    bgColor: 'bg-indigo-500/20',
+    icon: Package,
+  },
+  shipped: {
+    label: 'تم الشحن',
+    color: 'text-purple-400',
+    bgColor: 'bg-purple-500/20',
+    icon: Truck,
+  },
+  delivered: {
+    label: 'تم التسليم',
+    color: 'text-green-400',
+    bgColor: 'bg-green-500/20',
+    icon: CheckCircle,
+  },
+  cancelled: {
+    label: 'ملغي',
+    color: 'text-red-400',
+    bgColor: 'bg-red-500/20',
+    icon: XCircle,
+  },
+};
+
+export default function OrdersPage() {
+  const { userId } = useAuth();
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+
+  useEffect(() => {
+    if (userId) {
+      fetchOrders();
+    }
+  }, [userId]);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch(`/api/orders?userId=${userId}`);
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredOrders = filter === 'all' 
+    ? orders 
+    : orders.filter(order => order.status === filter);
+
+  if (loading) {
+    return (
+      <Container className="py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <p className="mt-4 text-gray-400">جاري تحميل الطلبات...</p>
+        </div>
+      </Container>
+    );
+  }
+
+  return (
+    <Container className="py-16">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">طلباتي</h1>
+          <p className="text-gray-400">
+            تتبع وإدارة جميع طلباتك
+          </p>
+        </div>
+
+        {/* Filter Tabs */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-xl transition-all ${
+              filter === 'all'
+                ? 'bg-indigo-500 text-white'
+                : 'bg-white/5 text-gray-400 hover:bg-white/10'
+            }`}
+          >
+            الكل ({orders.length})
+          </button>
+          {Object.entries(statusConfig).map(([key, config]) => {
+            const count = orders.filter(o => o.status === key).length;
+            if (count === 0) return null;
+            return (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`px-4 py-2 rounded-xl transition-all ${
+                  filter === key
+                    ? 'bg-indigo-500 text-white'
+                    : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                }`}
+              >
+                {config.label} ({count})
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Orders List */}
+        {filteredOrders.length === 0 ? (
+          <Card variant="glass" className="text-center py-12">
+            <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-white mb-2">
+              لا توجد طلبات
+            </h3>
+            <p className="text-gray-400 mb-6">
+              لم تقم بأي طلبات بعد
+            </p>
+            <Link href="/products">
+              <Button>ابدأ التسوق</Button>
+            </Link>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {filteredOrders.map((order) => {
+              const statusInfo = statusConfig[order.status];
+              const StatusIcon = statusInfo.icon;
+
+              return (
+                <Card key={order.id} variant="glass">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-xl ${statusInfo.bgColor} flex items-center justify-center`}>
+                        <StatusIcon className={`w-6 h-6 ${statusInfo.color}`} />
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">
+                          طلب #{order.id.slice(0, 8).toUpperCase()}
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          {new Date(order.created_at).toLocaleDateString('ar-SA')}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-6">
+                      <div className="text-center">
+                        <p className="text-white font-bold text-lg">
+                          ${order.total.toFixed(2)}
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          {order.order_items?.length || 0} منتج
+                        </p>
+                      </div>
+
+                      <span className={`px-3 py-1 rounded-full text-sm ${statusInfo.bgColor} ${statusInfo.color}`}>
+                        {statusInfo.label}
+                      </span>
+
+                      <Link href={`/orders/${order.id}`}>
+                        <Button variant="secondary" size="sm">
+                          <Eye className="w-4 h-4 ml-2" />
+                          التفاصيل
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </Container>
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔍 الخطوة 6: صفحة تفاصيل الطلب</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/(shop)/orders/[id]/page.js</span>
+            <span class="code-block-lang">jsx</span>
+          </div>
+          <pre><code>"use client";
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { useAuth } from '@clerk/nextjs';
+import Link from 'next/link';
+import { ArrowLeft, Package, Truck, CheckCircle, Clock, MapPin, CreditCard } from 'lucide-react';
+import Container from '@/components/ui/Container';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+
+export default function OrderDetailPage() {
+  const params = useParams();
+  const { userId } = useAuth();
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (userId && params.id) {
+      fetchOrder();
+    }
+  }, [userId, params.id]);
+
+  const fetchOrder = async () => {
+    try {
+      const response = await fetch(`/api/orders/${params.id}?userId=${userId}`);
+      if (!response.ok) {
+        throw new Error('الطلب غير موجود');
+      }
+      const data = await response.json();
+      setOrder(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container className="py-16">
+        <div className="text-center">
+          <div className="w-16 h-16 mx-auto border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+          <p className="mt-4 text-gray-400">جاري تحميل تفاصيل الطلب...</p>
+        </div>
+      </Container>
+    );
+  }
+
+  if (error || !order) {
+    return (
+      <Container className="py-16">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-white mb-4">
+            {error || 'الطلب غير موجود'}
+          </h2>
+          <Link href="/orders">
+            <Button>
+              <ArrowLeft className="w-5 h-5 ml-2" />
+              العودة للطلبات
+            </Button>
+          </Link>
+        </div>
+      </Container>
+    );
+  }
+
+  return (
+    <Container className="py-16">
+      <div className="max-w-4xl mx-auto">
+        {/* Back Button */}
+        <Link href="/orders" className="inline-flex items-center text-gray-400 hover:text-white mb-6 transition-colors">
+          <ArrowLeft className="w-5 h-5 ml-2" />
+          العودة للطلبات
+        </Link>
+
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">
+            طلب #{order.id.slice(0, 8).toUpperCase()}
+          </h1>
+          <p className="text-gray-400">
+            تم الإنشاء في {new Date(order.created_at).toLocaleDateString('ar-SA', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Order Items */}
+            <Card variant="glass">
+              <h2 className="text-xl font-bold text-white mb-6">المنتجات</h2>
+              <div className="space-y-4">
+                {order.order_items?.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-4 p-4 bg-white/5 rounded-xl"
+                  >
+                    <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gray-800">
+                      {item.products?.image && (
+                        <img
+                          src={item.products.image}
+                          alt={item.products.name}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-medium">
+                        {item.products?.name}
+                      </p>
+                      <p className="text-gray-400 text-sm">
+                        {item.selected_size && `مقاس: ${item.selected_size}`}
+                        {item.selected_size && item.selected_color && ' | '}
+                        {item.selected_color && `لون: ${item.selected_color}`}
+                      </p>
+                      <p className="text-gray-400 text-sm">
+                        الكمية: {item.quantity}
+                      </p>
+                    </div>
+                    <div className="text-left">
+                      <p className="text-white font-bold">
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </p>
+                      <p className="text-gray-400 text-sm">
+                        ${item.price.toFixed(2)} × {item.quantity}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Shipping Address */}
+            <Card variant="glass">
+              <div className="flex items-center gap-3 mb-4">
+                <MapPin className="w-5 h-5 text-indigo-400" />
+                <h3 className="text-lg font-bold text-white">عنوان الشحن</h3>
+              </div>
+              <div className="text-gray-300 space-y-1">
+                <p>{order.shipping_address?.firstName} {order.shipping_address?.lastName}</p>
+                <p>{order.shipping_address?.address}</p>
+                <p>{order.shipping_address?.city}, {order.shipping_address?.state} {order.shipping_address?.zipCode}</p>
+                <p>{order.shipping_address?.phone}</p>
+              </div>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Order Summary */}
+            <Card variant="glass">
+              <h3 className="text-lg font-bold text-white mb-4">ملخص الطلب</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between text-gray-300">
+                  <span>المجموع الفرعي</span>
+                  <span>${order.subtotal?.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-gray-300">
+                  <span>الشحن</span>
+                  <span>
+                    {order.shipping_cost === 0 ? (
+                      <span className="text-green-400">مجاني</span>
+                    ) : (
+                      `$${order.shipping_cost?.toFixed(2)}`
+                    )}
+                  </span>
+                </div>
+                <div className="flex justify-between text-gray-300">
+                  <span>الضرائب</span>
+                  <span>${order.tax?.toFixed(2)}</span>
+                </div>
+                <div className="border-t border-white/10 pt-3">
+                  <div className="flex justify-between text-white font-bold text-lg">
+                    <span>الإجمالي</span>
+                    <span>${order.total?.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Payment Info */}
+            <Card variant="glass">
+              <div className="flex items-center gap-3 mb-4">
+                <CreditCard className="w-5 h-5 text-indigo-400" />
+                <h3 className="text-lg font-bold text-white">الدفع</h3>
+              </div>
+              <div className="space-y-2">
+                <p className="text-gray-300">
+                  الطريقة: {
+                    order.payment_method === 'credit_card' ? 'بطاقة ائتمان' :
+                    order.payment_method === 'apple_pay' ? 'Apple Pay' :
+                    'الدفع عند الاستلام'
+                  }
+                </p>
+                <p className="text-gray-300">
+                  الحالة: <span className={
+                    order.payment_status === 'paid' ? 'text-green-400' : 'text-yellow-400'
+                  }>
+                    {order.payment_status === 'paid' ? 'مدفوع' : 'في الانتظار'}
+                  </span>
+                </p>
+              </div>
+            </Card>
+
+            {/* Order Status */}
+            <Card variant="glass">
+              <h3 className="text-lg font-bold text-white mb-4">حالة الطلب</h3>
+              <div className="space-y-3">
+                {['pending', 'confirmed', 'processing', 'shipped', 'delivered'].map((status, index) => {
+                  const statusLabels = {
+                    pending: 'قيد الانتظار',
+                    confirmed: 'تم التأكيد',
+                    processing: 'قيد المعالجة',
+                    shipped: 'تم الشحن',
+                    delivered: 'تم التسليم',
+                  };
+                  const isCompleted = ['pending', 'confirmed', 'processing', 'shipped', 'delivered']
+                    .indexOf(order.status) >= index;
+                  
+                  return (
+                    <div key={status} className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        isCompleted ? 'bg-indigo-500' : 'bg-gray-700'
+                      }`}>
+                        {isCompleted ? (
+                          <CheckCircle className="w-4 h-4 text-white" />
+                        ) : (
+                          <Clock className="w-4 h-4 text-gray-400" />
+                        )}
+                      </div>
+                      <span className={isCompleted ? 'text-white' : 'text-gray-500'}>
+                        {statusLabels[status]}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </Container>
+  );
+}</code></pre>
+        </div>
+
+        <h2>🔗 الخطوة 7: API Route لتفاصيل الطلب</h2>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span class="code-block-title">app/api/orders/[id]/route.js</span>
+            <span class="code-block-lang">javascript</span>
+          </div>
+          <pre><code>import { NextResponse } from 'next/server';
+import { getOrderById, updateOrderStatus } from '@/services/orderService';
+
+// GET: جلب تفاصيل طلب محدد
+export async function GET(request, { params }) {
+  try {
+    const { id } = params;
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'معرف المستخدم مطلوب' },
+        { status: 400 }
+      );
+    }
+
+    const order = await getOrderById(id, userId);
+
+    return NextResponse.json(order);
+  } catch (error) {
+    console.error('Error fetching order:', error);
+    return NextResponse.json(
+      { error: error.message || 'الطلب غير موجود' },
+      { status: 404 }
+    );
+  }
+}
+
+// PATCH: تحديث حالة الطلب (للadmin فقط)
+export async function PATCH(request, { params }) {
+  try {
+    const { id } = params;
+    const body = await request.json();
+    const { status } = body;
+
+    // التحقق من الحالة المسموحة
+    const validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return NextResponse.json(
+        { error: 'حالة غير صالحة' },
+        { status: 400 }
+      );
+    }
+
+    // هنا يجب التحقق من صلاحيات المستخدم (admin)
+    // يمكنك إضافة middleware للتحقق من Clerk
+
+    const order = await updateOrderStatus(id, status);
+
+    return NextResponse.json(order);
+  } catch (error) {
+    console.error('Error updating order:', error);
+    return NextResponse.json(
+      { error: error.message || 'فشل في تحديث الطلب' },
+      { status: 500 }
+    );
+  }
+}</code></pre>
+        </div>
+
+        <div class="callout callout-success">
+          <div class="callout-title">🎉 تحسينات إضافية</div>
+          <div class="callout-content">
+            <ul>
+              <li>أضف إشعارات push عند تغير حالة الطلب</li>
+              <li>أضف نظام تقييم المنتجات بعد التسليم</li>
+              <li>أضف إمكانية إرجاع المنتجات</li>
+              <li>أضف نظام كوبونات الخصم للطلبات</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>📝 ملخص الدرس</h2>
+        <p>في الدرس ده بنينا نظام طلبات كامل:</p>
+        <ul>
+          <li>✅ جدول orders في Supabase مع RLS</li>
+          <li>✅ خدمات الطلبات (createOrder, getUserOrders)</li>
+          <li>✅ API Routes للتعامل مع الطلبات</li>
+          <li>✅ صفحة تأكيد الطلب مع تتبع الحالة</li>
+          <li>✅ صفحة سجل الطلبات مع التصفية</li>
+          <li>✅ صفحة تفاصيل الطلب</li>
+        </ul>
+
+        <div class="callout callout-info">
+          <div class="callout-title">💡 النقطة القادمة</div>
+          <div class="callout-content">
+            في الدرس الجاي هنبني نظام المفضلة (Wishlist) اللي بيسمح للمستخدمين بحفظ المنتجات اللي عايزينها.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Navigation -->
+      <div class="lesson-nav">
+        <a href="14-checkout.html" class="nav-btn">
+          <span class="nav-btn-label">← السابق</span>
+          <span class="nav-btn-title">صفحة الدفع</span>
+        </a>
+        <a href="16-wishlist.html" class="nav-btn nav-btn-next">
+          <span class="nav-btn-label">التالي →</span>
+          <span class="nav-btn-title">نظام المفضلة</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
